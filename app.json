@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "my-expo-app",
-    "slug": "my-expo-app",
+    "name": "hamalog-RN",
+    "slug": "hamalog-rn",
     "version": "1.0.0",
-    "scheme": "my-expo-app",
+    "scheme": "hamalog-rn",
 
     "web": {
       "favicon": "./assets/favicon.png",
