@@ -1,5 +1,5 @@
-import { ScreenContent } from '../components/ScreenContent';
+import { HomeWidget } from '@widgets/home';
 
 export default function HomePage() {
-  return <ScreenContent title="Home" path="app/index.tsx" />;
+  return <HomeWidget />;
 }
