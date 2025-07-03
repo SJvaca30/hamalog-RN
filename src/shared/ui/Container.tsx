@@ -1,9 +1,9 @@
 import React from 'react';
-import { SafeAreaView, type ViewProps } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { cn } from '../lib/utils';
 import type { BackgroundColor } from '../types/colors.types';
 
-interface ContainerProps extends Omit {
+interface ContainerProps {
   /**
    * 컴포넌트 children
    */

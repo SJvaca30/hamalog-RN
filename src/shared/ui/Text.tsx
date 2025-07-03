@@ -4,7 +4,7 @@ import { cn } from '../lib/utils';
 import type { HamalogFontFamily, HamalogTextSize, TextColor } from '../types/colors.types';
 import type { TypographyVariant } from '../types/typography.types';
 
-interface TextProps extends Omit {
+interface TextProps {
   /**
    * 컴포넌트 children
    */

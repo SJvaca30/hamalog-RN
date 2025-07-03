@@ -3,8 +3,9 @@
  * @param inputs 클래스명 또는 조건부 객체들
  * @returns 결합된 클래스명 문자열
  */
+type ClassNameInput = string | { [key: string]: unknown } | undefined;
 
-export function cn(...inputs: (string | Record | undefined)[]): string {
+export function cn(...inputs: ClassNameInput[]): string {
   const classes: string[] = [];
 
   for (const input of inputs) {
