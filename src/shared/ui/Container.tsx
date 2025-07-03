@@ -3,7 +3,7 @@ import { SafeAreaView, type ViewProps } from 'react-native';
 import { cn } from '../lib/utils';
 import type { BackgroundColor } from '../types/colors.types';
 
-interface ContainerProps extends Omit {
+interface ContainerProps extends Omit<ViewProps, 'className'> {
   /**
    * 컴포넌트 children
    */

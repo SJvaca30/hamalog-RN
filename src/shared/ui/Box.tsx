@@ -3,7 +3,7 @@ import { View, ViewProps } from 'react-native';
 import { cn } from '../lib/utils';
 import type { BackgroundColor, BorderColor } from '../types/colors.types';
 
-interface BoxProps extends Omit {
+interface BoxProps extends Omit<ViewProps, 'className'> {
   /**
    * 컴포넌트 children
    */

@@ -3,7 +3,7 @@
  * @param inputs 클래스명 또는 조건부 객체들
  * @returns 결합된 클래스명 문자열
  */
-export function cn(...inputs: (string | Record | undefined)[]): string {
+export function cn(...inputs: (string | Record<string, unknown> | undefined)[]): string {
   const classes: string[] = [];
 
   for (const input of inputs) {
