@@ -1,9 +1,9 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { cn } from '../lib/utils';
 import type { BackgroundColor, BorderColor } from '../types/colors.types';
 
-interface BoxProps {
+interface BoxProps extends Omit {
   /**
    * 컴포넌트 children
    */

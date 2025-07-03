@@ -19,4 +19,4 @@ export interface TypographyStyle {
 }
 
 // Typography configuration type
-export type TypographyConfig = { [K in TypographyVariant]: TypographyStyle };
+export type TypographyConfig = Record;
