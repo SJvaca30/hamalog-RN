@@ -13,8 +13,9 @@ web-build/
 
 
 
-ios
-android
+# Uncomment these if you're using prebuild
+# ios
+# android
 
 # macOS
 .DS_Store
@@ -23,3 +24,4 @@ android
 .metro-health-check*
 
 .cursor
+docs
