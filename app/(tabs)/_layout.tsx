@@ -1,5 +1,8 @@
-import { Text, colors } from '@shared';
-import { HomeIcon, ProfileIcon, ReportIcon } from '@shared/ui/icons';
+import { colors } from '@shared';
+import { Text } from '@shared/ui';
+import HomeIcon from 'assets/svg/HomeIcon';
+import ProfileIcon from 'assets/svg/ProfileIcon';
+import ReportIcon from 'assets/svg/ReportIcon';
 import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
 
