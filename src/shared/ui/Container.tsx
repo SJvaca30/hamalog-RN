@@ -1,7 +1,7 @@
+import { cn } from '@shared/lib/utils';
+import { BackgroundColor } from '@shared/types/ui.types';
 import React from 'react';
-import { SafeAreaView, type ViewProps } from 'react-native';
-import { cn } from '../lib/utils';
-import type { BackgroundColor } from '../types/colors.types';
+import { SafeAreaView, ViewProps } from 'react-native';
 
 interface ContainerProps extends Omit<ViewProps, 'className'> {
   /**

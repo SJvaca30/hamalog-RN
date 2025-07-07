@@ -39,23 +39,9 @@ export default function RootLayout() {
 
   return (
     <>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#f4f4f5',
-          },
-          headerTintColor: '#000',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}>
-        <Stack.Screen
-          name="index"
-          options={{
-            title: 'Home',
-            headerShown: true,
-          }}
-        />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="create" />
       </Stack>
       <StatusBar style="auto" />
     </>

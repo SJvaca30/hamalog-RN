@@ -10,8 +10,14 @@ npm-debug.*
 *.orig.*
 web-build/
 
-
-
+# EAS 배포 관련 민감한 정보
+service-account-key.json
+google-services.json
+GoogleService-Info.plist
+.env
+.env.local
+.env.production
+.env.development
 
 # Uncomment these if you're using prebuild
 # ios
@@ -25,3 +31,5 @@ web-build/
 
 .cursor
 docs
+.gemini
+GEMINI.md

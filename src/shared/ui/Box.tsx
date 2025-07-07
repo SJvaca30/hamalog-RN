@@ -1,7 +1,7 @@
+import { cn } from '@shared/lib/utils';
+import type { BackgroundColor, BorderColor } from '@shared/types/ui.types';
 import React from 'react';
 import { View, ViewProps } from 'react-native';
-import { cn } from '../lib/utils';
-import type { BackgroundColor, BorderColor } from '../types/colors.types';
 
 interface BoxProps extends Omit<ViewProps, 'className'> {
   /**

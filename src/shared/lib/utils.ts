@@ -1,24 +1,12 @@
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
 /**
- * 클래스명을 조건부로 결합하는 유틸리티 함수
- * @param inputs 클래스명 또는 조건부 객체들
- * @returns 결합된 클래스명 문자열
+ * 클래스 이름을 조건부로 결합하고 Tailwind CSS 클래스 충돌을 해결하는 유틸리티 함수.
+ * clsx와 tailwind-merge를 함께 사용합니다.
+ * @param inputs - 결합할 클래스 이름들.
+ * @returns 병합되고 충돌이 해결된 클래스 이름 문자열.
  */
-export function cn(...inputs: (string | Record<string, unknown> | undefined)[]): string {
-  const classes: string[] = [];
-
-  for (const input of inputs) {
-    if (!input) continue;
-
-    if (typeof input === 'string') {
-      classes.push(input);
-    } else if (typeof input === 'object') {
-      for (const [key, value] of Object.entries(input)) {
-        if (value) {
-          classes.push(key);
-        }
-      }
-    }
-  }
-
-  return classes.join(' ');
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }

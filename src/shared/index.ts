@@ -4,30 +4,12 @@
 // UI Components
 export { Box } from './ui/Box';
 export { Container } from './ui/Container';
+export { HomeIcon, ProfileIcon, ReportIcon } from './ui/icons';
 export { Text } from './ui/Text';
 
-// Types
-export type {
-  BackgroundColor,
-  BodySize,
-  BorderColor,
-  ButtonSize,
-  ColorClass,
-  FontFamilyClass,
-  GrayColor,
-  HamalogColor,
-  HamalogFontFamily,
-  HamalogTextSize,
-  HeadlineSize,
-  PointColor,
-  PrimaryColor,
-  StrokeColor,
-  TextColor,
-  TextSizeClass,
-} from './types/colors.types';
-
-export * from './config/typography';
-export * from './types/typography.types';
+// Configs & Types (디자인 시스템의 설정값 및 타입)
+export * from './config/colors';
+export * from './types/ui.types';
 
 // Utils
 export { cn } from './lib/utils';
