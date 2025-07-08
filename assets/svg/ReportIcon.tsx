@@ -1,9 +1,8 @@
-import { Path, Rect, Svg } from 'react-native-svg';
-
 import { IconProps } from '@shared/ui/icons/icon.types';
 import { useIconProps } from '@shared/ui/icons/use-icon-props';
+import { Path, Rect, Svg } from 'react-native-svg';
 
-const ReportIcon: React.FC<IconProps> = props => {
+const ReportIcon = (props: IconProps) => {
   const { size, iconColor } = useIconProps(props);
 
   return props.isActive ? (

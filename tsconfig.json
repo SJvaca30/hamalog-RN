@@ -6,6 +6,8 @@
 
     "baseUrl": ".",
     "paths": {
+      "@assets": ["assets"],
+      "@assets/*": ["assets/*"],
       "@app": ["app"],
       "@app/*": ["app/*"],
       "@pages": ["src/pages"],
@@ -18,9 +20,7 @@
       "@entities/*": ["src/entities/*"],
       "@shared": ["src/shared"],
       "@shared/*": ["src/shared/*"],
-      "@assets": ["assets"],
-      "@assets/*": ["assets/*"]
-    }
+    },
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }

@@ -1,4 +1,5 @@
 import { colors } from '@shared';
+import { ICON_SIZES } from '@shared/constants/sizes';
 import { Text } from '@shared/ui';
 import HomeIcon from 'assets/svg/HomeIcon';
 import ProfileIcon from 'assets/svg/ProfileIcon';
@@ -33,8 +34,13 @@ export default function TabsLayout() {
         name="(home)"
         options={{
           title: '홈',
-          tabBarIcon: ({ focused, size }) => (
-            <HomeIcon isActive={focused} size={size} />
+          tabBarIcon: ({ focused }) => (
+            <HomeIcon
+              isActive={focused}
+              activeColor={colors.primary[400]}
+              inactiveColor={colors.gray[700]}
+              size={ICON_SIZES.M}
+            />
           ),
           tabBarLabel: ({ focused }) => (
             <Text
@@ -49,8 +55,13 @@ export default function TabsLayout() {
         name="report"
         options={{
           title: '리포트',
-          tabBarIcon: ({ focused, size }) => (
-            <ReportIcon isActive={focused} size={size} />
+          tabBarIcon: ({ focused }) => (
+            <ReportIcon
+              isActive={focused}
+              activeColor={colors.primary[400]}
+              inactiveColor={colors.gray[700]}
+              size={ICON_SIZES.M}
+            />
           ),
           tabBarLabel: ({ focused }) => (
             <Text
@@ -65,8 +76,13 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: '마이',
-          tabBarIcon: ({ focused, size }) => (
-            <ProfileIcon isActive={focused} size={size} />
+          tabBarIcon: ({ focused }) => (
+            <ProfileIcon
+              isActive={focused}
+              activeColor={colors.primary[400]}
+              inactiveColor={colors.gray[700]}
+              size={ICON_SIZES.M}
+            />
           ),
           tabBarLabel: ({ focused }) => (
             <Text
