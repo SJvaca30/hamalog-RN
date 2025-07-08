@@ -7,7 +7,7 @@ const FONT_DIR = path.resolve(__dirname, '../assets/fonts');
 const OUTPUT_FILE = path.resolve(__dirname, '../src/shared/config/font-map.ts');
 // 생성될 파일 내부에서 사용될, 에셋 폴더의 상대 경로입니다.
 // 이 경로는 최종적으로 _layout.tsx 파일이 require() 구문에서 사용하게 됩니다.
-const FONT_ASSET_PATH_FOR_REQUIRE = '../../assets/fonts';
+const FONT_ASSET_PATH_FOR_REQUIRE = '../../../assets/fonts';
 
 // --- 스크립트 실행 ---
 

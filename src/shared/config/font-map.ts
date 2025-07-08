@@ -9,15 +9,15 @@
 // ======================================================================
 
 export const customFontsToLoad = {
-  'Paperlogy-Black': require('../../assets/fonts/Paperlogy-Black.ttf'),
-  'Paperlogy-Bold': require('../../assets/fonts/Paperlogy-Bold.ttf'),
-  'Paperlogy-ExtraBold': require('../../assets/fonts/Paperlogy-ExtraBold.ttf'),
-  'Paperlogy-ExtraLight': require('../../assets/fonts/Paperlogy-ExtraLight.ttf'),
-  'Paperlogy-Light': require('../../assets/fonts/Paperlogy-Light.ttf'),
-  'Paperlogy-Medium': require('../../assets/fonts/Paperlogy-Medium.ttf'),
-  'Paperlogy-Regular': require('../../assets/fonts/Paperlogy-Regular.ttf'),
-  'Paperlogy-SemiBold': require('../../assets/fonts/Paperlogy-SemiBold.ttf'),
-  'Paperlogy-Thin': require('../../assets/fonts/Paperlogy-Thin.ttf'),
-  'Pretendard-Medium': require('../../assets/fonts/Pretendard-Medium.otf'),
-  'Pretendard-Regular': require('../../assets/fonts/Pretendard-Regular.otf'),
+  'Paperlogy-Black': require('../../../assets/fonts/Paperlogy-Black.ttf'),
+  'Paperlogy-Bold': require('../../../assets/fonts/Paperlogy-Bold.ttf'),
+  'Paperlogy-ExtraBold': require('../../../assets/fonts/Paperlogy-ExtraBold.ttf'),
+  'Paperlogy-ExtraLight': require('../../../assets/fonts/Paperlogy-ExtraLight.ttf'),
+  'Paperlogy-Light': require('../../../assets/fonts/Paperlogy-Light.ttf'),
+  'Paperlogy-Medium': require('../../../assets/fonts/Paperlogy-Medium.ttf'),
+  'Paperlogy-Regular': require('../../../assets/fonts/Paperlogy-Regular.ttf'),
+  'Paperlogy-SemiBold': require('../../../assets/fonts/Paperlogy-SemiBold.ttf'),
+  'Paperlogy-Thin': require('../../../assets/fonts/Paperlogy-Thin.ttf'),
+  'Pretendard-Medium': require('../../../assets/fonts/Pretendard-Medium.otf'),
+  'Pretendard-Regular': require('../../../assets/fonts/Pretendard-Regular.otf'),
 };
