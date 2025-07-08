@@ -43,9 +43,9 @@ module.exports = {
         'pretendard-400': ['Pretendard-Regular', 'system-ui', 'sans-serif'],
         'pretendard-600': ['Pretendard-SemiBold', 'system-ui', 'sans-serif'],
 
-        'paperlogy-400': ['Paperlogy-4Regular', 'system-ui', 'sans-serif'],
-        'paperlogy-500': ['Paperlogy-5Medium', 'system-ui', 'sans-serif'],
-        'paperlogy-600': ['Paperlogy-6SemiBold', 'system-ui', 'sans-serif'],
+        'paperlogy-400': ['Paperlogy-Regular', 'system-ui', 'sans-serif'],
+        'paperlogy-500': ['Paperlogy-Medium', 'system-ui', 'sans-serif'],
+        'paperlogy-600': ['Paperlogy-SemiBold', 'system-ui', 'sans-serif'],
 
         // 시스템 폰트 (fallback)
         system: ['system-ui', '-apple-system', 'sans-serif'],

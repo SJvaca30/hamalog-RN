@@ -34,12 +34,12 @@ interface TextProps extends Omit<RNTextProps, 'className' | 'style'> {
    */
   children?: React.ReactNode;
   /**
-   * Typography variant (Figma로부터 가져온 스타일).
+   * Typography variant
    * @default 'body-1'
    */
   variant?: TypographyVariant;
   /**
-   * 텍스트 색상 (하마로그 디자인 시스템)
+   * 텍스트 색상
    * @default 'text-gray-850'
    */
   color?: TextColor;

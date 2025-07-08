@@ -18,6 +18,6 @@ export const customFontsToLoad = {
   'Paperlogy-Regular': require('../../../assets/fonts/Paperlogy-Regular.ttf'),
   'Paperlogy-SemiBold': require('../../../assets/fonts/Paperlogy-SemiBold.ttf'),
   'Paperlogy-Thin': require('../../../assets/fonts/Paperlogy-Thin.ttf'),
-  'Pretendard-Medium': require('../../../assets/fonts/Pretendard-Medium.otf'),
   'Pretendard-Regular': require('../../../assets/fonts/Pretendard-Regular.otf'),
+  'Pretendard-SemiBold': require('../../../assets/fonts/Pretendard-SemiBold.otf'),
 };

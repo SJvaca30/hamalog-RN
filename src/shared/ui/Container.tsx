@@ -9,7 +9,7 @@ interface ContainerProps extends Omit<ViewProps, 'className'> {
    */
   children: React.ReactNode;
   /**
-   * 배경 색상 (하마로그 디자인 시스템)
+   * 배경 색상
    */
   bg?: BackgroundColor;
   /**
