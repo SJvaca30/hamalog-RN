@@ -7,7 +7,7 @@ import { Text as RNText, TextProps as RNTextProps } from 'react-native';
  * 이 객체는 tailwind.config.js에 정의된 값을 기반으로 합니다.
  * 이제부터 텍스트 스타일은 이 variant를 통해 제어하는 것을 원칙으로 합니다.
  */
-const variantStyles: Record<TypographyVariant, string> = {
+const variantStyles: Record   <TypographyVariant, string> = {
   'display-b': 'text-display-b font-paperlogy-600 tracking-display-b',
   display: 'text-display font-paperlogy-400 tracking-display',
   h1: 'text-h1 font-paperlogy-500 tracking-h1',
