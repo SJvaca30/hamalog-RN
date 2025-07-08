@@ -51,8 +51,8 @@ export type PrimaryColor =
   | 'primary-700';
 
 export type PointColor =
-  | 'point-red-100'
-  | 'point-red-500'
+  | 'point-red-50'
+  | 'point-red-400'
   | 'point-yellow-50'
   | 'point-yellow-400';
 

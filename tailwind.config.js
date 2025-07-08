@@ -1,4 +1,21 @@
 /** @type {import('tailwindcss').Config} */
+
+/**
+ * ---
+ * 폰트 스타일 가이드 (Font Style Guide)
+ * ---
+ * 이 프로젝트의 폰트 스타일을 안전하게 유지보수하기 위한 규칙입니다.
+ *
+ * 1. 기존 스타일 수정 (예: h1 크기 변경):
+ *    - 이 파일 (`tailwind.config.js`)의 `theme.extend`에서 해당 스타일의 값만 수정하면 됩니다.
+ *
+ * 2. 새로운 스타일 추가 (예: subtitle 스타일 추가):
+ *    - 아래 4개 파일을 순서대로 모두 수정해야 합니다.
+ *    - 1. tailwind.config.js: 새로운 스타일(fontSize, letterSpacing 등) 정의
+ *    - 2. src/shared/types/ui.types.ts: `TypographyVariant` 타입에 새 이름 추가
+ *    - 3. src/shared/ui/Text.tsx: `variantStyles` 맵에 새 variant와 클래스 연결 추가
+ *    - 4. src/shared/lib/utils.ts: `extendTailwindMerge` 설정에 새 클래스 그룹 추가
+ */
 module.exports = {
   content: ['./app/**/*.{js,jsx,ts,tsx}', './src/**/*.{js,jsx,ts,tsx}'],
 
@@ -7,34 +24,27 @@ module.exports = {
     extend: {
       // 하마로그 디자인 시스템 색상 팔레트
       colors: {
-        gray: {
-          0: '#FFFFFF',
-          50: '#F4F5F7',
-          100: '#E1E4EB',
-          150: '#C9CACF',
-          300: '#8A96A4',
-          500: '#6E7987',
-          700: '#454B52',
-          850: '#1F1E23',
-        },
-        primary: {
-          50: '#E4F2FF',
-          100: '#B2DAFF',
-          250: '#6CB8EF',
-          400: '#189EFF',
-          600: '#507B99',
-          700: '#28506D',
-        },
-        point: {
-          red: {
-            50: '#ffddd7',
-            400: '#ff6262',
-          },
-          yellow: {
-            50: '#FFFAD3',
-            400: '#FEE36E',
-          },
-        },
+        'gray-0': '#FFFFFF',
+        'gray-50': '#F4F5F7',
+        'gray-100': '#E1E4EB',
+        'gray-150': '#C9CACF',
+        'gray-300': '#8A96A4',
+        'gray-500': '#6E7987',
+        'gray-700': '#454B52',
+        'gray-850': '#1F1E23',
+
+        'primary-50': '#E4F2FF',
+        'primary-100': '#B2DAFF',
+        'primary-250': '#6CB8EF',
+        'primary-400': '#189EFF',
+        'primary-600': '#507B99',
+        'primary-700': '#28506D',
+
+        'point-red-50': '#ffddd7',
+        'point-red-400': '#ff6262',
+        'point-yellow-50': '#FFFAD3',
+        'point-yellow-400': '#FEE36E',
+
         stroke: '#E2E8F0', // 테두리, 구분선용
       },
 

@@ -87,13 +87,9 @@ export const Text = ({
   ...props
 }: TextProps) => {
   const textStyles = cn(
-    // 1. Variant에 따른 기본 스타일 적용
     variantStyles[variant],
-    // 2. 색상 적용
     color,
-    // 3. 정렬 적용
     `text-${align}`,
-    // 4. 추가적인 className 적용 (커스텀 스타일)
     className
   );
 
