@@ -51,7 +51,7 @@ module.exports = {
         system: ['system-ui', '-apple-system', 'sans-serif'],
       },
 
-      // 하마로그 텍스트 스타일
+      // 텍스트 스타일
       fontSize: {
         'display-b': ['24px', { lineHeight: '28.8px' }],
         display: ['22px', { lineHeight: '26.4px' }],
