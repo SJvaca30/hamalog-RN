@@ -29,7 +29,7 @@ export function MainBottomTabs() {
         headerShown: false,
         // 탭 바 자체의 스타일을 지정
         tabBarStyle: {
-          backgroundColor: colors.gray[0],
+          backgroundColor: colors.gray[0], // 기본값이랑 같지만 명시적으로 지정
           paddingTop: 12,
           height: 85,
           // 상단 경계선

@@ -1,11 +1,9 @@
 import { Box, Text } from '@shared/ui';
+import { format } from 'date-fns';
 import { memo } from 'react';
 
 const HomeHeader = () => {
-  const today = new Date();
-  const formattedDate = `${today.getFullYear()}년 ${
-    today.getMonth() + 1
-  }월 ${today.getDate()}일`;
+  const formattedDate = format(new Date(), 'yyyy년 M월 d일');
 
   return (
     <Box

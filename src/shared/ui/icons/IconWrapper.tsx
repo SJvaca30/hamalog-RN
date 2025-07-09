@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
 
 import { IconProps } from './icon.types';
@@ -19,18 +19,26 @@ const IconWrapper = ({
 
   return (
     <View
-      style={{
-        width: size,
-        height: size,
-        justifyContent: 'center',
-        alignItems: 'center',
-        aspectRatio: 1,
-      }}>
+      style={[
+        styles.wrapper,
+        {
+          width: size,
+          height: size,
+        },
+      ]}>
       <Svg width="100%" height="100%" viewBox={viewBox} fill="none">
         {children(iconColor)}
       </Svg>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  wrapper: {
+    alignItems: 'center',
+    aspectRatio: 1,
+    justifyContent: 'center',
+  },
+});
 
 export default IconWrapper;

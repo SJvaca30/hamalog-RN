@@ -1,7 +1,7 @@
 import { cn } from '@shared/lib/utils';
 import { BackgroundColor } from '@shared/types/ui.types';
 import React from 'react';
-import { SafeAreaView, ViewProps } from 'react-native';
+import { View, ViewProps } from 'react-native';
 
 interface ContainerProps extends Omit<ViewProps, 'className'> {
   /**
@@ -47,8 +47,8 @@ export const Container = ({
   );
 
   return (
-    <SafeAreaView className={containerStyles} {...props}>
+    <View className={containerStyles} {...props}>
       {children}
-    </SafeAreaView>
+    </View>
   );
 };
