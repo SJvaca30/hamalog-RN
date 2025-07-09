@@ -12,12 +12,4 @@ module.exports = {
 
   plugins: [require.resolve('prettier-plugin-tailwindcss')],
   tailwindAttributes: ['className'],
-  overrides: [
-    {
-      files: '*.{ts,tsx}',
-      options: {
-        parser: 'typescript',
-      },
-    },
-  ],
 };
