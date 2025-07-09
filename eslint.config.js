@@ -2,7 +2,6 @@
 const { FlatCompat } = require('@eslint/eslintrc');
 const typescript = require('@typescript-eslint/eslint-plugin');
 const typescriptParser = require('@typescript-eslint/parser');
-const prettier = require('eslint-plugin-prettier');
 const reactHooks = require('eslint-plugin-react-hooks');
 const reactNative = require('eslint-plugin-react-native');
 const betterTailwindcss = require('eslint-plugin-better-tailwindcss');
@@ -30,7 +29,6 @@ const eslintConfig = [
       },
     },
     plugins: {
-      prettier,
       '@typescript-eslint': typescript,
       'react-hooks': reactHooks,
       'react-native': reactNative,
@@ -42,9 +40,6 @@ const eslintConfig = [
       },
     },
     rules: {
-      // Prettier 통합
-      'prettier/prettier': 'warn',
-
       // React hooks 규칙
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
