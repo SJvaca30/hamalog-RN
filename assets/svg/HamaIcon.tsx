@@ -3,7 +3,7 @@ import { IconProps } from '@shared/ui/icons/icon.types';
 import IconWrapper from '@shared/ui/icons/IconWrapper';
 import { Circle, G, Path } from 'react-native-svg';
 
-const HipoIcon = (props: IconProps) => {
+const HamaIcon = (props: IconProps) => {
   return (
     <IconWrapper {...props} viewBox="0 0 32 32">
       {() => (
@@ -30,4 +30,4 @@ const HipoIcon = (props: IconProps) => {
   );
 };
 
-export default HipoIcon;
+export default HamaIcon;

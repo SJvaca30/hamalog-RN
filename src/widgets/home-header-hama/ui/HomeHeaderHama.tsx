@@ -1,0 +1,12 @@
+import { HamaNavigator } from '@features';
+import { Box } from '@shared/ui';
+
+const HomeHeaderHama = () => {
+  return (
+    <Box className="w-full flex-row items-center justify-end bg-gray-0 px-2 pb-2 pt-4">
+      <HamaNavigator href="/" size={32} />
+    </Box>
+  );
+};
+
+export default HomeHeaderHama;

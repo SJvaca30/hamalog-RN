@@ -2,7 +2,7 @@ import { Box, Text } from '@shared/ui';
 import { format } from 'date-fns';
 import { memo } from 'react';
 
-const HomeHeader = () => {
+const HomeWelcome = () => {
   const formattedDate = format(new Date(), 'yyyy년 M월 d일');
 
   return (
@@ -25,4 +25,4 @@ const HomeHeader = () => {
   );
 };
 
-export default memo(HomeHeader);
+export default memo(HomeWelcome);
