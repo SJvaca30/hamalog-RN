@@ -1,7 +1,7 @@
 import { colors } from '@shared/config/colors';
-import { IconProps } from '@shared/ui/icons/icon.types';
-import IconWrapper from '@shared/ui/icons/IconWrapper';
 import { Circle, G, Path } from 'react-native-svg';
+import { IconProps } from './icon.types';
+import IconWrapper from './IconWrapper';
 
 const HamaIcon = (props: IconProps) => {
   return (

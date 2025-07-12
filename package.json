@@ -27,6 +27,7 @@
   "dependencies": {
     "@bacons/link-assets": "^1.1.0",
     "@react-navigation/elements": "^2.5.2",
+    "@react-navigation/native": "^7.1.6",
     "@tanstack/react-query": "^5.81.5",
     "axios": "^1.10.0",
     "class-variance-authority": "^0.7.1",

@@ -1,3 +1,5 @@
+import { CreateRecordFAB } from '@features';
+import { useTabStore } from '@shared/stores/use-tab-store';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -16,6 +18,8 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts(customFontsToLoad);
+  const activeTab = useTabStore(state => state.activeTab);
+  const isHomePage = activeTab === 'home';
 
   useEffect(() => {
     if (fontsLoaded || fontError) {
@@ -34,6 +38,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="create" />
       </Stack>
+      {isHomePage && <CreateRecordFAB />}
       <StatusBar style="auto" />
     </SafeAreaProvider>
   );

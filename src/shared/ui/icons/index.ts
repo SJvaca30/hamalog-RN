@@ -1,6 +1,9 @@
-export { default as HomeIcon } from '@assets/svg/HomeIcon';
-export { default as ProfileIcon } from '@assets/svg/ProfileIcon';
-export { default as ReportIcon } from '@assets/svg/ReportIcon';
+export * from './CloseIcon';
+export { default as HamaIcon } from './HamaIcon';
+export { default as HomeIcon } from './HomeIcon';
+export { default as ProfileIcon } from './ProfileIcon';
+export { default as RecordIcon } from './RecordIcon';
+export { default as ReportIcon } from './ReportIcon';
 
 export * from './icon.types';
 export * from './use-icon-props';
