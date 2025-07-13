@@ -45,9 +45,6 @@ export const CreateRecordFAB = () => {
           </View>
         )}
 
-        {/* 클로즈 아이콘
-      figma 요구사항 : border-radius: 20px;
-       */}
         {isOpen ? (
           <Pressable
             className="h-12 w-12 items-center justify-center rounded-[18px] bg-gray-0"
