@@ -4,3 +4,4 @@
 export * from './home-header-hama';
 export * from './home-welcome';
 export * from './main-bottom-tabs';
+export * from './weekly-medication-status';
