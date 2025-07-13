@@ -8,11 +8,13 @@ const config = getDefaultConfig(__dirname);
 config.resolver = {
   ...config.resolver,
   extraNodeModules: {
-    '~': path.resolve(__dirname, 'src'),
+    '@app': path.resolve(__dirname, 'app'),
+    '@pages': path.resolve(__dirname, 'src/pages'),
     '@widgets': path.resolve(__dirname, 'src/widgets'),
     '@features': path.resolve(__dirname, 'src/features'),
     '@entities': path.resolve(__dirname, 'src/entities'),
     '@shared': path.resolve(__dirname, 'src/shared'),
+    '@assets': path.resolve(__dirname, 'assets'),
   },
 };
 
