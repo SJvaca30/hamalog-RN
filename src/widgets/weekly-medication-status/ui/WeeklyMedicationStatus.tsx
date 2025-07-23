@@ -1,10 +1,9 @@
-import { Box } from '@shared';
+import { DayItem } from '@entities/medication';
+import { Box, WeekDays } from '@shared';
 import { format } from 'date-fns';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS } from 'react-native-reanimated';
 import { useWeeklyCalendar } from '../model';
-import { DayItem } from './DayItem';
-import { WeekDays } from './WeekDays';
 
 export const WeeklyMedicationStatus = () => {
   const { days, goToNextWeek, goToPreviousWeek } = useWeeklyCalendar();
@@ -14,10 +13,10 @@ export const WeeklyMedicationStatus = () => {
     .onEnd(e => {
       // 벨로시티(속도)를 기준으로 좌우 스와이프 감지
       if (e.velocityX > 500) {
-        // 오른쪽으로 빠르게 스와이프
+        // 오른쪽으로 스와이프
         runOnJS(goToPreviousWeek)();
       } else if (e.velocityX < -500) {
-        // 왼쪽으로 빠르게 스와이프
+        // 왼쪽으로 스와이프
         runOnJS(goToNextWeek)();
       }
     });
@@ -34,8 +33,8 @@ export const WeeklyMedicationStatus = () => {
               isToday={
                 format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
               }
-              medicationProgress={0.5} // 임시 값
-              hasSymptom={false} // 임시 값
+              medicationProgress={0.5} // 임시 값, 백엔드 담당자가 api 준비중
+              hasSymptom={false} // 임시 값, 백엔드 담당자가 api 준비중
             />
           ))}
         </Box>

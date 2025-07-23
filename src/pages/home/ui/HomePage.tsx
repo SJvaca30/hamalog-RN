@@ -1,6 +1,5 @@
 import { CreateRecordFAB } from '@features';
-import { HomeHeaderHama, HomeWelcome } from '@widgets';
-import { WeeklyMedicationStatus } from '@widgets/weekly-medication-status/ui/WeeklyMedicationStatus';
+import { HomeHeaderHama, HomeWelcome, WeeklyMedicationStatus } from '@widgets';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const HomePage = () => {

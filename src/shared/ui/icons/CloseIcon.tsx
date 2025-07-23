@@ -1,6 +1,6 @@
 import { Path } from 'react-native-svg';
-import IconWrapper from './IconWrapper';
 import { IconProps } from './icon.types';
+import { IconWrapper } from './IconWrapper';
 
 export const CloseIcon = (props: IconProps) => {
   return (

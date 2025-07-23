@@ -3,7 +3,7 @@ import { Path, Svg } from 'react-native-svg';
 import { IconProps } from './icon.types';
 import { useIconProps } from './use-icon-props';
 
-const ProfileIcon = (props: IconProps) => {
+export const ProfileIcon = (props: IconProps) => {
   const { size, iconColor } = useIconProps(props);
 
   return (
@@ -34,5 +34,3 @@ const ProfileIcon = (props: IconProps) => {
     </View>
   );
 };
-
-export default ProfileIcon;

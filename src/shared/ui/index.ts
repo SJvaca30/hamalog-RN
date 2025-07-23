@@ -1,4 +1,5 @@
-export { Box } from './Box';
-export { Container } from './Container';
+export * from './Box';
+export * from './Container';
 export * from './icons';
-export { Text } from './Text';
+export * from './Text';
+export * from './WeekDays';

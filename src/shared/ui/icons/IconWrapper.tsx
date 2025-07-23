@@ -10,7 +10,7 @@ interface IconWrapperProps extends IconProps {
   viewBox?: string;
 }
 
-const IconWrapper = ({
+export const IconWrapper = ({
   children,
   viewBox = '0 0 24 24',
   ...props
@@ -40,5 +40,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-export default IconWrapper;

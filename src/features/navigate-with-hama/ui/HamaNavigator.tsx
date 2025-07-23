@@ -1,4 +1,4 @@
-import { HamaIcon, IconProps } from '@shared/ui/icons';
+import { HamaIcon, IconProps } from '@shared';
 import { useRouter } from 'expo-router';
 import { Pressable } from 'react-native';
 
@@ -21,5 +21,4 @@ const HamaNavigator = ({ href, ...props }: HamaNavigatorProps) => {
     </Pressable>
   );
 };
-
 export default HamaNavigator;

@@ -1,8 +1,8 @@
 import { Path } from 'react-native-svg';
 import { IconProps } from './icon.types';
-import IconWrapper from './IconWrapper';
+import { IconWrapper } from './IconWrapper';
 
-const RecordIcon = (props: IconProps) => {
+export const RecordIcon = (props: IconProps) => {
   return (
     <IconWrapper {...props} viewBox="0 0 24 24">
       {color => (
@@ -16,5 +16,3 @@ const RecordIcon = (props: IconProps) => {
     </IconWrapper>
   );
 };
-
-export default RecordIcon;

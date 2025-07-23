@@ -1,6 +1,7 @@
+import { DiaryForm } from '@entities';
 import { Box, Container, Text } from '@shared';
 import { useRouter } from 'expo-router';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native';
 
 export const DiaryPage = () => {
   const router = useRouter();
@@ -27,40 +28,7 @@ export const DiaryPage = () => {
           </Text>
         </Box>
 
-        <View className="gap-y-6">
-          <View>
-            <Text variant="label" className="mb-2">
-              기분
-            </Text>
-            <View className="rounded-lg border border-gray-150 bg-gray-50 p-3">
-              <Text variant="body-1" color="text-gray-300">
-                오늘의 기분을 선택하세요
-              </Text>
-            </View>
-          </View>
-
-          <View>
-            <Text variant="label" className="mb-2">
-              스트레스 수준
-            </Text>
-            <View className="rounded-lg border border-gray-150 bg-gray-50 p-3">
-              <Text variant="body-1" color="text-gray-300">
-                1-10 중 선택하세요
-              </Text>
-            </View>
-          </View>
-
-          <View>
-            <Text variant="label" className="mb-2">
-              일기 내용
-            </Text>
-            <View className="rounded-lg border border-gray-150 bg-gray-50 p-3">
-              <Text variant="body-1" color="text-gray-300">
-                오늘 하루를 기록해보세요
-              </Text>
-            </View>
-          </View>
-        </View>
+        <DiaryForm />
 
         <TouchableOpacity
           className="mt-10 items-center rounded-xl bg-primary-400 py-4 shadow-md"

@@ -3,7 +3,7 @@ import { Path, Rect, Svg } from 'react-native-svg';
 import { IconProps } from './icon.types';
 import { useIconProps } from './use-icon-props';
 
-const ReportIcon = (props: IconProps) => {
+export const ReportIcon = (props: IconProps) => {
   const { size, iconColor } = useIconProps(props);
 
   return (
@@ -59,5 +59,3 @@ const ReportIcon = (props: IconProps) => {
     </View>
   );
 };
-
-export default ReportIcon;

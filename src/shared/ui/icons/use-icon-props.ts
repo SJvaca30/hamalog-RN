@@ -1,4 +1,4 @@
-import { colors } from '@shared/config/colors';
+import { colors } from '@shared/config';
 import { IconProps } from './icon.types';
 
 export const useIconProps = ({

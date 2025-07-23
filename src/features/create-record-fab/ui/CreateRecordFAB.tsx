@@ -1,7 +1,6 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { colors } from '@shared/config/colors';
-import { Text } from '@shared/ui';
-import { CloseIcon, RecordIcon } from '@shared/ui/icons';
+import { colors } from '@shared/config';
+import { CloseIcon, RecordIcon, Text } from '@shared/ui';
 import { useRouter } from 'expo-router';
 import { Modal, Pressable, View } from 'react-native';
 import { useCreateRecordFAB } from '../model';
