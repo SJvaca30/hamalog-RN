@@ -1,6 +1,7 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { colors } from '@shared/config';
-import { CloseIcon, RecordIcon, Text } from '@shared/ui';
+import { CloseIcon, RecordIcon } from '@shared/ui/icons';
+import { Typography } from '@shared/ui/Typography';
 import { useRouter } from 'expo-router';
 import { Modal, Pressable, View } from 'react-native';
 import { useCreateRecordFAB } from '../model';
@@ -44,9 +45,12 @@ export const CreateRecordFAB = () => {
                   key={item.href}
                   className="flex-row items-center rounded-lg p-3"
                   onPress={() => handleMenuPress(item.href)}>
-                  <Text className="ml-3 text-base font-semibold">
+                  <Typography
+                    variant="body-1"
+                    color="text-gray-850"
+                    className="text-center">
                     {item.label}
-                  </Text>
+                  </Typography>
                 </Pressable>
               ))}
             </View>

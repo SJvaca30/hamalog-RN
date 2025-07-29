@@ -3,9 +3,10 @@ import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 
-import { colors } from '@shared';
+import { colors } from '@shared/config';
 import { ICON_SIZES } from '@shared/constants/sizes';
-import { HomeIcon, ProfileIcon, ReportIcon, Text } from '@shared/ui';
+import { HomeIcon, ProfileIcon, ReportIcon } from '@shared/ui/icons';
+import { Typography } from '@shared/ui/Typography';
 
 const CustomTabBar = (props: BottomTabBarProps) => {
   return (
@@ -54,11 +55,11 @@ export function MainBottomTabs() {
             />
           ),
           tabBarLabel: ({ focused }) => (
-            <Text
+            <Typography
               variant="button-small"
               color={focused ? 'text-primary-400' : 'text-gray-500'}>
               홈
-            </Text>
+            </Typography>
           ),
         }}
       />
@@ -75,11 +76,11 @@ export function MainBottomTabs() {
             />
           ),
           tabBarLabel: ({ focused }) => (
-            <Text
+            <Typography
               variant="button-small"
               color={focused ? 'text-primary-400' : 'text-gray-500'}>
               리포트
-            </Text>
+            </Typography>
           ),
         }}
       />
@@ -96,11 +97,11 @@ export function MainBottomTabs() {
             />
           ),
           tabBarLabel: ({ focused }) => (
-            <Text
+            <Typography
               variant="button-small"
               color={focused ? 'text-primary-400' : 'text-gray-500'}>
               마이
-            </Text>
+            </Typography>
           ),
         }}
       />

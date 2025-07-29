@@ -1,4 +1,5 @@
-import { Box, Text } from '@shared/ui';
+import { Box } from '@shared/ui/Box';
+import { Typography } from '@shared/ui/Typography';
 import { format } from 'date-fns';
 import { memo } from 'react';
 
@@ -11,16 +12,16 @@ const HomeWelcome = () => {
       borderColor="border-gray-150"
       className="w-full flex-row items-end justify-between border-b-[1.5px] px-4 py-6">
       <Box className="flex-col gap-1">
-        <Text variant="display-b" color="text-gray-850">
+        <Typography variant="display-b" color="text-gray-850">
           처음 만나 반가워
-        </Text>
-        <Text variant="display" color="text-gray-850">
+        </Typography>
+        <Typography variant="display" color="text-gray-850">
           함께 기록해볼까?
-        </Text>
+        </Typography>
       </Box>
-      <Text variant="body-2" color="text-gray-500">
+      <Typography variant="body-2" color="text-gray-500">
         {formattedDate}
-      </Text>
+      </Typography>
     </Box>
   );
 };

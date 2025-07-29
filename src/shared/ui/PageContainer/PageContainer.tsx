@@ -3,7 +3,18 @@ import { BackgroundColor } from '@shared/types/ui.types';
 import React from 'react';
 import { View, ViewProps } from 'react-native';
 
-interface ContainerProps extends Omit<ViewProps, 'className'> {
+const paddingMap = {
+  none: 'p-0',
+  xs: 'p-1',
+  sm: 'p-2',
+  md: 'p-4',
+  lg: 'p-6',
+  xl: 'p-8',
+};
+
+type PaddingKey = keyof typeof paddingMap;
+
+interface PageContainerProps extends Omit<ViewProps, 'className'> {
   /**
    * 컴포넌트 children
    */
@@ -15,34 +26,27 @@ interface ContainerProps extends Omit<ViewProps, 'className'> {
   /**
    * 패딩
    */
-  p?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  p?: PaddingKey;
   /**
    * 추가 스타일 클래스
    */
   className?: string;
 }
 
-export const Container = ({
+export const PageContainer = ({
   children,
   bg = 'bg-gray-0',
   p = 'lg',
   className,
   ...props
-}: ContainerProps) => {
+}: PageContainerProps) => {
   const containerStyles = cn(
     // 기본 스타일
     'flex-1',
     // 배경색
     bg,
     // 패딩
-    {
-      'p-0': p === 'none',
-      'p-1': p === 'xs',
-      'p-2': p === 'sm',
-      'p-4': p === 'md',
-      'p-6': p === 'lg',
-      'p-8': p === 'xl',
-    },
+    paddingMap[p],
     className
   );
 

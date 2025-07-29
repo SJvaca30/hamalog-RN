@@ -23,12 +23,24 @@ const variantStyles: Record<TypographyVariant, string> = {
   'button-small-p':
     'text-button-small-p font-pretendard-400 tracking-button-small-p',
   'caption-primary':
-    'text-caption-primary font-pretendard-400 tracking-caption-primary',
+    'text-caption-primary font-pretendard-600 tracking-caption-primary',
   'caption-secondary':
     'text-caption-secondary font-pretendard-400 tracking-caption-secondary',
 };
 
-interface TextProps extends Omit<RNTextProps, 'className' | 'style'> {
+/**
+ * 텍스트 정렬 값을 안전한 Tailwind로 매핑하는 객체
+ */
+const alignMap = {
+  left: 'text-left',
+  center: 'text-center',
+  right: 'text-right',
+  justify: 'text-justify',
+} as const;
+
+type TextAlign = keyof typeof alignMap;
+
+interface TypographyProps extends Omit<RNTextProps, 'className' | 'style'> {
   /**
    * 컴포넌트 children
    */
@@ -47,37 +59,45 @@ interface TextProps extends Omit<RNTextProps, 'className' | 'style'> {
    * 텍스트 정렬
    * @default 'left'
    */
-  align?: 'left' | 'center' | 'right' | 'justify';
+  align?: TextAlign;
   /**
    * 추가 클래스명
    */
   className?: string;
   /**
-   * 네이티브 style prop. 꼭 필요한 경우에만 사용하세요.
+   * 네이티브 style prop. 꼭 필요한 경우에만 사용ㅇㅅㅇ
    */
   style?: RNTextProps['style'];
 }
 
 /**
- * Hamalog 디자인 시스템의 Text 컴포넌트입니다.
+ * Hamalog 디자인 시스템의 Typography 컴포넌트입니다.
  * `variant` prop을 사용하여 스타일을 적용하세요.
  * 개별적인 size, weight, font-family 등의 prop은 사용하지 않습니다.
  *
  * @example
- * // h1 스타일 적용
- * <Text variant="h1">Hello World</Text>
+ * // 타이틀
+ * <Typography variant="h1">메인 제목</Typography>
+ * <Typography variant="h2">부제목</Typography>
+ *
+ * // 본문
+ * <Typography variant="body-1">일반 텍스트</Typography>
+ * <Typography variant="body-2">작은 텍스트</Typography>
+ *
+ * // 버튼
+ * <Typography variant="button-large">큰 버튼</Typography>
  *
  * // 색상 및 정렬 변경
- * <Text variant="body-1" color="text-primary-400" align="center">
+ * <Typography variant="body-1" color="text-primary-400" align="center">
  *   Centered blue text
- * </Text>
+ * </Typography>
  *
  * // 추가 스타일링
- * <Text variant="label" className="mt-4">
+ * <Typography variant="label" className="mt-4">
  *   Label with margin
- * </Text>
+ * </Typography>
  */
-export const Text = ({
+export const Typography = ({
   children,
   variant = 'body-1',
   color = 'text-gray-850',
@@ -85,11 +105,11 @@ export const Text = ({
   className,
   style,
   ...props
-}: TextProps) => {
+}: TypographyProps) => {
   const textStyles = cn(
     variantStyles[variant],
     color,
-    `text-${align}`,
+    alignMap[align],
     className
   );
 

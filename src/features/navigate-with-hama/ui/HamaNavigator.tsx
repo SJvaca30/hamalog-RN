@@ -1,4 +1,4 @@
-import { HamaIcon, IconProps } from '@shared';
+import { HamaIcon, IconProps } from '@shared/ui/icons';
 import { useRouter } from 'expo-router';
 import { Pressable } from 'react-native';
 

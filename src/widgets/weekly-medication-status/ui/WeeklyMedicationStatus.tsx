@@ -1,9 +1,9 @@
-import { DayItem } from '@entities/medication';
-import { Box, WeekDays } from '@shared';
+import { Box } from '@shared/ui/Box';
 import { format } from 'date-fns';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS } from 'react-native-reanimated';
-import { useWeeklyCalendar } from '../model';
+import { useWeeklyCalendar } from '../model/useWeeklyCalendar';
+import { DayItem } from './DayItem';
 
 export const WeeklyMedicationStatus = () => {
   const { days, goToNextWeek, goToPreviousWeek } = useWeeklyCalendar();
@@ -23,21 +23,22 @@ export const WeeklyMedicationStatus = () => {
 
   return (
     <GestureDetector gesture={panGesture}>
-      <Box className="p-4">
-        <WeekDays />
-        <Box className="mt-2 flex-row justify-between">
-          {days.map(day => (
-            <DayItem
-              key={day.toString()}
-              date={day}
-              isToday={
-                format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
-              }
-              medicationProgress={0.5} // 임시 값, 백엔드 담당자가 api 준비중
-              hasSymptom={false} // 임시 값, 백엔드 담당자가 api 준비중
-            />
-          ))}
-        </Box>
+      <Box
+        direction="row"
+        justify="between"
+        align="end"
+        className="self-stretch px-[10px] pb-[8px] pt-[10px]">
+        {days.map(day => (
+          <DayItem
+            key={day.toString()}
+            date={day}
+            isToday={
+              format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
+            }
+            medicationProgress={1} // 복약 스케줄 달성률, 임시 값, 백엔드 담당자가 api 준비중
+            hasSymptom={true} // 증상 기록 유무, 임시 값, 백엔드 담당자가 api 준비중
+          />
+        ))}
       </Box>
     </GestureDetector>
   );
