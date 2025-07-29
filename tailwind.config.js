@@ -1,20 +1,53 @@
 /** @type {import('tailwindcss').Config} */
 
+const { colors } = require('./src/shared/config/colors');
+
 /**
- * ---
- * 폰트 스타일 가이드 (Font Style Guide)
- * ---
- * 이 프로젝트의 폰트 스타일을 안전하게 유지보수하기 위한 규칙입니다.
+ * `colors.ts`의 색상 객체를 Tailwind 설정용으로 변환합니다.
+ * @param {typeof colors} colorsObj
+ */
+const flattenColorPalette = colorsObj => {
+  const flattened = {};
+  for (const colorName in colorsObj) {
+    if (typeof colorsObj[colorName] === 'object') {
+      for (const shade in colorsObj[colorName]) {
+        flattened[`${colorName}-${shade}`] = colorsObj[colorName][shade];
+      }
+    } else {
+      flattened[colorName] = colorsObj[colorName];
+    }
+  }
+  return flattened;
+};
+
+/**
+ * 🎨 Hamalog 디자인 시스템 가이드
  *
- * 1. 기존 스타일 수정 (예: h1 크기 변경):
- *    - 이 파일 (`tailwind.config.js`)의 `theme.extend`에서 해당 스타일의 값만 수정하면 됩니다.
+ * 색상이나 텍스트 스타일을 수정하고 싶다면 이 가이드를 따라하세요
  *
- * 2. 새로운 스타일 추가 (예: subtitle 스타일 추가):
- *    - 아래 4개 파일을 순서대로 모두 수정해야 합니다.
- *    - 1. tailwind.config.js: 새로운 스타일(fontSize, letterSpacing 등) 정의
- *    - 2. src/shared/types/ui.types.ts: `TypographyVariant` 타입에 새 이름 추가
- *    - 3. src/shared/ui/Text.tsx: `variantStyles` 맵에 새 variant와 클래스 연결 추가
- *    - 4. src/shared/lib/utils.ts: `extendTailwindMerge` 설정에 새 클래스 그룹 추가
+ *
+ * 🎨 색상 변경하기
+ *
+ * 🔸 기존 색상 수정 (예: gray-100 색상 변경)
+ *    → `src/shared/config/colors.ts` 파일만 수정
+ *
+ * 🔸 기존 그룹에 새 색상 추가 (예: gray-900 추가)
+ *    → `src/shared/config/colors.ts` 파일만 수정
+ *
+ * 🔸 완전히 새로운 색상 그룹 추가 (예: point.blue 그룹 추가)
+ *    1. `src/shared/config/colors.ts` - 새 색상 추가
+ *    2. `src/shared/types/ui.types.ts` - 새 타입 정의 추가
+ *
+ *
+ * ✏️ 텍스트 스타일 변경하기
+ *
+ * 🔸 기존 스타일 수정 (예: h1 크기 변경)
+ *    → 이 파일에서 `fontSize`, `letterSpacing` 값만 수정
+ *
+ * 🔸 새로운 텍스트 스타일 추가 (예: subtitle 추가)
+ *    1. `src/shared/types/typography-variants.ts` - 이름 추가
+ *    2. `tailwind.config.js` (이 파일) - 크기, 간격 정의
+ *    3. `src/shared/ui/Typography/Typography.tsx` - 폰트, 굵기 설정
  */
 module.exports = {
   content: ['./app/**/*.{js,jsx,ts,tsx}', './src/**/*.{js,jsx,ts,tsx}'],
@@ -22,33 +55,10 @@ module.exports = {
   presets: [require('nativewind/preset')],
   theme: {
     extend: {
-      // 하마로그 디자인 시스템 색상 팔레트
-      colors: {
-        'gray-0': '#FFFFFF',
-        'gray-50': '#F4F5F7',
-        'gray-100': '#E1E4EB',
-        'gray-150': '#C9CACF',
-        'gray-300': '#8A96A4',
-        'gray-500': '#6E7987',
-        'gray-700': '#454B52',
-        'gray-850': '#1F1E23',
+      // 모든 색상 값은 'src/shared/config/colors.ts'에서 가져옵니다.
+      colors: flattenColorPalette(colors),
 
-        'primary-50': '#E4F2FF',
-        'primary-100': '#B2DAFF',
-        'primary-250': '#6CB8EF',
-        'primary-400': '#189EFF',
-        'primary-600': '#507B99',
-        'primary-700': '#28506D',
-
-        'point-red-50': '#ffddd7',
-        'point-red-400': '#ff6262',
-        'point-yellow-50': '#FFFAD3',
-        'point-yellow-400': '#FEE36E',
-
-        stroke: '#E2E8F0', // 테두리, 구분선용
-      },
-
-      // 폰트 시스템
+      // 폰트 패밀리
       fontFamily: {
         'pretendard-400': ['Pretendard-Regular', 'system-ui', 'sans-serif'],
         'pretendard-600': ['Pretendard-SemiBold', 'system-ui', 'sans-serif'],

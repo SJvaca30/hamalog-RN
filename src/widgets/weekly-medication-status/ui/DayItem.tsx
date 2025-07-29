@@ -31,7 +31,7 @@ export const DayItem = ({
       justify="end"
       align="center"
       gap="xs"
-      className={cn('w-[45px]', isToday && 'gap-[2px]')}>
+      className="w-[45px]">
       {/* 요일 */}
       {isToday ? (
         <Box className="h-[20px] w-[22px] shrink-0 items-center justify-center rounded-[10px] bg-gray-300">
@@ -40,9 +40,11 @@ export const DayItem = ({
           </Typography>
         </Box>
       ) : (
-        <Typography variant="caption-secondary" color="text-gray-700">
-          {dayOfWeek}
-        </Typography>
+        <Box className="h-[20px] w-[22px] shrink-0 items-center justify-center">
+          <Typography variant="caption-secondary" color="text-gray-700">
+            {dayOfWeek}
+          </Typography>
+        </Box>
       )}
 
       <Box
