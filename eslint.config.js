@@ -49,6 +49,7 @@ const eslintConfig = [
         'error',
         {
           args: 'after-used',
+          argsIgnorePattern: '^_',
           ignoreRestSiblings: true,
           varsIgnorePattern: '^_',
         },

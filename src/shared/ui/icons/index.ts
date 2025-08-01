@@ -1,8 +1,12 @@
 export { CloseIcon } from './CloseIcon';
+export { DiaryIcon } from './DiaryIcon';
 export { HamaIcon } from './HamaIcon';
 export { HomeIcon } from './HomeIcon';
 export type { IconProps } from './icon.types';
 export { ProfileIcon } from './ProfileIcon';
 export { RecordIcon } from './RecordIcon';
 export { ReportIcon } from './ReportIcon';
+export { ScheduleIcon } from './ScheduleIcon';
+export { SleepIcon } from './SleepIcon';
+export { SymptomIcon } from './SymptomIcon';
 export { useIconProps } from './use-icon-props';

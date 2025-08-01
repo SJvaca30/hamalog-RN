@@ -3,124 +3,206 @@ import type { BackgroundColor, BorderColor } from '@shared/types/ui.types';
 import React from 'react';
 import { View, ViewProps } from 'react-native';
 
-const paddingMap = {
-  none: 'p-0', // 0px
-  xs: 'p-1', // 4px
-  sm: 'p-2', // 8px
-  md: 'p-4', // 16px
-  lg: 'p-6', // 24px
-  xl: 'p-8', // 32px
+import {
+  alignMap,
+  directionMap,
+  gapMap,
+  justifyMap,
+  marginMap,
+  paddingMap,
+  roundedMap,
+} from '@shared/config';
+
+const borderWidthMap = {
+  thin: 'border',
+  thick: 'border-2',
 };
 
-const marginMap = {
-  none: 'm-0', // 0px
-  xs: 'm-1', // 4px
-  sm: 'm-2', // 8px
-  md: 'm-4', // 16px
-  lg: 'm-6', // 24px
-  xl: 'm-8', // 32px
-};
-
-const roundedMap = {
-  none: 'rounded-none',
-  sm: 'rounded-sm',
-  md: 'rounded-md',
-  lg: 'rounded-lg',
-  xl: 'rounded-xl',
-  full: 'rounded-full',
-};
-
-const directionMap = {
-  row: 'flex-row',
-  col: 'flex-col',
-  'row-reverse': 'flex-row-reverse',
-  'col-reverse': 'flex-col-reverse',
-};
-
-const justifyMap = {
-  start: 'justify-start',
-  center: 'justify-center',
-  end: 'justify-end',
-  between: 'justify-between',
-  around: 'justify-around',
-  evenly: 'justify-evenly',
-};
-
-const alignMap = {
-  start: 'items-start',
-  center: 'items-center',
-  end: 'items-end',
-  stretch: 'items-stretch',
-  baseline: 'items-baseline',
-};
-
-const gapMap = {
-  none: 'gap-0', // 0px
-  xs: 'gap-1', // 4px
-  sm: 'gap-2', // 8px
-  md: 'gap-4', // 16px
-  lg: 'gap-6', // 24px
-  xl: 'gap-8', // 32px
-  auto: 'gap-auto', // auto
-} as const;
-
-type PaddingKey = keyof typeof paddingMap;
-type MarginKey = keyof typeof marginMap;
+type SpacingKey = keyof typeof paddingMap;
 type RoundedKey = keyof typeof roundedMap;
-type BorderKey = 'thin' | 'thick';
+type BorderWidthKey = keyof typeof borderWidthMap;
 type DirectionKey = keyof typeof directionMap;
 type JustifyKey = keyof typeof justifyMap;
 type AlignKey = keyof typeof alignMap;
 type GapKey = keyof typeof gapMap;
 
 interface BoxProps extends Omit<ViewProps, 'className'> {
-  /**
-   * 컴포넌트 children
-   */
+  /** 컴포넌트 children */
   children?: React.ReactNode;
   /**
-   * 배경 색상
+   * 배경 색상.
+   * NativeWind의 배경색 클래스 이름을 사용합니다. (e.g., 'bg-primary-100')
    */
   bg?: BackgroundColor;
   /**
-   * 테두리 색상
+   * 테두리 색상.
+   * NativeWind의 테두리색 클래스 이름을 사용합니다. (e.g., 'border-gray-300')
    */
   borderColor?: BorderColor;
+
   /**
-   * 패딩
+   * 전체 패딩.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
    */
-  p?: PaddingKey;
+  p?: SpacingKey;
   /**
-   * 마진
+   * 수평(좌/우) 패딩.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
    */
-  m?: MarginKey;
+  px?: SpacingKey;
   /**
-   * 테두리 반지름
+   * 수직(상/하) 패딩.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  py?: SpacingKey;
+  /**
+   * 상단 패딩.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  pt?: SpacingKey;
+  /**
+   * 하단 패딩.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  pb?: SpacingKey;
+  /**
+   * 좌측 패딩.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  pl?: SpacingKey;
+  /**
+   * 우측 패딩.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  pr?: SpacingKey;
+
+  /**
+   * 전체 마진.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  m?: SpacingKey;
+  /**
+   * 수평(좌/우) 마진.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  mx?: SpacingKey;
+  /**
+   * 수직(상/하) 마진.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  my?: SpacingKey;
+  /**
+   * 상단 마진.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  mt?: SpacingKey;
+  /**
+   * 하단 마진.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  mb?: SpacingKey;
+  /**
+   * 좌측 마진.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  ml?: SpacingKey;
+  /**
+   * 우측 마진.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  mr?: SpacingKey;
+
+  /**
+   * 전체 모서리의 테두리 반지름.
+   * @default 'none'
+   * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
    */
   rounded?: RoundedKey;
   /**
-   * 테두리 두께
+   * 위쪽 두 모서리의 테두리 반지름.
+   * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
    */
-  border?: boolean | BorderKey;
+  roundedT?: RoundedKey;
   /**
-   * Flex 방향
+   * 아래쪽 두 모서리의 테두리 반지름.
+   * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
+   */
+  roundedB?: RoundedKey;
+  /**
+   * 왼쪽 두 모서리의 테두리 반지름. (NativeWind v4+)
+   * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
+   */
+  roundedL?: RoundedKey;
+  /**
+   * 오른쪽 두 모서리의 테두리 반지름. (NativeWind v4+)
+   * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
+   */
+  roundedR?: RoundedKey;
+  /**
+   * 좌측 상단 모서리의 테두리 반지름.
+   * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
+   */
+  roundedTL?: RoundedKey;
+  /**
+   * 우측 상단 모서리의 테두리 반지름.
+   * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
+   */
+  roundedTR?: RoundedKey;
+  /**
+   * 좌측 하단 모서리의 테두리 반지름.
+   * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
+   */
+  roundedBL?: RoundedKey;
+  /**
+   * 우측 하단 모서리의 테두리 반지름.
+   * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
+   */
+  roundedBR?: RoundedKey;
+
+  /**
+   * 테두리 표시 여부.
+   * @default false
+   */
+  border?: boolean;
+  /**
+   * 테두리 두께.
+   * @type 'thin' | 'thick'
+   */
+  borderWidth?: BorderWidthKey;
+
+  /**
+   * Flex 방향.
+   * @type 'row' | 'col' | 'row-reverse' | 'col-reverse'
    */
   direction?: DirectionKey;
   /**
-   * Flex justify-content
+   * Flex 메인 축 정렬 (justify-content).
+   * @type 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'
    */
   justify?: JustifyKey;
   /**
-   * Flex align-items
+   * Flex 교차 축 정렬 (align-items).
+   * @type 'start' | 'center' | 'end' | 'stretch' | 'baseline'
    */
   align?: AlignKey;
+
   /**
-   * Gap 간격
+   * 전체 Gap 간격.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
    */
   gap?: GapKey;
   /**
-   * 추가 스타일 클래스
+   * 수평 Gap 간격.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
    */
+  gapX?: GapKey;
+  /**
+   * 수직 Gap 간격.
+   * - `none`: 0px, `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px
+   */
+  gapY?: GapKey;
+
+  /** 추가적인 NativeWind 클래스 */
   className?: string;
 }
 
@@ -128,38 +210,101 @@ export const Box = ({
   children,
   bg,
   borderColor,
-  p = 'none',
-  m = 'none',
-  rounded = 'none',
+  p,
+  px,
+  py,
+  pt,
+  pb,
+  pl,
+  pr,
+  m,
+  mx,
+  my,
+  mt,
+  mb,
+  ml,
+  mr,
+  rounded,
+  roundedT,
+  roundedB,
+  roundedL,
+  roundedR,
+  roundedTL,
+  roundedTR,
+  roundedBL,
+  roundedBR,
   border = false,
+  borderWidth,
   direction,
   justify,
   align,
   gap,
+  gapX,
+  gapY,
   className,
   ...props
 }: BoxProps) => {
   const boxStyles = cn(
-    // 배경색
     bg,
-    // 테두리 색상
-    borderColor,
-    // 패딩
-    paddingMap[p],
-    // 마진
-    marginMap[m],
-    // 테두리 반지름
-    roundedMap[rounded],
-    // 테두리
     {
-      border: border === true || border === 'thin',
-      'border-2': border === 'thick',
+      ...(borderWidth && { [borderWidthMap[borderWidth]]: true }),
+      border: border && !borderWidth,
     },
-    // Flex 관련
+    borderColor,
+    {
+      ...(p && { [paddingMap[p]]: true }),
+      ...(px && { [paddingMap[px].replace('p', 'px')]: true }),
+      ...(py && { [paddingMap[py].replace('p', 'py')]: true }),
+      ...(pt && { [paddingMap[pt].replace('p', 'pt')]: true }),
+      ...(pb && { [paddingMap[pb].replace('p', 'pb')]: true }),
+      ...(pl && { [paddingMap[pl].replace('p', 'pl')]: true }),
+      ...(pr && { [paddingMap[pr].replace('p', 'pr')]: true }),
+    },
+    {
+      ...(m && { [marginMap[m]]: true }),
+      ...(mx && { [marginMap[mx].replace('m', 'mx')]: true }),
+      ...(my && { [marginMap[my].replace('m', 'my')]: true }),
+      ...(mt && { [marginMap[mt].replace('m', 'mt')]: true }),
+      ...(mb && { [marginMap[mb].replace('m', 'mb')]: true }),
+      ...(ml && { [marginMap[ml].replace('m', 'ml')]: true }),
+      ...(mr && { [marginMap[mr].replace('m', 'mr')]: true }),
+    },
+    // Rounded
+    {
+      ...(rounded && { [roundedMap[rounded]]: true }),
+      ...(roundedT && {
+        [roundedMap[roundedT].replace('rounded', 'rounded-t')]: true,
+      }),
+      ...(roundedB && {
+        [roundedMap[roundedB].replace('rounded', 'rounded-b')]: true,
+      }),
+      ...(roundedL && {
+        [roundedMap[roundedL].replace('rounded', 'rounded-l')]: true,
+      }),
+      ...(roundedR && {
+        [roundedMap[roundedR].replace('rounded', 'rounded-r')]: true,
+      }),
+      ...(roundedTL && {
+        [roundedMap[roundedTL].replace('rounded', 'rounded-tl')]: true,
+      }),
+      ...(roundedTR && {
+        [roundedMap[roundedTR].replace('rounded', 'rounded-tr')]: true,
+      }),
+      ...(roundedBL && {
+        [roundedMap[roundedBL].replace('rounded', 'rounded-bl')]: true,
+      }),
+      ...(roundedBR && {
+        [roundedMap[roundedBR].replace('rounded', 'rounded-br')]: true,
+      }),
+    },
     direction && directionMap[direction],
     justify && justifyMap[justify],
     align && alignMap[align],
-    gap && gapMap[gap],
+    {
+      ...(gap && { [gapMap[gap]]: true }),
+      ...(gapX && { [gapMap[gapX].replace('gap', 'gap-x')]: true }),
+      ...(gapY && { [gapMap[gapY].replace('gap', 'gap-y')]: true }),
+    },
     className
   );
 

@@ -21,7 +21,7 @@ const flattenColorPalette = colorsObj => {
 };
 
 /**
- * 🎨 Hamalog 디자인 시스템 가이드
+ * 🎨 디자인 시스템 가이드
  *
  * 색상이나 텍스트 스타일을 수정하고 싶다면 이 가이드를 따라하세요
  *

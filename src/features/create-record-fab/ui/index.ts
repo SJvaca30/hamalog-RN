@@ -1,1 +1,1 @@
-export * from './CreateRecordFAB';
+export { CreateRecordFAB } from './CreateRecordFAB';
