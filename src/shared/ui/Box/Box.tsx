@@ -114,47 +114,56 @@ interface BoxProps extends Omit<ViewProps, 'className'> {
 
   /**
    * 전체 모서리의 테두리 반지름.
+   * - `none`: 0px, `sm`: 2px, `md`: 6px, `lg`: 8px, `xl`: 12px, `full`: 9999px
    * @default 'none'
    * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
    */
   rounded?: RoundedKey;
   /**
    * 위쪽 두 모서리의 테두리 반지름.
+   * - `none`: 0px, `sm`: 2px, `md`: 6px, `lg`: 8px, `xl`: 12px, `full`: 9999px
    * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
    */
   roundedT?: RoundedKey;
   /**
    * 아래쪽 두 모서리의 테두리 반지름.
+   * - `none`: 0px, `sm`: 2px, `md`: 6px, `lg`: 8px, `xl`: 12px, `full`: 9999px
    * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
    */
   roundedB?: RoundedKey;
   /**
    * 왼쪽 두 모서리의 테두리 반지름. (NativeWind v4+)
+   * - `none`: 0px, `sm`: 2px, `md`: 6px, `lg`: 8px, `xl`: 12px, `full`: 9999px
    * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
    */
   roundedL?: RoundedKey;
   /**
    * 오른쪽 두 모서리의 테두리 반지름. (NativeWind v4+)
+   * - `none`: 0px, `sm`: 2px, `md`: 6px, `lg`: 8px, `xl`: 12px, `full`: 9999px
    * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
    */
   roundedR?: RoundedKey;
   /**
    * 좌측 상단 모서리의 테두리 반지름.
+   * - `none`: 0px, `sm`: 2px, `md`: 6px, `lg`: 8px, `xl`: 12px, `full`: 9999px
    * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
    */
   roundedTL?: RoundedKey;
   /**
    * 우측 상단 모서리의 테두리 반지름.
+   * - `none`: 0px, `sm`: 2px, `md`: 6px, `lg`: 8px, `xl`: 12px, `full`: 9999px
    * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
    */
   roundedTR?: RoundedKey;
   /**
    * 좌측 하단 모서리의 테두리 반지름.
+   * - `none`: 0px, `sm`: 2px, `md`: 6px, `lg`: 8px, `xl`: 12px, `full`: 9999px
    * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
    */
   roundedBL?: RoundedKey;
   /**
    * 우측 하단 모서리의 테두리 반지름.
+   * - `none`: 0px, `sm`: 2px, `md`: 6px, `lg`: 8px, `xl`: 12px, `full`: 9999px
    * @type 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
    */
   roundedBR?: RoundedKey;

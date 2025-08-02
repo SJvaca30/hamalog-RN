@@ -1,20 +1,36 @@
 import { cn } from '@shared/lib/utils';
 import { BackgroundColor } from '@shared/types/ui.types';
 import React from 'react';
-import { View, ViewProps } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  ScrollViewProps,
+  View,
+} from 'react-native';
 
-const paddingMap = {
-  none: 'p-0',
-  xs: 'p-1',
-  sm: 'p-2',
-  md: 'p-4',
-  lg: 'p-6',
-  xl: 'p-8',
+const paddingXMap = {
+  none: 'px-0',
+  xs: 'px-1',
+  sm: 'px-2',
+  md: 'px-4',
+  lg: 'px-6',
+  xl: 'px-8',
 };
 
-type PaddingKey = keyof typeof paddingMap;
+const paddingYMap = {
+  none: 'py-0',
+  xs: 'py-1',
+  sm: 'py-2',
+  md: 'py-4',
+  lg: 'py-6',
+  xl: 'py-8',
+};
 
-interface PageContainerProps extends Omit<ViewProps, 'className'> {
+type PaddingKey = keyof typeof paddingXMap;
+
+interface PageContainerProps
+  extends Omit<ScrollViewProps, 'className' | 'children'> {
   /**
    * 컴포넌트 children
    */
@@ -24,9 +40,17 @@ interface PageContainerProps extends Omit<ViewProps, 'className'> {
    */
   bg?: BackgroundColor;
   /**
-   * 패딩
+   * 수평 패딩
    */
-  p?: PaddingKey;
+  px?: PaddingKey;
+  /**
+   * 수직 패딩
+   */
+  py?: PaddingKey;
+  /**
+   * 스크롤 가능 여부
+   */
+  scrollable?: boolean;
   /**
    * 추가 스타일 클래스
    */
@@ -36,23 +60,33 @@ interface PageContainerProps extends Omit<ViewProps, 'className'> {
 export const PageContainer = ({
   children,
   bg = 'bg-gray-0',
-  p = 'lg',
+  px = 'none',
+  py = 'none',
+  scrollable = false,
   className,
   ...props
 }: PageContainerProps) => {
-  const containerStyles = cn(
-    // 기본 스타일
-    'flex-1',
-    // 배경색
-    bg,
-    // 패딩
-    paddingMap[p],
-    className
+  const contentPaddingStyles = cn(paddingXMap[px], paddingYMap[py]);
+
+  const content = scrollable ? (
+    <ScrollView
+      className="flex-1"
+      contentContainerClassName={contentPaddingStyles}
+      showsVerticalScrollIndicator={false}
+      {...props}>
+      {children}
+    </ScrollView>
+  ) : (
+    <View className={cn('flex-1', contentPaddingStyles)} {...props}>
+      {children}
+    </View>
   );
 
   return (
-    <View className={containerStyles} {...props}>
-      {children}
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      className={cn('flex-1', bg, className)}>
+      {content}
+    </KeyboardAvoidingView>
   );
 };

@@ -1,6 +1,8 @@
-import { HeaderBackButton } from '@react-navigation/elements';
+import { colors } from '@shared/config';
+import { Typography } from '@shared/ui/Typography';
+import { ArrowLeftIcon } from '@shared/ui/icons';
 import { Stack, useRouter } from 'expo-router';
-import { Platform } from 'react-native';
+import { Pressable } from 'react-native';
 
 export default function CreateLayout() {
   const router = useRouter();
@@ -10,33 +12,24 @@ export default function CreateLayout() {
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: '#f8fafc',
+          backgroundColor: colors.gray[0],
         },
-        headerTintColor: '#1f2937',
-        headerTitleStyle: {
-          fontWeight: '600',
-        },
+        headerTintColor: colors.gray[850],
         presentation: 'card',
-        // iOS에서만 HeaderBackButton 표시, Android는 기본 뒤로가기 버튼 사용
-        ...(Platform.OS === 'ios' && {
-          headerLeft: props => (
-            <HeaderBackButton
-              {...props}
-              onPress={() => {
-                if (router.canGoBack()) {
-                  router.back();
-                } else {
-                  router.push('/(tabs)/(home)/');
-                }
-              }}
-            />
-          ),
-        }),
+        headerTitleAlign: 'center',
+        headerShadowVisible: false,
       }}>
       <Stack.Screen
         name="medication"
         options={{
-          title: '복약 스케줄 추가',
+          headerTitle: () => (
+            <Typography variant="h1">복약 스케줄 추가</Typography>
+          ),
+          headerLeft: () => (
+            <Pressable onPress={() => router.back()} hitSlop={10}>
+              <ArrowLeftIcon />
+            </Pressable>
+          ),
         }}
       />
       <Stack.Screen
