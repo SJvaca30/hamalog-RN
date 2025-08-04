@@ -23,12 +23,12 @@ export const SleepIcon = (props: IconProps) => {
             fill="#616AFB"
             rx="5"
           />
-          <G clip-path="url(#a)">
+          <G clipPath="url(#a)">
             <Path
               fill="#C8CBFF"
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M16.79 13.806c.353 0 .64.294.64.656v2.144c0 .071.027.14.076.19l1.496 1.534c.25.256.25.671 0 .928a.629.629 0 0 1-.905 0l-1.85-1.568a.812.812 0 0 1-.28-.677l.183-2.55c0-.363.286-.657.64-.657Z"
-              clip-rule="evenodd"
+              clipRule="evenodd"
             />
           </G>
           <Defs>

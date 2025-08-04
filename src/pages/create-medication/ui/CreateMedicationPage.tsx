@@ -1,4 +1,4 @@
-import { MedicationCreationOptions } from '@widgets/medication-creation-options/ui';
+import { MedicationCreationOptions } from '@widgets/medication-creation-options';
 
 export function CreateMedicationPage() {
   return <MedicationCreationOptions />;

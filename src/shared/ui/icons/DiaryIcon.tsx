@@ -13,8 +13,8 @@ export const DiaryIcon = (props: IconProps) => {
           />
           <Path
             stroke="#FF6262"
-            stroke-linecap="round"
-            stroke-width="2"
+            strokeLinecap="round"
+            strokeWidth="2"
             d="M5.383 5.878h4M5.383 9.878h1"
           />
           <Path

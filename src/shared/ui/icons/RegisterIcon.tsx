@@ -2,9 +2,9 @@ import { G, Path, Rect } from 'react-native-svg';
 import { IconProps } from './icon.types';
 import { IconWrapper } from './IconWrapper';
 
-export const AddScheduleIcon = (props: IconProps) => {
+export const RegisterIcon = (props: IconProps) => {
   return (
-    <IconWrapper {...props} size={63} viewBox="0 0 63 64">
+    <IconWrapper {...props} viewBox="0 0 63 64">
       {_color => (
         <G>
           <Rect width="63" height="63" y=".5" fill="#B2DAFF" rx="31.5" />

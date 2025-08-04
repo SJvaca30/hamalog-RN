@@ -18,6 +18,11 @@ export default function CreateLayout() {
         presentation: 'card',
         headerTitleAlign: 'center',
         headerShadowVisible: false,
+        headerLeft: () => (
+          <Pressable onPress={() => router.back()} hitSlop={10}>
+            <ArrowLeftIcon />
+          </Pressable>
+        ),
       }}>
       <Stack.Screen
         name="medication"
@@ -25,29 +30,26 @@ export default function CreateLayout() {
           headerTitle: () => (
             <Typography variant="h1">복약 스케줄 추가</Typography>
           ),
-          headerLeft: () => (
-            <Pressable onPress={() => router.back()} hitSlop={10}>
-              <ArrowLeftIcon />
-            </Pressable>
-          ),
         }}
       />
       <Stack.Screen
         name="symptom"
         options={{
-          title: '증상 기록',
+          headerTitle: () => <Typography variant="h1">증상 기록</Typography>,
         }}
       />
       <Stack.Screen
         name="sleep"
         options={{
-          title: '수면/기상 기록',
+          headerTitle: () => (
+            <Typography variant="h1">수면/기상 기록</Typography>
+          ),
         }}
       />
       <Stack.Screen
         name="diary"
         options={{
-          title: '마음 일기',
+          headerTitle: () => <Typography variant="h1">마음 일기</Typography>,
         }}
       />
     </Stack>

@@ -169,12 +169,14 @@ interface BoxProps extends Omit<ViewProps, 'className'> {
   roundedBR?: RoundedKey;
 
   /**
-   * 테두리 표시 여부.
+   * 테두리 표시 여부. `true`일 경우 1px의 테두리가 적용됩니다.
    * @default false
    */
   border?: boolean;
   /**
    * 테두리 두께.
+   * - `thin`: 1px
+   * - `thick`: 2px
    * @type 'thin' | 'thick'
    */
   borderWidth?: BorderWidthKey;

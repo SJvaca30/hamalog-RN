@@ -19,7 +19,7 @@ const HomeWelcome = () => {
           함께 기록해볼까?
         </Typography>
       </Box>
-      <Typography variant="body-2" color="text-gray-500">
+      <Typography variant="button-small" color="text-gray-500">
         {formattedDate}
       </Typography>
     </Box>

@@ -15,15 +15,15 @@ export const IconWrapper = ({
   viewBox = '0 0 24 24',
   ...props
 }: IconWrapperProps) => {
-  const { size, iconColor } = useIconProps(props);
+  const { width, height, iconColor } = useIconProps(props);
 
   return (
     <View
       style={[
         styles.wrapper,
         {
-          width: size,
-          height: size,
+          width,
+          height,
         },
       ]}>
       <Svg width="100%" height="100%" viewBox={viewBox} fill="none">
@@ -36,7 +36,6 @@ export const IconWrapper = ({
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: 'center',
-    aspectRatio: 1,
     justifyContent: 'center',
   },
 });

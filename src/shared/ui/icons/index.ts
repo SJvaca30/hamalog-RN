@@ -1,5 +1,5 @@
-export { AddScheduleIcon } from './AddScheduleIcon';
 export { ArrowLeftIcon } from './ArrowLeftIcon';
+export { CheckIcon } from './CheckIcon';
 export { CloseIcon } from './CloseIcon';
 export { DiaryIcon } from './DiaryIcon';
 export { HamaIcon } from './HamaIcon';
@@ -8,8 +8,10 @@ export type { IconProps } from './icon.types';
 export { ImportScheduleIcon } from './ImportScheduleIcon';
 export { ProfileIcon } from './ProfileIcon';
 export { RecordIcon } from './RecordIcon';
+export { RegisterIcon } from './RegisterIcon';
 export { ReportIcon } from './ReportIcon';
 export { ScheduleIcon } from './ScheduleIcon';
 export { SleepIcon } from './SleepIcon';
+export { StepConnectorIcon } from './StepConnectorIcon';
 export { SymptomIcon } from './SymptomIcon';
 export { useIconProps } from './use-icon-props';
