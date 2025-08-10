@@ -1,4 +1,5 @@
 export { colors } from './colors';
+export { env } from './env';
 export { customFontsToLoad } from './font-map';
 export {
   alignMap,

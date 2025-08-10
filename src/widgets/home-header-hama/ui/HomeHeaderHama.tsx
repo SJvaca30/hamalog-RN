@@ -1,4 +1,4 @@
-import { HamaNavigator } from '@features';
+import { HamaNavigator } from '@features/navigate-with-hama';
 import { Box } from '@shared/ui/Box';
 
 export const HomeHeaderHama = () => {

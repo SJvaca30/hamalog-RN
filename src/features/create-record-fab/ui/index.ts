@@ -1,1 +1,0 @@
-export { CreateRecordFAB } from './CreateRecordFAB';

@@ -1,4 +1,4 @@
-import { CreateRecordFAB } from '@features';
+import { CreateRecordFAB } from '@features/create-record-fab';
 import { HomeHeaderHama } from '@widgets/home-header-hama';
 import { HomeWelcome } from '@widgets/home-welcome';
 import { WeeklyMedicationStatus } from '@widgets/weekly-medication-status';

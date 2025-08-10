@@ -11,8 +11,8 @@ import {
 } from '@shared/ui/icons';
 import { useRouter } from 'expo-router';
 import { Modal, Pressable } from 'react-native';
-import { useCreateRecordFAB } from '../model';
 import { MenuItem, type MenuItemType } from './MenuItem';
+import { useCreateRecordFAB } from '../model/useCreateRecordFAB';
 
 const MENU_ITEMS: MenuItemType[] = [
   {
