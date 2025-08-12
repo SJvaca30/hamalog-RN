@@ -1,5 +1,6 @@
 import { cn } from '@shared/lib';
 import { Box } from '@shared/ui/Box';
+import { PictureDeleteIcon, PictureUploadIcon } from '@shared/ui/icons';
 import { Typography } from '@shared/ui/Typography';
 import { Image, Pressable, View } from 'react-native';
 import { usePickImage } from '../model/usePickImage';
@@ -7,6 +8,7 @@ import { useUploadImage } from '../model/useUploadImage';
 
 type Props = {
   onUploaded?: (url: string) => void;
+  onCleared?: () => void;
   label?: string;
   description?: string;
 };
@@ -18,10 +20,11 @@ type Props = {
  */
 export function MedicationPhotoField({
   onUploaded,
+  onCleared,
   label = '약물 사진',
-  description = '약 봉투, 약 한 알 등, 편한 방식으로 기록하세요',
+  description = '약 봉투, 약 한 알 등,\n편한 방식으로 기록하세요',
 }: Props) {
-  const { image, pickFromLibrary, takePhoto } = usePickImage();
+  const { image, pickFromLibrary, takePhoto, clear } = usePickImage();
   const upload = useUploadImage();
 
   const handlePick = async () => {
@@ -31,20 +34,30 @@ export function MedicationPhotoField({
     onUploaded?.(res.url);
   };
 
-  const handleCamera = async () => {
+  const _handleCamera = async () => {
     const picked = await takePhoto();
     if (!picked) return;
     const res = await upload.mutateAsync({ image: picked });
     onUploaded?.(res.url);
   };
 
+  const handleClear = () => {
+    clear();
+    onCleared?.();
+  };
+
   return (
-    <Box direction="col" className="gap-3">
-      <View>
-        <Box direction="row" align="center" className="gap-1">
-          <Typography variant="h2">{label} *</Typography>
+    <Box direction="row" justify="between" className="gap-2">
+      <View className="flex-col gap-1 pb-1 pt-1">
+        <Box direction="row" align="center" gap="xs">
+          <Typography variant="label" color="text-gray-700">
+            {label}
+          </Typography>
+          <Typography variant="label" color="text-primary-400">
+            *
+          </Typography>
         </Box>
-        <Typography variant="body-2" color="text-gray-500">
+        <Typography variant="caption-secondary" color="text-gray-500">
           {description}
         </Typography>
       </View>
@@ -52,23 +65,36 @@ export function MedicationPhotoField({
       <Pressable
         onPress={handlePick}
         className={cn(
-          'border-secondary-200 h-[220] w-[220] self-start rounded-3xl border-2',
-          'items-center justify-center'
+          'h-[120] w-[120] rounded-2xl border border-gray-150',
+          'shrink-0 items-center justify-center gap-2.5'
         )}>
         {image ? (
-          <Image
-            source={{ uri: image.uri }}
-            className="h-full w-full rounded-3xl"
-            resizeMode="cover"
-          />
+          <>
+            <Image
+              source={{ uri: image.uri }}
+              className="h-full w-full rounded-2xl"
+              resizeMode="cover"
+            />
+            <Pressable
+              onPress={handleClear}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="사진 삭제"
+              className="absolute right-[6px] top-[6px] z-10">
+              <PictureDeleteIcon width={24} height={24} />
+            </Pressable>
+          </>
         ) : (
-          <Typography variant="button-medium" color="text-gray-500">
-            사진 업로드
-          </Typography>
+          <View className="items-center gap-2.5">
+            <PictureUploadIcon width={20} height={20} />
+            <Typography variant="button-small" color="text-gray-300">
+              사진 업로드
+            </Typography>
+          </View>
         )}
       </Pressable>
 
-      <Box direction="row" className="gap-3">
+      {/* <Box direction="row" className="gap-3">
         <Pressable
           onPress={handlePick}
           className="rounded-xl border-[1px] border-stroke px-4 py-2">
@@ -79,7 +105,7 @@ export function MedicationPhotoField({
           className="rounded-xl border-[1px] border-stroke px-4 py-2">
           <Typography variant="button-small">카메라로 사진 찍기</Typography>
         </Pressable>
-      </Box>
+      </Box> */}
     </Box>
   );
 }

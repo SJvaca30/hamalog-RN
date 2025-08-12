@@ -6,6 +6,8 @@ export { HamaIcon } from './HamaIcon';
 export { HomeIcon } from './HomeIcon';
 export type { IconProps } from './icon.types';
 export { ImportScheduleIcon } from './ImportScheduleIcon';
+export { PictureDeleteIcon } from './PictureDeleteIcon';
+export { PictureUploadIcon } from './PictureUploadIcon';
 export { ProfileIcon } from './ProfileIcon';
 export { RecordIcon } from './RecordIcon';
 export { RegisterIcon } from './RegisterIcon';

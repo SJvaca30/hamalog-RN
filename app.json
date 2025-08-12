@@ -35,7 +35,12 @@
           "android": {
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
-            "buildToolsVersion": "35.0.0"
+            "buildToolsVersion": "35.0.0",
+            "manifest": {
+              "application": {
+                "android:windowSoftInputMode": "adjustResize"
+              }
+            }
           },
           "ios": {
             "deploymentTarget": "15.1"
@@ -67,6 +72,7 @@
       },
       "package": "com.hamalog.hamalog",
       "versionCode": 1,
+      "softwareKeyboardLayoutMode": "resize",
       "permissions": [
         "INTERNET",
         "READ_EXTERNAL_STORAGE",
