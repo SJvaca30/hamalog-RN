@@ -36,7 +36,7 @@ export function MedicationCreationOptions() {
                 variant="button-medium"
                 color="text-primary-700"
                 align="center">
-                새로 추가하기
+                새로 추가하기a
               </Typography>
             </Box>
           </Pressable>

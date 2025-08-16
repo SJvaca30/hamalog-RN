@@ -104,6 +104,11 @@ module.exports = {
         'caption-primary': '-0.24px',
         'caption-secondary': '-0.48px',
       },
+
+      // 커스텀 그림자 효과
+      boxShadow: {
+        'bottom-cta': '0px -2px 12px 0px rgba(0, 0, 0, 0.15)',
+      },
     },
   },
   plugins: [],
