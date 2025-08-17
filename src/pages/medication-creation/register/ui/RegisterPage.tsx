@@ -8,6 +8,11 @@ import { MedicationCreationStepper } from '@widgets/medication-creation-stepper'
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Platform, TextInput } from 'react-native';
+import {
+  runOnJS,
+  useAnimatedReaction,
+  useSharedValue,
+} from 'react-native-reanimated';
 import { Shadow } from 'react-native-shadow-2';
 
 export function RegisterPage() {
@@ -21,6 +26,7 @@ export function RegisterPage() {
   const [memo, setMemo] = useState('');
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const canProceed = nickname.trim().length > 0 && !!photoUrl; // 별명+사진 필수
+  const contentSizeChanged = useSharedValue(0);
 
   const handleNext = () => {
     if (!canProceed) return;
@@ -30,12 +36,26 @@ export function RegisterPage() {
   const handleMemoContentSizeChange = () => {
     // Android에서 multiline 입력 시 높이가 변경될 때 스크롤을 재조정 함.
     if (Platform.OS === 'android') {
-      setTimeout(() => {
-        // @ts-ignore: `scrollToFocusedInput` is a valid method on the instance
-        scrollRef.current?.scrollToFocusedInput(memoInputRef.current, 200);
-      }); // 렌더링 후 스크롤을 위해 약간의 딜레이를 줌
+      contentSizeChanged.value += 1;
     }
   };
+
+  const scrollToFocusedInput = () => {
+    // @ts-ignore: `scrollToFocusedInput` is a valid method on the instance
+    scrollRef.current?.scrollToFocusedInput(memoInputRef.current, 199);
+  };
+  // useSharedValue를 사용하여 렌더링을 유발하지 않는 효율적인 '신호'(contentSizeChanged)를 만들었습니다.
+  // useAnimatedReaction으로 이 신호의 변경을 감지하여, 화면 렌더링 주기와 완벽하게 동기화된 시점에 스크롤 함수를 호출합니다.
+  // runOnJS를 통해 UI 스레드와 JS 스레드 간의 작업을 안전하게 처리하여 안정성을 극대화했습니다.
+  useAnimatedReaction(
+    () => contentSizeChanged.value,
+    (currentValue, previousValue) => {
+      if (currentValue !== previousValue && previousValue !== null) {
+        runOnJS(scrollToFocusedInput)();
+      }
+    },
+    [contentSizeChanged]
+  );
 
   return (
     <PageContainer

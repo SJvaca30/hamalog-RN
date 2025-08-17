@@ -1,8 +1,9 @@
 import { colors } from '@shared/config';
 import { Box } from '@shared/ui/Box';
 import { Typography } from '@shared/ui/Typography';
+import clsx from 'clsx';
 import React from 'react';
-import { TextInput, TextInputProps, View } from 'react-native';
+import { Platform, TextInput, TextInputProps, View } from 'react-native';
 
 type Props = {
   /** 필드 라벨 */
@@ -11,6 +12,8 @@ type Props = {
   required?: boolean;
   /** placeholder 텍스트 */
   placeholder?: string;
+  /** placeholder에 적용할 추가 클래스 */
+  placeholderClassName?: string;
   /** 입력 값 */
   value: string;
   /** 입력 변경 핸들러 */
@@ -42,11 +45,12 @@ export function TextField({
   multiline,
   inputProps,
   inputClassName,
+  placeholderClassName,
   inputRef,
 }: Props) {
   return (
     <View>
-      <Box direction="col" gap="md">
+      <Box direction="col" gap="sm">
         <Box direction="row" gap="xs">
           <Typography variant="label" color="text-gray-700">
             {label}
@@ -58,19 +62,28 @@ export function TextField({
           )}
         </Box>
 
-        <TextInput
-          ref={inputRef}
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
-          placeholderTextColor={colors.gray[150]}
-          multiline={multiline}
-          className={`border-b border-gray-150 pb-2 font-pretendard-400 text-body-1 ${
-            inputClassName ?? ''
-          }`}
-          textAlignVertical={multiline ? 'top' : 'auto'}
-          {...inputProps}
-        />
+        <Box
+          className={clsx('border-b border-gray-150', {
+            'py-2': multiline && Platform.OS === 'ios',
+          })}>
+          <TextInput
+            ref={inputRef}
+            value={value}
+            onChangeText={onChangeText}
+            placeholder={placeholder}
+            placeholderTextColor={colors.gray[150]}
+            multiline={multiline}
+            className={clsx(
+              'px-0 text-body-1',
+              {
+                'h-[40px]': !multiline && Platform.OS === 'ios',
+              },
+              value ? inputClassName : placeholderClassName
+            )}
+            textAlignVertical={multiline ? 'top' : 'auto'}
+            {...inputProps}
+          />
+        </Box>
       </Box>
     </View>
   );
