@@ -72,6 +72,10 @@ interface PageContainerProps
    * 내부 ScrollView ref (scrollable=true일 때만 유효)
    */
   scrollRef?: React.RefObject<ScrollView | KeyboardAwareScrollView | null>;
+  /**
+   * 상단 Safe Area(Inset) 적용 여부
+   */
+  useTopInset?: boolean;
 }
 
 /**
@@ -94,6 +98,7 @@ export const PageContainer = ({
   className,
   keyboardVerticalOffset,
   scrollRef,
+  useTopInset = false,
   ...props
 }: PageContainerProps) => {
   const { top: topInset, bottom: bottomInset } = useSafeAreaInsets();
@@ -144,8 +149,8 @@ export const PageContainer = ({
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={keyboardVerticalOffset ?? 0}
-      className={cn('flex-1', bg, className)}
-      style={{ paddingTop: topInset }}>
+      style={{ paddingTop: useTopInset ? topInset : 0 }}
+      className={cn('flex-1', bg, className)}>
       {content}
     </KeyboardAvoidingView>
   );

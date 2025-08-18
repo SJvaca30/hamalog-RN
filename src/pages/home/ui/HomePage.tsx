@@ -6,7 +6,7 @@ import { WeeklyMedicationStatus } from '@widgets/weekly-medication-status';
 
 export const HomePage = () => {
   return (
-    <PageContainer bg="bg-gray-50">
+    <PageContainer bg="bg-gray-50" useTopInset>
       <HomeHeaderHama />
       <HomeWelcome />
       <WeeklyMedicationStatus />

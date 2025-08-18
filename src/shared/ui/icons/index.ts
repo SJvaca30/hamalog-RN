@@ -1,7 +1,10 @@
 export { ArrowLeftIcon } from './ArrowLeftIcon';
+export { ArrowRighttIcon } from './ArrowRighttIcon';
+export { CameraIcon } from './CameraIcon';
 export { CheckIcon } from './CheckIcon';
 export { CloseIcon } from './CloseIcon';
 export { DiaryIcon } from './DiaryIcon';
+export { GalaryTwoToneIcon } from './GalaryTwoToneIcon';
 export { HamaIcon } from './HamaIcon';
 export { HomeIcon } from './HomeIcon';
 export type { IconProps } from './icon.types';
