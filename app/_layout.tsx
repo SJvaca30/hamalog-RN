@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
+import * as NavigationBar from 'expo-navigation-bar';
+import { SplashScreen, Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // 글로벌 CSS 임포트
@@ -18,6 +18,12 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts(customFontsToLoad);
   const [queryClient] = useState(() => new QueryClient());
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      NavigationBar.setButtonStyleAsync('dark');
+    }
+  }, []);
 
   useEffect(() => {
     if (fontsLoaded || fontError) {
@@ -35,8 +41,8 @@ export default function RootLayout() {
       <SafeAreaProvider>
         {/**
          * React Query 전역 Provider
-         * - 서버 상태(업로드 요청 등)를 전역적으로 캐싱/관리하기 위해 루트에 배치합니다.
-         * - `useMutation`, `useQuery` 훅이 앱 어디서든 동작하도록 합니다.
+         * - 서버 상태(업로드 요청 등)를 전역적으로 캐싱/관리하기 위해 루트에 배치
+         * - `useMutation`, `useQuery` 훅이 앱 어디서든 동작
          */}
         <QueryClientProvider client={queryClient}>
           <Stack screenOptions={{ headerShown: false }}>

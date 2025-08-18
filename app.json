@@ -20,34 +20,14 @@
       "policy": "appVersion"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
     },
     "experiments": {
-      "tsconfigPaths": true
+      "typedRoutes": true
     },
-    "plugins": [
-      "expo-router",
-      "expo-localization",
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "compileSdkVersion": 35,
-            "targetSdkVersion": 35,
-            "buildToolsVersion": "35.0.0",
-            "manifest": {
-              "application": {
-                "android:windowSoftInputMode": "adjustResize"
-              }
-            }
-          },
-          "ios": {
-            "deploymentTarget": "15.1"
-          }
-        }
-      ]
-    ],
+    "plugins": ["expo-router"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -72,7 +52,7 @@
       },
       "package": "com.hamalog.hamalog",
       "versionCode": 1,
-      "softwareKeyboardLayoutMode": "resize",
+      "softwareKeyboardLayoutMode": "pan",
       "permissions": [
         "INTERNET",
         "READ_EXTERNAL_STORAGE",

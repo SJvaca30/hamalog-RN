@@ -1,6 +1,7 @@
 import { BottomTabBar, BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Shadow } from 'react-native-shadow-2';
 
 import { colors } from '@shared/config';
@@ -23,6 +24,8 @@ const CustomTabBar = (props: BottomTabBarProps) => {
 };
 
 export function MainBottomTabs() {
+  const { bottom: bottomInset } = useSafeAreaInsets();
+
   return (
     <Tabs
       tabBar={props => <CustomTabBar {...props} />}
@@ -32,7 +35,8 @@ export function MainBottomTabs() {
         tabBarStyle: {
           backgroundColor: colors.gray[0], // 기본값이랑 같지만 명시적으로 지정
           paddingTop: 12,
-          height: 85,
+          height: 85 + (Platform.OS === 'android' ? bottomInset : 0),
+          paddingBottom: Platform.OS === 'android' ? bottomInset : 0,
           // 상단 경계선
           borderTopWidth: 0,
         },

@@ -3,7 +3,6 @@
   "compilerOptions": {
     "strict": true,
     "jsx": "react-jsx",
-
     "baseUrl": ".",
     "paths": {
       "@assets": ["assets"],
@@ -19,8 +18,9 @@
       "@entities": ["src/entities"],
       "@entities/*": ["src/entities/*"],
       "@shared": ["src/shared"],
-      "@shared/*": ["src/shared/*"],
-    },
+      "@shared/*": ["src/shared/*"]
+    }
   },
   "exclude": ["node_modules"],
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }

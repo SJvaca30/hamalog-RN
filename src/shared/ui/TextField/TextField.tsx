@@ -2,8 +2,14 @@ import { colors } from '@shared/config';
 import { Box } from '@shared/ui/Box';
 import { Typography } from '@shared/ui/Typography';
 import clsx from 'clsx';
-import React from 'react';
-import { Platform, TextInput, TextInputProps, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Keyboard,
+  Platform,
+  TextInput,
+  TextInputProps,
+  View,
+} from 'react-native';
 
 type Props = {
   /** 필드 라벨 */
@@ -29,6 +35,10 @@ type Props = {
   inputClassName?: string;
   /** TextInput ref (포커스 위치 계산 등 외부 제어용) */
   inputRef?: React.Ref<TextInput>;
+  /** 포커스를 받았을 때 호출되는 함수 */
+  onFocus?: () => void;
+  /** 포커스를 잃었을 때 호출되는 함수 */
+  onBlur?: () => void;
 };
 
 /**
@@ -47,7 +57,37 @@ export function TextField({
   inputClassName,
   placeholderClassName,
   inputRef,
+  onFocus,
+  onBlur,
 }: Props) {
+  const [isFocused, setIsFocused] = useState(false);
+  const internalInputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        if (isFocused) {
+          internalInputRef.current?.blur();
+        }
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+    };
+  }, [isFocused]);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    onFocus?.();
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    onBlur?.();
+  };
+
   return (
     <View>
       <Box direction="col" gap="sm">
@@ -67,12 +107,22 @@ export function TextField({
             'py-2': multiline && Platform.OS === 'ios',
           })}>
           <TextInput
-            ref={inputRef}
+            ref={node => {
+              internalInputRef.current = node;
+              if (typeof inputRef === 'function') {
+                inputRef(node);
+              } else if (inputRef) {
+                // @ts-ignore
+                inputRef.current = node;
+              }
+            }}
             value={value}
             onChangeText={onChangeText}
             placeholder={placeholder}
             placeholderTextColor={colors.gray[150]}
             multiline={multiline}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             className={clsx(
               'px-0 text-body-1',
               {

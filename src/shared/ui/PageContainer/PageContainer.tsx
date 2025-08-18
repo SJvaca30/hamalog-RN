@@ -32,14 +32,14 @@ const paddingYMap = {
 type PaddingKey = keyof typeof paddingXMap;
 
 interface PageContainerProps
-  extends Omit<ScrollViewProps, 'className' | 'children'> {
+  extends Omit<ScrollViewProps, 'className' | 'children' | 'scrollEnabled'> {
   /**
    * 페이지의 자식 요소.
    * `bottomInset` 값을 사용하기 위해 함수 형태(Render Prop)로 전달할 수 있습니다.
    */
   children:
     | React.ReactNode
-    | ((insets: { bottomInset: number }) => React.ReactNode);
+    | ((insets: { topInset: number; bottomInset: number }) => React.ReactNode);
   /**
    * 배경 색상
    */
@@ -56,6 +56,10 @@ interface PageContainerProps
    * 스크롤 가능 여부
    */
   scrollable?: boolean;
+  /**
+   * 스크롤 활성화 여부 (scrollable=true일 때만 유효)
+   */
+  scrollEnabled?: boolean;
   /**
    * 추가 스타일 클래스
    */
@@ -86,16 +90,19 @@ export const PageContainer = ({
   px = 'none',
   py = 'none',
   scrollable = false,
+  scrollEnabled = true,
   className,
   keyboardVerticalOffset,
   scrollRef,
   ...props
 }: PageContainerProps) => {
-  const { bottom: bottomInset } = useSafeAreaInsets();
+  const { top: topInset, bottom: bottomInset } = useSafeAreaInsets();
   const contentPaddingStyles = cn(paddingXMap[px], paddingYMap[py]);
 
   const childrenContent =
-    typeof children === 'function' ? children({ bottomInset }) : children;
+    typeof children === 'function'
+      ? children({ topInset, bottomInset })
+      : children;
 
   const content = scrollable ? (
     Platform.OS === 'android' ? (
@@ -108,7 +115,8 @@ export const PageContainer = ({
         keyboardShouldPersistTaps="handled"
         enableOnAndroid={true}
         enableAutomaticScroll={true}
-        extraScrollHeight={180}
+        extraScrollHeight={10}
+        scrollEnabled={scrollEnabled}
         {...props}>
         {childrenContent}
       </KeyboardAwareScrollView>
@@ -121,6 +129,7 @@ export const PageContainer = ({
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="never"
         keyboardShouldPersistTaps="handled"
+        scrollEnabled={scrollEnabled}
         {...props}>
         {childrenContent}
       </ScrollView>
@@ -135,7 +144,8 @@ export const PageContainer = ({
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={keyboardVerticalOffset ?? 0}
-      className={cn('flex-1', bg, className)}>
+      className={cn('flex-1', bg, className)}
+      style={{ paddingTop: topInset }}>
       {content}
     </KeyboardAvoidingView>
   );

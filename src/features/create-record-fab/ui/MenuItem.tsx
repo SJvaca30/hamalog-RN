@@ -1,16 +1,17 @@
 import { Typography } from '@shared/ui/Typography';
+import { Href } from 'expo-router';
 import type { ComponentType } from 'react';
 import { Pressable } from 'react-native';
 
 export type MenuItemType = {
-  href: string;
+  href: Href;
   label: string;
   Icon: ComponentType;
 };
 
 interface MenuItemProps {
   item: MenuItemType;
-  onPress: (href: string) => void;
+  onPress: (href: Href) => void;
 }
 
 export const MenuItem = ({ item, onPress }: MenuItemProps) => (
