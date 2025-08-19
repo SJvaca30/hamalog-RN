@@ -3,13 +3,16 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
 import { BottomCTA } from '@shared/ui/BottomCTA';
 import { Box } from '@shared/ui/Box';
+import { CalendarModal } from '@shared/ui/Calendar';
 import { ConfirmModal } from '@shared/ui/ConfirmModal';
 import { PageContainer } from '@shared/ui/PageContainer';
 import { TextField } from '@shared/ui/TextField';
 import { MedicationCreationStepper } from '@widgets/medication-creation-stepper';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Keyboard, Platform, TextInput } from 'react-native';
+import { Keyboard, Platform, Pressable, TextInput } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 
 export function RegisterPage() {
@@ -21,18 +24,19 @@ export function RegisterPage() {
   const isNavigatingBackRef = useRef(false); // 뒤로가기 여부 확인용 ref
   const [nickname, setNickname] = useState('');
   const [hospital, setHospital] = useState('');
-  const [prescribedAt, setPrescribedAt] = useState('');
+  const [prescribedAt, setPrescribedAt] = useState<Date | null>(null);
   const [memo, setMemo] = useState('');
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [isTextFieldFocused, setIsTextFieldFocused] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const canProceed = nickname.trim().length > 0 && !!photoUrl; // 별명+사진 필수
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   // 사용자가 입력한 내용이 있는지 확인
   const hasUserInput =
     nickname.trim().length > 0 ||
     hospital.trim().length > 0 ||
-    prescribedAt.trim().length > 0 ||
+    prescribedAt !== null ||
     memo.trim().length > 0 ||
     !!photoUrl;
 
@@ -70,6 +74,19 @@ export function RegisterPage() {
 
   const handleTextFieldBlur = () => {
     setIsTextFieldFocused(false);
+  };
+
+  const handleOpenCalendar = () => {
+    setIsCalendarVisible(true);
+  };
+
+  const handleCloseCalendar = () => {
+    setIsCalendarVisible(false);
+  };
+
+  const handleConfirmDate = (date: Date) => {
+    setPrescribedAt(date);
+    handleCloseCalendar();
   };
 
   // 모달 핸들러 함수들
@@ -124,17 +141,24 @@ export function RegisterPage() {
                   onFocus={handleTextFieldFocus}
                   onBlur={handleTextFieldBlur}
                 />
-
                 {/* 4. 처방일 */}
-                <TextField
-                  label="처방일"
-                  placeholder="처방 받은 날짜를 적어주세요"
-                  value={prescribedAt}
-                  onChangeText={setPrescribedAt}
-                  inputProps={{ keyboardType: 'numbers-and-punctuation' }}
-                  onFocus={handleTextFieldFocus}
-                  onBlur={handleTextFieldBlur}
-                />
+                <Pressable onPress={handleOpenCalendar}>
+                  <TextField
+                    label="처방일"
+                    placeholder="처방 받은 날짜를 적어주세요"
+                    value={
+                      prescribedAt
+                        ? format(prescribedAt, 'yyyy년 M월 d일', { locale: ko })
+                        : ''
+                    }
+                    onChangeText={() => {}}
+                    inputProps={{
+                      editable: false,
+                    }}
+                    onFocus={handleTextFieldFocus}
+                    onBlur={handleTextFieldBlur}
+                  />
+                </Pressable>
 
                 {/* 5. 메모 */}
                 <TextField
@@ -176,6 +200,13 @@ export function RegisterPage() {
           );
         }}
       </PageContainer>
+
+      <CalendarModal
+        visible={isCalendarVisible}
+        onClose={handleCloseCalendar}
+        onConfirm={handleConfirmDate}
+        initialDate={prescribedAt ?? new Date()}
+      />
 
       <ConfirmModal
         visible={showConfirmModal}
