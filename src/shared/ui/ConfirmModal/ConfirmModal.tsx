@@ -7,11 +7,12 @@ import type { ConfirmModalProps } from './types';
 
 /**
  * 사용자에게 특정 작업을 확인받기 위한 다목적 모달 컴포넌트입니다.
- * `variant` prop을 통해 세 가지 다른 유형의 모달을 렌더링할 수 있습니다.
  *
- * @param {'confirm'} variant - 일반 확인/취소 모달입니다. (예: "정말 삭제하시겠습니까?")
- * @param {'consent'} variant - 약관 동의 모달입니다.
- * @param {'select'} variant - 여러 옵션 중 하나를 선택하는 모달입니다. (예: 갤러리/카메라 선택)
+ * `variant` prop 값('confirm', 'consent', 'select')에 따라
+ * 필요한 props가 달라집니다.
+ *
+ * 상세한 prop 정보는 `ConfirmModalProps` 타입을 확인해주세요.
+ * (VSCode에서 props 위에 마우스를 올리거나, props 입력 시 자동완성 설명을 통해 확인 가능)
  */
 export function ConfirmModal(props: ConfirmModalProps) {
   const { bottom: bottomInset } = useSafeAreaInsets();

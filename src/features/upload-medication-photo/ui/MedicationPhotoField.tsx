@@ -129,7 +129,7 @@ export function MedicationPhotoField({
         title="사진을 올리려면 동의가 필요해요"
         termsContent="사진 어쩌구 이용약관"
         onTermsPress={() => {
-          /* 이용약관 페이지로 이동 */
+          /* TODO: 이용약관 페이지로 이동 */
         }}
         onConfirm={handleConsentConfirm}
         onCancel={() => setShowConsentModal(false)}
