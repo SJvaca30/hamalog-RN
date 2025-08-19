@@ -179,6 +179,8 @@ export function RegisterPage() {
 
       <ConfirmModal
         visible={showConfirmModal}
+        variant="confirm"
+        title={`지금까지 작성한 내용이 저장되지 않아요.\n이전 페이지로 이동할까요?`}
         onCancel={handleModalCancel}
         onConfirm={handleModalConfirm}
       />
