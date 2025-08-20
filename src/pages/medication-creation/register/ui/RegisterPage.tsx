@@ -27,9 +27,11 @@ export function RegisterPage() {
   const [prescribedAt, setPrescribedAt] = useState<Date | null>(null);
   const [memo, setMemo] = useState('');
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [isPhotoUploading, setIsPhotoUploading] = useState(false);
   const [isTextFieldFocused, setIsTextFieldFocused] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const canProceed = nickname.trim().length > 0 && !!photoUrl; // 별명+사진 필수
+  const canProceed =
+    nickname.trim().length > 0 && !!photoUrl && !isPhotoUploading; // 별명+사진 필수, 업로드 중이 아닐 때
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   // 사용자가 입력한 내용이 있는지 확인
@@ -119,6 +121,7 @@ export function RegisterPage() {
                 <MedicationPhotoField
                   onUploaded={setPhotoUrl}
                   onCleared={() => setPhotoUrl(null)}
+                  onUploadStateChange={setIsPhotoUploading}
                 />
 
                 {/* 2. 별명 */}

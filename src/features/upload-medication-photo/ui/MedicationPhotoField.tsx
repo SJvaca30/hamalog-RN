@@ -7,8 +7,8 @@ import {
   PictureUploadIcon,
 } from '@shared/ui/icons';
 import { Typography } from '@shared/ui/Typography';
-import { useState } from 'react';
-import { Image, Pressable, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Image, Pressable, View } from 'react-native';
 import { ConfirmModal } from '../../../shared/ui/ConfirmModal';
 import { usePickImage } from '../model/usePickImage';
 import { useUploadImage } from '../model/useUploadImage';
@@ -16,6 +16,7 @@ import { useUploadImage } from '../model/useUploadImage';
 type Props = {
   onUploaded?: (url: string) => void;
   onCleared?: () => void;
+  onUploadStateChange?: (isUploading: boolean) => void;
   label?: string;
   description?: string;
 };
@@ -28,13 +29,40 @@ type Props = {
 export function MedicationPhotoField({
   onUploaded,
   onCleared,
+  onUploadStateChange,
   label = '약물 사진',
   description = '약 봉투, 약 한 알 등,\n편한 방식으로 기록하세요',
 }: Props) {
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [showSelectModal, setShowSelectModal] = useState(false);
+  const [_uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const { image, pickFromLibrary, takePhoto, clear } = usePickImage();
   const upload = useUploadImage();
+
+  // 업로드 성공 시 즉시 상위 컴포넌트에 알림
+  useEffect(() => {
+    if (upload.isSuccess && upload.data?.url) {
+      const url = upload.data.url;
+      setUploadedUrl(url);
+      onUploaded?.(url);
+    }
+  }, [upload.isSuccess, upload.data?.url, onUploaded]);
+
+  // 업로드 에러 시 사용자에게 알림
+  useEffect(() => {
+    if (upload.isError) {
+      Alert.alert(
+        '업로드 실패',
+        '사진 업로드에 실패했습니다. 다시 시도해주세요.',
+        [{ text: '확인' }]
+      );
+    }
+  }, [upload.isError]);
+
+  // 업로드 상태 변경을 상위 컴포넌트에 알림
+  useEffect(() => {
+    onUploadStateChange?.(upload.isPending);
+  }, [upload.isPending, onUploadStateChange]);
 
   const handlePressUpload = () => {
     // TODO: 로컬 스토리지에서 동의 여부 확인
@@ -54,22 +82,38 @@ export function MedicationPhotoField({
 
   const handlePick = async () => {
     setShowSelectModal(false);
-    const picked = await pickFromLibrary();
-    if (!picked) return;
-    const res = await upload.mutateAsync({ image: picked });
-    onUploaded?.(res.url);
+    try {
+      const picked = await pickFromLibrary();
+      if (!picked) return;
+
+      // TanStack Query의 mutateAsync를 사용하여 업로드
+      await upload.mutateAsync({ image: picked });
+      // 성공 시 처리는 useEffect에서 처리됨
+    } catch (error) {
+      // 에러는 useEffect에서 처리됨
+      console.error('Gallery upload failed:', error);
+    }
   };
 
   const handleCamera = async () => {
     setShowSelectModal(false);
-    const picked = await takePhoto();
-    if (!picked) return;
-    const res = await upload.mutateAsync({ image: picked });
-    onUploaded?.(res.url);
+    try {
+      const picked = await takePhoto();
+      if (!picked) return;
+
+      // TanStack Query의 mutateAsync를 사용하여 업로드
+      await upload.mutateAsync({ image: picked });
+      // 성공 시 처리는 useEffect에서 처리됨
+    } catch (error) {
+      // 에러는 useEffect에서 처리됨
+      console.error('Camera upload failed:', error);
+    }
   };
 
   const handleClear = () => {
     clear();
+    setUploadedUrl(null);
+    upload.reset(); // TanStack Query 상태 초기화
     onCleared?.();
   };
 
@@ -92,9 +136,11 @@ export function MedicationPhotoField({
 
         <Pressable
           onPress={handlePressUpload}
+          disabled={upload.isPending}
           className={cn(
             'h-[120] w-[120] rounded-2xl border border-gray-150',
-            'shrink-0 items-center justify-center gap-2.5'
+            'shrink-0 items-center justify-center gap-2.5',
+            upload.isPending && 'opacity-70'
           )}>
           {image ? (
             <>
@@ -103,21 +149,39 @@ export function MedicationPhotoField({
                 className="h-full w-full rounded-2xl"
                 resizeMode="cover"
               />
-              <Pressable
-                onPress={handleClear}
-                hitSlop={8}
-                accessibilityRole="button"
-                accessibilityLabel="사진 삭제"
-                className="absolute right-[6px] top-[6px] z-10">
-                <PictureDeleteIcon width={24} height={24} />
-              </Pressable>
+              {upload.isPending && (
+                <View className="absolute inset-0 items-center justify-center rounded-2xl bg-black/50">
+                  <ActivityIndicator size="large" color="#ffffff" />
+                </View>
+              )}
+              {!upload.isPending && (
+                <Pressable
+                  onPress={handleClear}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel="사진 삭제"
+                  className="absolute right-[6px] top-[6px] z-10">
+                  <PictureDeleteIcon width={24} height={24} />
+                </Pressable>
+              )}
             </>
           ) : (
             <View className="items-center gap-2.5">
-              <PictureUploadIcon width={20} height={20} />
-              <Typography variant="button-small" color="text-gray-300">
-                사진 업로드
-              </Typography>
+              {upload.isPending ? (
+                <>
+                  <ActivityIndicator size="small" color="#9CA3AF" />
+                  <Typography variant="button-small" color="text-gray-300">
+                    업로드 중...
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <PictureUploadIcon width={20} height={20} />
+                  <Typography variant="button-small" color="text-gray-300">
+                    사진 업로드
+                  </Typography>
+                </>
+              )}
             </View>
           )}
         </Pressable>

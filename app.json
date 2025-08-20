@@ -27,7 +27,16 @@
     "experiments": {
       "typedRoutes": true
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "사진을 등록하기 위해 앨범 접근 권한이 필요합니다.",
+          "cameraPermission": "사진을 촬영하기 위해 카메라 접근 권한이 필요합니다."
+        }
+      ]
+    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
