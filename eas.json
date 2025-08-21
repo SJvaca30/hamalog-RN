@@ -9,7 +9,7 @@
       "distribution": "internal",
       "env": {
         "NODE_ENV": "development",
-        "EXPO_PUBLIC_API_BASE_URL": "https://httpbin.org"
+        "EXPO_PUBLIC_API_BASE_URL": "http://112.72.248.195:8080"
       }
     },
     "preview": {
@@ -17,7 +17,7 @@
       "channel": "preview",
       "env": {
         "NODE_ENV": "preview",
-        "EXPO_PUBLIC_API_BASE_URL": "https://httpbin.org"
+        "EXPO_PUBLIC_API_BASE_URL": "http://112.72.248.195:8080"
       }
     },
     "production": {
@@ -25,7 +25,7 @@
       "channel": "production",
       "env": {
         "NODE_ENV": "production",
-        "EXPO_PUBLIC_API_BASE_URL": ""
+        "EXPO_PUBLIC_API_BASE_URL": "http://112.72.248.195:8080"
       }
     }
   },

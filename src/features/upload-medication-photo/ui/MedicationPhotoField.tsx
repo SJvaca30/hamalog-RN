@@ -8,7 +8,14 @@ import {
 } from '@shared/ui/icons';
 import { Typography } from '@shared/ui/Typography';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Image, Pressable, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Platform,
+  Pressable,
+  View,
+} from 'react-native';
 import { ConfirmModal } from '../../../shared/ui/ConfirmModal';
 import { usePickImage } from '../model/usePickImage';
 import { useUploadImage } from '../model/useUploadImage';
@@ -36,8 +43,17 @@ export function MedicationPhotoField({
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [showSelectModal, setShowSelectModal] = useState(false);
   const [_uploadedUrl, setUploadedUrl] = useState<string | null>(null);
-  const { image, pickFromLibrary, takePhoto, clear } = usePickImage();
+  const { image, pickFromLibrary, takePhoto, clear, checkPermissions } =
+    usePickImage();
   const upload = useUploadImage();
+
+  // 개발 중 권한 상태 확인
+  useEffect(() => {
+    // 개발 환경에서만 실행
+    if (__DEV__) {
+      checkPermissions();
+    }
+  }, [checkPermissions]);
 
   // 업로드 성공 시 즉시 상위 컴포넌트에 알림
   useEffect(() => {
@@ -58,6 +74,15 @@ export function MedicationPhotoField({
       );
     }
   }, [upload.isError]);
+
+  // 개발 환경에서 시뮬레이터 제한사항 안내
+  useEffect(() => {
+    if (__DEV__ && Platform.OS === 'ios') {
+      // 시뮬레이터 감지는 완벽하지 않지만, 개발 중에는 유용
+      console.warn('iOS 시뮬레이터에서는 갤러리 선택이 제한적일 수 있습니다.');
+      console.warn('실제 기기나 `npx expo run:ios`로 테스트를 권장합니다.');
+    }
+  }, []);
 
   // 업로드 상태 변경을 상위 컴포넌트에 알림
   useEffect(() => {
@@ -83,30 +108,60 @@ export function MedicationPhotoField({
   const handlePick = async () => {
     setShowSelectModal(false);
     try {
+      console.log('[MedicationPhotoField] 갤러리 선택 시작');
       const picked = await pickFromLibrary();
-      if (!picked) return;
+      if (!picked) {
+        console.log('[MedicationPhotoField] 갤러리에서 이미지 선택되지 않음');
 
+        // iOS 시뮬레이터에서의 제한사항 안내
+        if (__DEV__ && Platform.OS === 'ios') {
+          Alert.alert(
+            '갤러리 접근 제한',
+            'iOS 시뮬레이터에서는 갤러리 선택이 제한적일 수 있습니다.\n\n해결 방법:\n• 실제 iPhone에서 테스트\n• npx expo run:ios 사용',
+            [{ text: '확인' }]
+          );
+        }
+        return;
+      }
+
+      console.log('[MedicationPhotoField] 선택된 이미지 업로드 시작');
       // TanStack Query의 mutateAsync를 사용하여 업로드
       await upload.mutateAsync({ image: picked });
       // 성공 시 처리는 useEffect에서 처리됨
+      console.log('[MedicationPhotoField] 갤러리 이미지 업로드 요청 완료');
     } catch (error) {
       // 에러는 useEffect에서 처리됨
-      console.error('Gallery upload failed:', error);
+      console.error('[MedicationPhotoField] Gallery upload failed:', error);
     }
   };
 
   const handleCamera = async () => {
     setShowSelectModal(false);
     try {
+      console.log('[MedicationPhotoField] 카메라 촬영 시작');
       const picked = await takePhoto();
-      if (!picked) return;
+      if (!picked) {
+        console.log('[MedicationPhotoField] 카메라에서 이미지 촬영되지 않음');
 
+        // iOS 시뮬레이터에서의 카메라 제한사항 안내
+        if (__DEV__ && Platform.OS === 'ios') {
+          Alert.alert(
+            '카메라 사용 불가',
+            'iOS 시뮬레이터에는 카메라가 없어 촬영할 수 없습니다.\n\n해결 방법:\n• 실제 iPhone에서 테스트\n• 갤러리에서 이미지 선택 사용',
+            [{ text: '확인' }]
+          );
+        }
+        return;
+      }
+
+      console.log('[MedicationPhotoField] 촬영된 이미지 업로드 시작');
       // TanStack Query의 mutateAsync를 사용하여 업로드
       await upload.mutateAsync({ image: picked });
       // 성공 시 처리는 useEffect에서 처리됨
+      console.log('[MedicationPhotoField] 카메라 이미지 업로드 요청 완료');
     } catch (error) {
       // 에러는 useEffect에서 처리됨
-      console.error('Camera upload failed:', error);
+      console.error('[MedicationPhotoField] Camera upload failed:', error);
     }
   };
 
