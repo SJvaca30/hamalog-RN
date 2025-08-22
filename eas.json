@@ -8,21 +8,24 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "EXPO_PUBLIC_API_BASE_URL": "http://112.72.248.195:8080"
       }
     },
     "preview": {
       "distribution": "internal",
       "channel": "preview",
       "env": {
-        "NODE_ENV": "preview"
+        "NODE_ENV": "preview",
+        "EXPO_PUBLIC_API_BASE_URL": "http://112.72.248.195:8080"
       }
     },
     "production": {
       "autoIncrement": true,
       "channel": "production",
       "env": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "production",
+        "EXPO_PUBLIC_API_BASE_URL": "http://112.72.248.195:8080"
       }
     }
   },

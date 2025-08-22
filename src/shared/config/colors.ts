@@ -1,9 +1,8 @@
 /**
- * 하마로그 디자인 시스템 색상 팔레트
- * tailwind.config.js와 동일한 색상 값을 사용
+ * 하마로그 디자인 시스템 색상 팔레트 (단일 진실 공급원)
  */
 export const colors = {
-  // Gray 시스템
+  // Gray Scale Palette
   gray: {
     0: '#FFFFFF',
     50: '#F4F5F7',
@@ -15,7 +14,7 @@ export const colors = {
     850: '#1F1E23',
   },
 
-  // Primary 시스템
+  // Primary Color Palette
   primary: {
     50: '#E4F2FF',
     100: '#B2DAFF',
@@ -25,11 +24,11 @@ export const colors = {
     700: '#28506D',
   },
 
-  // Point 시스템
+  // Point Color Palette
   point: {
     red: {
-      100: '#FED7D7',
-      500: '#FF6262',
+      50: '#FFDDD7',
+      400: '#FF6262',
     },
     yellow: {
       50: '#FFFAD3',
@@ -37,6 +36,7 @@ export const colors = {
     },
   },
 
-  // 기타
+  // 기타 색상
+  // 테두리, 구분선 등에 사용
   stroke: '#E2E8F0',
 } as const;

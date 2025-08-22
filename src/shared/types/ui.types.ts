@@ -1,64 +1,31 @@
-/**
- * Hamalog 디자인 시스템의 UI 컴포넌트에서 공통으로 사용되는 타입 모음입니다.
- */
-
-// 1. Typography Types
-// -----------------------------------------------------------------------------
+import { colors } from '@shared/config/colors';
 
 /**
  * Figma에 정의된 텍스트 스타일 종류입니다.
  * Text 컴포넌트의 `variant` prop으로 사용됩니다.
  */
-export type TypographyVariant =
-  | 'display-b'
-  | 'display'
-  | 'h1'
-  | 'h2'
-  | 'h3'
-  | 'body-1'
-  | 'label'
-  | 'body-2'
-  | 'button-large'
-  | 'button-medium'
-  | 'button-small'
-  | 'button-small-p'
-  | 'caption-primary'
-  | 'caption-secondary';
+export type { TypographyVariant } from './typography-variants';
 
 // 2. Color Types
 // -----------------------------------------------------------------------------
 
+// 각 색상 그룹에 대한 타입을 동적으로 생성합니다.
+type GrayColors = `gray-${keyof typeof colors.gray}`;
+type PrimaryColors = `primary-${keyof typeof colors.primary}`;
+type PointRedColors = `point-red-${keyof typeof colors.point.red}`;
+type PointYellowColors = `point-yellow-${keyof typeof colors.point.yellow}`;
+type StrokeColor = 'stroke';
+
 /**
- * `tailwind.config.js`에 정의된 색상 이름입니다.
- * (e.g., 'gray-50', 'primary-400')
+ * colors.ts 객체 구조를 기반으로 Tailwind 클래스명에 사용될 색상 이름을 동적으로 생성합니다.
+ * 예: 'gray-100', 'primary-400', 'point-red-400', 'stroke'
  */
-export type GrayColor =
-  | 'gray-0'
-  | 'gray-50'
-  | 'gray-100'
-  | 'gray-150'
-  | 'gray-300'
-  | 'gray-500'
-  | 'gray-700'
-  | 'gray-850';
-
-export type PrimaryColor =
-  | 'primary-50'
-  | 'primary-100'
-  | 'primary-250'
-  | 'primary-400'
-  | 'primary-600'
-  | 'primary-700';
-
-export type PointColor =
-  | 'point-red-50'
-  | 'point-red-400'
-  | 'point-yellow-50'
-  | 'point-yellow-400';
-
-export type StrokeColor = 'stroke';
-
-type HamalogColor = GrayColor | PrimaryColor | PointColor | StrokeColor;
+type HamalogColor =
+  | GrayColors
+  | PrimaryColors
+  | PointRedColors
+  | PointYellowColors
+  | StrokeColor;
 
 /**
  * 텍스트 색상 클래스입니다. (e.g., 'text-primary-400')

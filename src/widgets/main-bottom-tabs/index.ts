@@ -1,1 +1,1 @@
-export * from './ui/MainBottomTabs';
+export { MainBottomTabs } from './ui/MainBottomTabs';

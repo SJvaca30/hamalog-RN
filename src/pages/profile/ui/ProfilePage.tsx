@@ -1,16 +1,12 @@
-import { Text, View } from 'react-native';
-
-import { Container } from '@shared';
+import { PageContainer } from '@shared/ui/PageContainer';
+import { Typography } from '@shared/ui/Typography';
 
 export const ProfilePage = () => {
   return (
-    <Container bg="bg-gray-50" className="flex-1 items-center justify-center">
-      <View>
-        <Text className="mb-2 text-center text-2xl font-bold">마이</Text>
-        <Text className="text-center text-base text-gray-500">
-          개인 설정 및 프로필 관리
-        </Text>
-      </View>
-    </Container>
+    <PageContainer
+      bg="bg-gray-50"
+      className="flex-1 items-center justify-center">
+      <Typography>ProfilePage</Typography>
+    </PageContainer>
   );
 };

@@ -1,13 +1,16 @@
-import { CreateRecordFAB } from '@features';
-import { HomeHeaderHama, HomeWelcome } from '@widgets';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { CreateRecordFAB } from '@features/create-record-fab';
+import { PageContainer } from '@shared/ui/PageContainer';
+import { HomeHeaderHama } from '@widgets/home-header-hama';
+import { HomeWelcome } from '@widgets/home-welcome';
+import { WeeklyMedicationStatus } from '@widgets/weekly-medication-status';
 
 export const HomePage = () => {
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <PageContainer bg="bg-gray-50" useTopInset>
       <HomeHeaderHama />
       <HomeWelcome />
+      <WeeklyMedicationStatus />
       <CreateRecordFAB />
-    </SafeAreaView>
+    </PageContainer>
   );
 };

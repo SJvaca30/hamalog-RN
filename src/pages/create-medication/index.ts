@@ -1,1 +1,1 @@
-export * from './ui/MedicationPage';
+export { CreateMedicationPage } from './ui/CreateMedicationPage';

@@ -1,1 +1,1 @@
-export { default as HomeHeaderHama } from './ui/HomeHeaderHama';
+export { HomeHeaderHama } from './ui/HomeHeaderHama';

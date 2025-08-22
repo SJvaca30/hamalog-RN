@@ -1,11 +1,13 @@
 import { BottomTabBar, BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Shadow } from 'react-native-shadow-2';
 
-import { colors } from '@shared';
+import { colors } from '@shared/config';
 import { ICON_SIZES } from '@shared/constants/sizes';
-import { HomeIcon, ProfileIcon, ReportIcon, Text } from '@shared/ui';
+import { HomeIcon, ProfileIcon, ReportIcon } from '@shared/ui/icons';
+import { Typography } from '@shared/ui/Typography';
 
 const CustomTabBar = (props: BottomTabBarProps) => {
   return (
@@ -22,6 +24,8 @@ const CustomTabBar = (props: BottomTabBarProps) => {
 };
 
 export function MainBottomTabs() {
+  const { bottom: bottomInset } = useSafeAreaInsets();
+
   return (
     <Tabs
       tabBar={props => <CustomTabBar {...props} />}
@@ -31,7 +35,8 @@ export function MainBottomTabs() {
         tabBarStyle: {
           backgroundColor: colors.gray[0], // 기본값이랑 같지만 명시적으로 지정
           paddingTop: 12,
-          height: 85,
+          height: 85 + (Platform.OS === 'android' ? bottomInset : 0),
+          paddingBottom: Platform.OS === 'android' ? bottomInset : 0,
           // 상단 경계선
           borderTopWidth: 0,
         },
@@ -54,11 +59,11 @@ export function MainBottomTabs() {
             />
           ),
           tabBarLabel: ({ focused }) => (
-            <Text
+            <Typography
               variant="button-small"
               color={focused ? 'text-primary-400' : 'text-gray-500'}>
               홈
-            </Text>
+            </Typography>
           ),
         }}
       />
@@ -75,11 +80,11 @@ export function MainBottomTabs() {
             />
           ),
           tabBarLabel: ({ focused }) => (
-            <Text
+            <Typography
               variant="button-small"
               color={focused ? 'text-primary-400' : 'text-gray-500'}>
               리포트
-            </Text>
+            </Typography>
           ),
         }}
       />
@@ -96,11 +101,11 @@ export function MainBottomTabs() {
             />
           ),
           tabBarLabel: ({ focused }) => (
-            <Text
+            <Typography
               variant="button-small"
               color={focused ? 'text-primary-400' : 'text-gray-500'}>
               마이
-            </Text>
+            </Typography>
           ),
         }}
       />
