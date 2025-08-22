@@ -1,4 +1,3 @@
-import KakaoLogin from '@react-native-seoul/kakao-login';
 import { useMutation } from '@tanstack/react-query';
 import { Alert } from 'react-native';
 
@@ -7,6 +6,8 @@ import { postKakaoLogin } from '../api';
 import { useSession } from '@entities/session';
 
 export const useKakaoLogin = () => {
+  console.log('🔍 useKakaoLogin 훅 초기화됨 (웹 기반)');
+
   const { setTokens } = useSession();
 
   const kakaoLoginMutation = useMutation({
@@ -25,11 +26,30 @@ export const useKakaoLogin = () => {
 
   const login = async () => {
     try {
-      const kakaoToken = await KakaoLogin.login();
-      kakaoLoginMutation.mutate({ accessToken: kakaoToken.accessToken });
+      console.log('🔍 웹 기반 카카오 로그인 시도 시작');
+
+      // 임시: 웹 기반 카카오 로그인 알림
+      Alert.alert(
+        '카카오 로그인',
+        '현재 네이티브 SDK 연결 문제로 인해 임시로 웹 기반 로그인을 사용합니다.\n\n실제 구현에서는 카카오 웹 로그인 URL로 리다이렉트하거나, 네이티브 SDK 문제를 해결해야 합니다.',
+        [
+          {
+            text: '취소',
+            style: 'cancel',
+          },
+          {
+            text: '웹에서 로그인',
+            onPress: () => {
+              // 실제로는 카카오 웹 로그인 URL로 리다이렉트
+              const kakaoWebLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.EXPO_PUBLIC_KAKAO_REST_API_KEY}&redirect_uri=YOUR_REDIRECT_URI&response_type=code`;
+              console.log('🔍 카카오 웹 로그인 URL:', kakaoWebLoginUrl);
+              // Linking.openURL(kakaoWebLoginUrl);
+            },
+          },
+        ]
+      );
     } catch (error) {
-      // 사용자가 중간에 취소한 경우 등
-      console.error('카카오 SDK 로그인 실패:', error);
+      console.error('🔍 웹 기반 카카오 로그인 실패:', error);
     }
   };
 

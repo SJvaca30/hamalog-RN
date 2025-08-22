@@ -22,14 +22,29 @@ const useProtectedRoutes = () => {
   const { accessToken, isLoaded } = useSession();
 
   useEffect(() => {
-    if (!isLoaded) return;
+    console.log('🔍 라우팅 상태:', {
+      isLoaded,
+      accessToken: !!accessToken,
+      segments: segments.join('/'),
+      currentSegment: segments[0],
+    });
+
+    if (!isLoaded) {
+      console.log('🔍 세션 로딩 중...');
+      return;
+    }
 
     const inAuthGroup = segments[0] === '(auth)';
+    console.log('🔍 현재 위치 분석:', { inAuthGroup });
 
     if (accessToken && inAuthGroup) {
+      console.log('🔍 로그인된 사용자가 auth 페이지에 있음 → 홈으로 이동');
       router.replace('/(app)/(home)');
     } else if (!accessToken && !inAuthGroup) {
+      console.log('🔍 비로그인 사용자가 앱 내부에 있음 → 로그인으로 이동');
       router.replace('/(auth)/login');
+    } else {
+      console.log('🔍 라우팅 변경 없음');
     }
   }, [accessToken, isLoaded, segments, router]);
 };

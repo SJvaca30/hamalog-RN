@@ -45,13 +45,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         'expo-build-properties',
         {
           android: {
-            // Kotlin 버전 명시 (Expo 요구사항 및 라이브러리 호환성 고려)
-            kotlinVersion: '1.8.10',
-            // 카카오 SDK 저장소 추가
-            repositories: [
-              {
-                url: 'https://devrepo.kakao.com/nexus/content/groups/public/',
-              },
+            // Expo 기본값과 동일한 Kotlin 버전 명시 (카카오 SDK 호환성)
+            kotlinVersion: '2.0.21',
+            // 카카오 SDK 저장소 추가 (extraMavenRepos 방식)
+            extraMavenRepos: [
+              'https://devrepo.kakao.com/nexus/content/groups/public/',
             ],
           },
         },

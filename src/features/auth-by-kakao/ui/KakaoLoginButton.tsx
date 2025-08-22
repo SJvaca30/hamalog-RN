@@ -1,9 +1,6 @@
-import { Image } from 'expo-image';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 
-import { Typography } from '@shared/ui/Typography';
-
-const KAKAO_SYMBOL_URI =
+const _KAKAO_SYMBOL_URI =
   'https://developers.kakao.com/assets/img/about/logos/kakaologin/kr/kakaologin_ci_01.png';
 
 interface KakaoLoginButtonProps {
@@ -12,6 +9,8 @@ interface KakaoLoginButtonProps {
 }
 
 export function KakaoLoginButton({ onPress, disabled }: KakaoLoginButtonProps) {
+  console.log('🔍 KakaoLoginButton 렌더링됨', { disabled });
+
   return (
     <Pressable
       style={({ pressed }) => [
@@ -20,12 +19,10 @@ export function KakaoLoginButton({ onPress, disabled }: KakaoLoginButtonProps) {
       ]}
       onPress={onPress}
       disabled={disabled}>
-      <Image source={{ uri: KAKAO_SYMBOL_URI }} style={styles.symbol} />
-      <View style={styles.labelContainer}>
-        <Typography variant="button-large" color="text-gray-850">
-          카카오 로그인
-        </Typography>
-      </View>
+      {/* 임시로 단순한 구조로 변경하여 테스트 */}
+      <Text style={{ color: '#3C1E1E', fontSize: 16, fontWeight: 'bold' }}>
+        🟡 카카오 로그인
+      </Text>
     </Pressable>
   );
 }
