@@ -1,15 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
-import { Alert } from 'react-native';
-
-import { postKakaoLogin } from '../api';
+import * as WebBrowser from 'expo-web-browser';
+import { useEffect, useState } from 'react';
+import { Alert, Linking } from 'react-native';
 
 import { useSession } from '@entities/session';
+import { postKakaoLogin } from '../api';
 
 export const useKakaoLogin = () => {
-  console.log('🔍 useKakaoLogin 훅 초기화됨 (웹 기반)');
-
   const { setTokens } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
 
+  // 백엔드 API 호출을 위한 mutation
   const kakaoLoginMutation = useMutation({
     mutationFn: postKakaoLogin,
     onSuccess: response => {
@@ -17,44 +18,89 @@ export const useKakaoLogin = () => {
         accessToken: response.accessToken,
         refreshToken: response.refreshToken,
       });
+      setIsLoading(false);
     },
-    onError: () => {
-      // TODO: 에러 처리 고도화 (e.g. Sentry 연동)
+    onError: error => {
+      console.error('백엔드 로그인 실패:', error);
       Alert.alert('로그인 실패', '카카오 로그인 중 오류가 발생했습니다.');
+      setIsLoading(false);
     },
   });
 
+  // Deep Link 처리
+  useEffect(() => {
+    const handleDeepLink = (event: { url: string }) => {
+      const url = event.url;
+      console.log('🔗 Deep Link 수신:', url);
+
+      // hamalog-rn://auth?token=xxx&refreshToken=yyy 형태 처리
+      if (url.startsWith('hamalog-rn://auth')) {
+        try {
+          const urlObj = new URL(url);
+          const token = urlObj.searchParams.get('token');
+          const refreshToken = urlObj.searchParams.get('refreshToken');
+
+          if (token && refreshToken) {
+            setTokens({
+              accessToken: token,
+              refreshToken: refreshToken,
+            });
+            setIsLoading(false);
+            Alert.alert('성공', '카카오 로그인에 성공했습니다!');
+          } else {
+            const error = urlObj.searchParams.get('error');
+            Alert.alert(
+              '로그인 실패',
+              error || '알 수 없는 오류가 발생했습니다.'
+            );
+            setIsLoading(false);
+          }
+        } catch (error) {
+          console.error('Deep Link 파싱 실패:', error);
+          Alert.alert('로그인 실패', 'Deep Link 처리 중 오류가 발생했습니다.');
+          setIsLoading(false);
+        }
+      }
+    };
+
+    // Deep Link 리스너 등록
+    const subscription = Linking.addEventListener('url', handleDeepLink);
+
+    return () => {
+      subscription.remove();
+    };
+  }, [setTokens]);
+
   const login = async () => {
     try {
-      console.log('🔍 웹 기반 카카오 로그인 시도 시작');
+      setIsLoading(true);
 
-      // 임시: 웹 기반 카카오 로그인 알림
-      Alert.alert(
-        '카카오 로그인',
-        '현재 네이티브 SDK 연결 문제로 인해 임시로 웹 기반 로그인을 사용합니다.\n\n실제 구현에서는 카카오 웹 로그인 URL로 리다이렉트하거나, 네이티브 SDK 문제를 해결해야 합니다.',
-        [
-          {
-            text: '취소',
-            style: 'cancel',
-          },
-          {
-            text: '웹에서 로그인',
-            onPress: () => {
-              // 실제로는 카카오 웹 로그인 URL로 리다이렉트
-              const kakaoWebLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.EXPO_PUBLIC_KAKAO_REST_API_KEY}&redirect_uri=YOUR_REDIRECT_URI&response_type=code`;
-              console.log('🔍 카카오 웹 로그인 URL:', kakaoWebLoginUrl);
-              // Linking.openURL(kakaoWebLoginUrl);
-            },
-          },
-        ]
-      );
+      // 카카오 OAuth URL 직접 구성
+      const kakaoAuthUrl =
+        `https://kauth.kakao.com/oauth/authorize?` +
+        `client_id=${process.env.EXPO_PUBLIC_KAKAO_REST_API_KEY}` +
+        `&redirect_uri=${encodeURIComponent(process.env.EXPO_PUBLIC_API_BASE_URL + '/api/auth/kakao/callback')}` +
+        `&response_type=code` +
+        `&lang=ko`;
+
+      console.log('🚀 카카오 로그인 URL:', kakaoAuthUrl);
+
+      // 웹브라우저로 카카오 로그인 페이지 열기
+      const result = await WebBrowser.openBrowserAsync(kakaoAuthUrl);
+
+      // 사용자가 브라우저를 직접 닫은 경우
+      if (result.type === 'dismiss') {
+        setIsLoading(false);
+      }
     } catch (error) {
-      console.error('🔍 웹 기반 카카오 로그인 실패:', error);
+      console.error('카카오 로그인 실패:', error);
+      Alert.alert('로그인 실패', '카카오 로그인을 시작할 수 없습니다.');
+      setIsLoading(false);
     }
   };
 
   return {
     login,
-    isPending: kakaoLoginMutation.isPending,
+    isPending: isLoading || kakaoLoginMutation.isPending,
   };
 };

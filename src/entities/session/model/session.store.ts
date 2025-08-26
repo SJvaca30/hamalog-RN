@@ -34,10 +34,9 @@ export const useSessionStore = create<SessionState & SessionActions>(set => ({
   },
 
   loadTokens: async () => {
-    console.log('🔍 SecureStore에서 토큰 로딩 시작');
     const accessToken = await SecureStore.getItemAsync('accessToken');
     const refreshToken = await SecureStore.getItemAsync('refreshToken');
-    console.log('🔍 토큰 로딩 완료:', {
+    console.log('SecureStore에서 토큰 로딩 시작, 토큰 로딩 완료:', {
       hasAccessToken: !!accessToken,
       hasRefreshToken: !!refreshToken,
     });

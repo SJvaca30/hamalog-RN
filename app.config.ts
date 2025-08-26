@@ -45,12 +45,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         'expo-build-properties',
         {
           android: {
-            // Expo 기본값과 동일한 Kotlin 버전 명시 (카카오 SDK 호환성)
-            kotlinVersion: '2.0.21',
-            // 카카오 SDK 저장소 추가 (extraMavenRepos 방식)
-            extraMavenRepos: [
-              'https://devrepo.kakao.com/nexus/content/groups/public/',
-            ],
+            // 기본 안드로이드 설정
           },
         },
       ],
@@ -60,14 +55,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           photosPermission: '사진을 등록하기 위해 앨범 접근 권한이 필요합니다.',
           cameraPermission:
             '사진을 촬영하기 위해 카메라 접근 권한이 필요합니다.',
-        },
-      ],
-      [
-        '@react-native-seoul/kakao-login',
-        {
-          kakaoAppKey: process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY,
-          isKakaoTalkLogin: true,
-          isKakaoStoryShare: false,
         },
       ],
     ],

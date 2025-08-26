@@ -12,6 +12,7 @@ import '../global.css';
 
 import { useSession } from '@entities/session';
 import { customFontsToLoad } from '@shared/config';
+import { isMockAuthEnabled, performMockLogin } from '@shared/lib/mock-auth';
 
 // Splash screen을 자동으로 숨기지 않도록 설정
 SplashScreen.preventAutoHideAsync();
@@ -22,29 +23,14 @@ const useProtectedRoutes = () => {
   const { accessToken, isLoaded } = useSession();
 
   useEffect(() => {
-    console.log('🔍 라우팅 상태:', {
-      isLoaded,
-      accessToken: !!accessToken,
-      segments: segments.join('/'),
-      currentSegment: segments[0],
-    });
-
-    if (!isLoaded) {
-      console.log('🔍 세션 로딩 중...');
-      return;
-    }
+    if (!isLoaded) return;
 
     const inAuthGroup = segments[0] === '(auth)';
-    console.log('🔍 현재 위치 분석:', { inAuthGroup });
 
     if (accessToken && inAuthGroup) {
-      console.log('🔍 로그인된 사용자가 auth 페이지에 있음 → 홈으로 이동');
       router.replace('/(app)/(home)');
     } else if (!accessToken && !inAuthGroup) {
-      console.log('🔍 비로그인 사용자가 앱 내부에 있음 → 로그인으로 이동');
       router.replace('/(auth)/login');
-    } else {
-      console.log('🔍 라우팅 변경 없음');
     }
   }, [accessToken, isLoaded, segments, router]);
 };
@@ -70,16 +56,32 @@ function RootLayoutNav() {
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts(customFontsToLoad);
   const [queryClient] = useState(() => new QueryClient());
-  const { loadTokens } = useSession();
+  const { loadTokens, setTokens, accessToken } = useSession();
 
   useEffect(() => {
     (async () => {
       if (Platform.OS === 'android') {
         await NavigationBar.setButtonStyleAsync('dark');
       }
+
+      // 기존 토큰 로드
       await loadTokens();
+
+      // Mock 인증 활성화 시 자동 로그인
+      if (isMockAuthEnabled() && !accessToken) {
+        try {
+          const mockTokens = await performMockLogin();
+          await setTokens({
+            accessToken: mockTokens.accessToken,
+            refreshToken: mockTokens.refreshToken,
+          });
+          console.log('✅ Mock 로그인 완료!');
+        } catch (error) {
+          console.error('❌ Mock 로그인 실패:', error);
+        }
+      }
     })();
-  }, [loadTokens]);
+  }, [loadTokens, setTokens, accessToken]);
 
   useEffect(() => {
     if (fontsLoaded || fontError) {

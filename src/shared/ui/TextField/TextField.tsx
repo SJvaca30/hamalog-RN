@@ -13,7 +13,7 @@ import {
 
 type Props = {
   /** 필드 라벨 */
-  label: string;
+  label?: string;
   /** 라벨 옆 필수 표시 여부 */
   required?: boolean;
   /** placeholder 텍스트 */
@@ -24,6 +24,8 @@ type Props = {
   value: string;
   /** 입력 변경 핸들러 */
   onChangeText: (text: string) => void;
+  /** 에러 메시지 */
+  error?: string;
   /** 여러 줄 입력 여부 */
   multiline?: boolean;
   /** TextInput에 전달할 추가 prop */
@@ -39,6 +41,8 @@ type Props = {
   onFocus?: () => void;
   /** 포커스를 잃었을 때 호출되는 함수 */
   onBlur?: () => void;
+  /** 오른쪽 아이콘 */
+  rightIcon?: React.ReactNode;
 };
 
 /**
@@ -52,6 +56,7 @@ export function TextField({
   placeholder,
   value,
   onChangeText,
+  error,
   multiline,
   inputProps,
   inputClassName,
@@ -59,6 +64,7 @@ export function TextField({
   inputRef,
   onFocus,
   onBlur,
+  rightIcon,
 }: Props) {
   const [isFocused, setIsFocused] = useState(false);
   const internalInputRef = useRef<TextInput>(null);
@@ -91,49 +97,62 @@ export function TextField({
   return (
     <View>
       <Box direction="col" gap="sm">
-        <Box direction="row" gap="xs">
-          <Typography variant="label" color="text-gray-700">
-            {label}
-          </Typography>
-          {required && (
-            <Typography variant="label" color="text-primary-400">
-              *
+        {label && (
+          <Box direction="row" gap="xs">
+            <Typography variant="label" color="text-gray-700">
+              {label}
             </Typography>
-          )}
-        </Box>
+            {required && (
+              <Typography variant="label" color="text-primary-400">
+                *
+              </Typography>
+            )}
+          </Box>
+        )}
 
         <Box
-          className={clsx('border-b border-gray-150', {
+          className={clsx('border-b', {
+            'border-red-400': error,
+            'border-gray-150': !error,
             'py-2': multiline && Platform.OS === 'ios',
           })}>
-          <TextInput
-            ref={node => {
-              internalInputRef.current = node;
-              if (typeof inputRef === 'function') {
-                inputRef(node);
-              } else if (inputRef) {
-                // @ts-ignore
-                inputRef.current = node;
-              }
-            }}
-            value={value}
-            onChangeText={onChangeText}
-            placeholder={placeholder}
-            placeholderTextColor={colors.gray[150]}
-            multiline={multiline}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            className={clsx(
-              'px-0 text-body-1',
-              {
-                'h-[40px]': !multiline && Platform.OS === 'ios',
-              },
-              value ? inputClassName : placeholderClassName
-            )}
-            textAlignVertical={multiline ? 'top' : 'auto'}
-            {...inputProps}
-          />
+          <Box direction="row" align="center" gap="sm">
+            <TextInput
+              ref={node => {
+                internalInputRef.current = node;
+                if (typeof inputRef === 'function') {
+                  inputRef(node);
+                } else if (inputRef) {
+                  // @ts-ignore
+                  inputRef.current = node;
+                }
+              }}
+              value={value}
+              onChangeText={onChangeText}
+              placeholder={placeholder}
+              placeholderTextColor={colors.gray[150]}
+              multiline={multiline}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              className={clsx(
+                'flex-1 px-0 text-body-1',
+                {
+                  'h-[40px]': !multiline && Platform.OS === 'ios',
+                },
+                value ? inputClassName : placeholderClassName
+              )}
+              textAlignVertical={multiline ? 'top' : 'auto'}
+              {...inputProps}
+            />
+            {rightIcon && <Box>{rightIcon}</Box>}
+          </Box>
         </Box>
+
+        {error && (
+          <Typography variant="caption-secondary" color="text-point-red-400">
+            {error}
+          </Typography>
+        )}
       </Box>
     </View>
   );
