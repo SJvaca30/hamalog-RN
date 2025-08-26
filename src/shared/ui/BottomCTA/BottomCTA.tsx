@@ -16,9 +16,11 @@ import { Pressable, PressableProps } from 'react-native';
 
 type BottomCTAProps = {
   /** 버튼 라벨 텍스트 */
-  label: string;
+  text: string;
   /** true일 때 비활성화 및 회색 스타일 적용 */
   disabled?: boolean;
+  /** 로딩 상태 */
+  loading?: boolean;
   /** Tailwind 클래스 등 추가 커스텀 스타일 */
   className?: string;
   /** 테스트 자동화를 위한 testID */
@@ -27,30 +29,36 @@ type BottomCTAProps = {
   onPress?: PressableProps['onPress'];
 };
 
+// 기존 props와의 호환성을 위한 별칭
+export type { BottomCTAProps };
+
 export const BottomCTA: React.FC<BottomCTAProps> = ({
-  label,
+  text,
   disabled,
+  loading,
   className,
   testID,
   onPress,
 }) => {
+  const isDisabled = disabled || loading;
+
   return (
     <Pressable
       onPress={onPress}
-      disabled={!!disabled}
+      disabled={isDisabled}
       accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityState={{ disabled: !!disabled }}
+      accessibilityLabel={text}
+      accessibilityState={{ disabled: isDisabled }}
       testID={testID}
       className={cn(
         'w-full items-center justify-center rounded-2xl py-[18.5]',
-        disabled ? 'bg-gray-50' : 'bg-primary-400',
+        isDisabled ? 'bg-gray-50' : 'bg-primary-400',
         className
       )}>
       <Typography
         variant="button-medium"
-        color={disabled ? 'text-gray-150' : 'text-gray-0'}>
-        {label}
+        color={isDisabled ? 'text-gray-150' : 'text-gray-0'}>
+        {loading ? '로딩 중...' : text}
       </Typography>
     </Pressable>
   );

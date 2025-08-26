@@ -193,7 +193,7 @@ export function RegisterPage() {
                       Platform.OS === 'android' ? bottomInset + 48 : 48,
                   }}>
                   <BottomCTA
-                    label="다음"
+                    text="다음"
                     disabled={!canProceed}
                     onPress={handleNext}
                   />
