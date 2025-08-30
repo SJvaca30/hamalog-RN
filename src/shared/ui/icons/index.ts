@@ -9,6 +9,7 @@ export { HamaIcon } from './HamaIcon';
 export { HomeIcon } from './HomeIcon';
 export type { IconProps } from './icon.types';
 export { ImportScheduleIcon } from './ImportScheduleIcon';
+export { MedicationCheckIcon } from './MedicationCheckIcon';
 export { PictureDeleteIcon } from './PictureDeleteIcon';
 export { PictureUploadIcon } from './PictureUploadIcon';
 export { ProfileIcon } from './ProfileIcon';

@@ -1,6 +1,10 @@
 import { cn } from '@shared/lib/utils';
 import type { TextColor, TypographyVariant } from '@shared/types/ui.types';
-import { Text as RNText, TextProps as RNTextProps } from 'react-native';
+import {
+  Platform,
+  Text as RNText,
+  TextProps as RNTextProps,
+} from 'react-native';
 
 /**
  * 각 텍스트 variant에 해당하는 스타일(className)을 정의한 맵 객체입니다.
@@ -16,12 +20,12 @@ const variantStyles: Record<TypographyVariant, string> = {
   'body-1': 'text-body-1 font-pretendard-400 tracking-body-1',
   label: 'text-label font-pretendard-600 tracking-label',
   'body-2': 'text-body-2 font-pretendard-400 tracking-body-2',
-  'button-large': 'text-button-large font-pretendard-600 tracking-button-large',
+  'button-large': 'text-button-large font-paperlogy-500 tracking-button-large',
   'button-medium':
-    'text-button-medium font-pretendard-600 tracking-button-medium',
+    'text-button-medium font-paperlogy-500 tracking-button-medium',
   'button-small': 'text-button-small font-pretendard-600 tracking-button-small',
   'button-small-p':
-    'text-button-small-p font-pretendard-400 tracking-button-small-p',
+    'text-button-small-p font-paperlogy-600 tracking-button-small-p',
   'caption-primary':
     'text-caption-primary font-pretendard-600 tracking-caption-primary',
   'caption-secondary':
@@ -113,8 +117,12 @@ export const Typography = ({
     className
   );
 
+  // Android에서 폰트 패딩 제거를 위한 props
+  const androidProps =
+    Platform.OS === 'android' ? { includeFontPadding: false } : {};
+
   return (
-    <RNText className={textStyles} style={style} {...props}>
+    <RNText className={textStyles} style={style} {...androidProps} {...props}>
       {children}
     </RNText>
   );

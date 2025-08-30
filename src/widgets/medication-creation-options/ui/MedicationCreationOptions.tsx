@@ -13,7 +13,7 @@ export function MedicationCreationOptions() {
   };
 
   const handleImportMedication = () => {
-    router.push('/create/medication/schedule');
+    router.push('/create/medication/selection');
   };
 
   return (

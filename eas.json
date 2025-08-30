@@ -9,7 +9,11 @@
       "distribution": "internal",
       "env": {
         "NODE_ENV": "development",
-        "EXPO_PUBLIC_API_BASE_URL": "http://112.72.248.195:8080"
+        "EXPO_PUBLIC_API_BASE_URL": "http://112.72.248.195:8080",
+        "EXPO_PUBLIC_MOCK_AUTH": "true",
+        "EXPO_PUBLIC_MOCK_USER_ID": "1",
+        "EXPO_PUBLIC_MOCK_USER_NAME": "개발자",
+        "EXPO_PUBLIC_MOCK_USER_EMAIL": "dev@hamalog.com"
       }
     },
     "preview": {

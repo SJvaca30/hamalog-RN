@@ -49,28 +49,36 @@ const StepItem = ({ status, stepNumber, label }: StepItemProps) => {
 };
 
 type Props = {
-  variant: 'register' | 'schedule';
+  variant: 'selection' | 'register' | 'schedule';
 };
 
 export const Step = ({ variant }: Props) => {
-  const isRegisterStepActive = variant === 'register';
+  if (variant === 'selection') {
+    return (
+      <>
+        <StepItem status="active" stepNumber={1} label="약물 선택" />
+        <StepConnectorIcon width={32} color={colors.gray[100]} />
+        <StepItem status="inactive" stepNumber={2} label="일정 설계" />
+      </>
+    );
+  }
 
+  if (variant === 'register') {
+    return (
+      <>
+        <StepItem status="active" stepNumber={1} label="약물 등록" />
+        <StepConnectorIcon width={32} color={colors.gray[100]} />
+        <StepItem status="inactive" stepNumber={2} label="일정 설계" />
+      </>
+    );
+  }
+
+  // variant === 'schedule'
   return (
     <>
-      <StepItem
-        status={isRegisterStepActive ? 'active' : 'completed'}
-        stepNumber={1}
-        label="약물 등록"
-      />
-      <StepConnectorIcon
-        width={32}
-        color={isRegisterStepActive ? colors.gray[100] : colors.primary[400]}
-      />
-      <StepItem
-        status={isRegisterStepActive ? 'inactive' : 'active'}
-        stepNumber={2}
-        label="일정 설계"
-      />
+      <StepItem status="completed" stepNumber={1} label="약물 준비" />
+      <StepConnectorIcon width={32} color={colors.primary[400]} />
+      <StepItem status="active" stepNumber={2} label="일정 설계" />
     </>
   );
 };

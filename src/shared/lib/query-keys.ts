@@ -18,4 +18,15 @@ export const queryKeys = {
     details: () => [...queryKeys.users.all(), 'detail'] as const,
     detail: (id: number) => [...queryKeys.users.details(), id] as const,
   },
+
+  // 복약 스케줄 쿼리 키
+  medicationSchedules: {
+    all: () => ['medication-schedules'] as const,
+    lists: () => [...queryKeys.medicationSchedules.all(), 'list'] as const,
+    list: (memberId: number) =>
+      [...queryKeys.medicationSchedules.lists(), { memberId }] as const,
+    details: () => [...queryKeys.medicationSchedules.all(), 'detail'] as const,
+    detail: (id: number) =>
+      [...queryKeys.medicationSchedules.details(), id] as const,
+  },
 } as const;
