@@ -43,7 +43,7 @@ function RootLayoutNav() {
       <Stack.Screen name="(app)" />
       <Stack.Screen name="create" />
       <Stack.Screen
-        name="(auth)/login"
+        name="(auth)"
         options={{
           // (auth) 그룹의 화면들은 애니메이션 없이 전환되도록 설정
           animation: 'none',

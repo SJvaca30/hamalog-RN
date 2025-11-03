@@ -15,7 +15,7 @@ import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Shadow } from 'react-native-shadow-2';
 
-export function MedicationSelectionPage() {
+export function MedicationImportPage() {
   const router = useRouter();
   const { bottom: _bottomInset } = useSafeAreaInsets();
 
@@ -52,7 +52,7 @@ export function MedicationSelectionPage() {
         return (
           <Box direction="col" className="flex-1">
             <Box p="md" pb="none">
-              <MedicationCreationStepper variant="selection" />
+              <MedicationCreationStepper variant="import" />
             </Box>
 
             <Box direction="col" gap="md" className="flex-1">

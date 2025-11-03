@@ -1,7 +1,7 @@
 import { PageContainer } from '@shared/ui/PageContainer';
 import { MedicationCreationOptions } from '@widgets/medication-creation-options';
 
-export function SelectionPage() {
+export function MedicationCreationPage() {
   return (
     <PageContainer>
       <MedicationCreationOptions />

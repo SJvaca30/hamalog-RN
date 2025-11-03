@@ -135,7 +135,7 @@ export function TextField({
               onFocus={handleFocus}
               onBlur={handleBlur}
               className={clsx(
-                'flex-1 px-0 text-body-1',
+                'flex-1 px-0 text-body-1 text-gray-850',
                 {
                   'h-[40px]': !multiline && Platform.OS === 'ios',
                 },

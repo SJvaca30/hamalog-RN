@@ -49,24 +49,24 @@ const StepItem = ({ status, stepNumber, label }: StepItemProps) => {
 };
 
 type Props = {
-  variant: 'selection' | 'register' | 'schedule';
+  variant: 'register' | 'import' | 'schedule';
 };
 
 export const Step = ({ variant }: Props) => {
-  if (variant === 'selection') {
+  if (variant === 'register') {
     return (
       <>
-        <StepItem status="active" stepNumber={1} label="약물 선택" />
+        <StepItem status="active" stepNumber={1} label="약물 등록" />
         <StepConnectorIcon width={32} color={colors.gray[100]} />
         <StepItem status="inactive" stepNumber={2} label="일정 설계" />
       </>
     );
   }
 
-  if (variant === 'register') {
+  if (variant === 'import') {
     return (
       <>
-        <StepItem status="active" stepNumber={1} label="약물 등록" />
+        <StepItem status="active" stepNumber={1} label="약물 가져오기" />
         <StepConnectorIcon width={32} color={colors.gray[100]} />
         <StepItem status="inactive" stepNumber={2} label="일정 설계" />
       </>
