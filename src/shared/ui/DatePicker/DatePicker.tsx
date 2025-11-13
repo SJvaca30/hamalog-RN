@@ -25,8 +25,8 @@ export function DatePicker({
   placeholder = '날짜를 선택해주세요',
   error,
   disabled = false,
-  //minimumDate,
-  //maximumDate,
+  minimumDate,
+  maximumDate,
 }: DatePickerProps) {
   const [showPicker, setShowPicker] = useState(false);
 
@@ -74,6 +74,8 @@ export function DatePicker({
         onClose={handleDateCancel}
         onConfirm={handleDateConfirm}
         initialDate={value || new Date()}
+        minimumDate={minimumDate}
+        maximumDate={maximumDate}
       />
     </Box>
   );

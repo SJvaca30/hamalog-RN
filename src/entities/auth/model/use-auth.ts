@@ -41,7 +41,6 @@ export const useLogin = () => {
       // 토큰을 세션 스토어에 저장
       await setTokens({
         accessToken: response.token,
-        refreshToken: response.token, // 현재 백엔드에서 refreshToken을 제공하지 않음
       });
 
       // 메인 화면으로 이동

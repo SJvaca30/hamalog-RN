@@ -12,6 +12,7 @@ import '../global.css';
 
 import { useSession } from '@entities/session';
 import { customFontsToLoad } from '@shared/config';
+import { env } from '@shared/config/env';
 import { isMockAuthEnabled, performMockLogin } from '@shared/lib/mock-auth';
 
 // Splash screen을 자동으로 숨기지 않도록 설정
@@ -56,7 +57,8 @@ function RootLayoutNav() {
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts(customFontsToLoad);
   const [queryClient] = useState(() => new QueryClient());
-  const { loadTokens, setTokens, accessToken } = useSession();
+  const { loadTokens, setTokens, clearTokensIfMockDisabled, accessToken } =
+    useSession();
 
   useEffect(() => {
     (async () => {
@@ -67,13 +69,16 @@ export default function RootLayout() {
       // 기존 토큰 로드
       await loadTokens();
 
-      // Mock 인증 활성화 시 자동 로그인
-      if (isMockAuthEnabled() && !accessToken) {
+      // Mock 인증 상태에 따라 토큰 처리
+      if (!env.mockAuth.enabled) {
+        // Mock 인증이 비활성화되었으면 기존 토큰 클리어
+        await clearTokensIfMockDisabled();
+      } else if (isMockAuthEnabled() && !accessToken) {
+        // Mock 인증이 활성화되어 있고 토큰이 없으면 자동 로그인
         try {
           const mockTokens = await performMockLogin();
           await setTokens({
             accessToken: mockTokens.accessToken,
-            refreshToken: mockTokens.refreshToken,
           });
           console.log('✅ Mock 로그인 완료!');
         } catch (error) {
@@ -81,7 +86,7 @@ export default function RootLayout() {
         }
       }
     })();
-  }, [loadTokens, setTokens, accessToken]);
+  }, [loadTokens, setTokens, clearTokensIfMockDisabled, accessToken]);
 
   useEffect(() => {
     if (fontsLoaded || fontError) {

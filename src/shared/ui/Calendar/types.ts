@@ -3,4 +3,6 @@ export type CalendarModalProps = {
   onClose: () => void;
   onConfirm: (date: Date) => void;
   initialDate?: Date;
+  minimumDate?: Date;
+  maximumDate?: Date;
 };

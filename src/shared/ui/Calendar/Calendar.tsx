@@ -68,6 +68,8 @@ export function CalendarModal({
   onClose,
   onConfirm,
   initialDate,
+  minimumDate,
+  maximumDate,
 }: CalendarModalProps) {
   const { bottom: bottomInset } = useSafeAreaInsets();
 
@@ -261,6 +263,12 @@ export function CalendarModal({
               monthFormat="yyyy년 M월"
               renderHeader={date => <CustomHeader date={date} />}
               hideArrows
+              minDate={
+                minimumDate ? format(minimumDate, 'yyyy-MM-dd') : undefined
+              }
+              maxDate={
+                maximumDate ? format(maximumDate, 'yyyy-MM-dd') : undefined
+              }
               theme={{
                 stylesheet: {
                   calendar: {

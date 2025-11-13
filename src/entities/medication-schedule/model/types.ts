@@ -11,7 +11,7 @@ export interface MemberSummary {
  */
 export interface MedicationSchedule {
   medicationScheduleId: number;
-  member: MemberSummary;
+  memberId: number;
   name: string;
   hospitalName: string;
   prescriptionDate: string; // "YYYY-MM-DD"

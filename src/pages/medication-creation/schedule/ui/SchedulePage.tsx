@@ -54,7 +54,7 @@ export function SchedulePage() {
   const canProceed = prescriptionDays >= 1 && medicationTimes.length >= 1;
 
   // 사용자 입력이 있는지 확인
-  const hasUserInput =
+  const _hasUserInput =
     startDate.toDateString() !== new Date().toDateString() ||
     prescriptionDays > 0 ||
     medicationTimes.length > 0 ||
@@ -67,7 +67,14 @@ export function SchedulePage() {
         return;
       }
 
-      if (!hasUserInput) {
+      // 사용자 입력 여부를 리스너 내부에서 최신 상태로 체크
+      const currentHasUserInput =
+        startDate.toDateString() !== new Date().toDateString() ||
+        prescriptionDays > 0 ||
+        medicationTimes.length > 0 ||
+        alarmMode !== 'sound';
+
+      if (!currentHasUserInput) {
         return;
       }
 
@@ -76,7 +83,7 @@ export function SchedulePage() {
     });
 
     return unsubscribe;
-  }, [navigation, hasUserInput]);
+  }, [navigation]);
 
   // 처방일수 직접 변경 시에만 종료일 업데이트 (캘린더 선택 시 제외)
   const updateEndDateFromDays = (days: number) => {

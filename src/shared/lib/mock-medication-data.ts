@@ -15,7 +15,7 @@ export function generateMockMedicationSchedules(): MedicationSchedule[] {
   return [
     {
       medicationScheduleId: 1,
-      member: { memberId: 1, name: '김민준' },
+      memberId: 1,
       name: '불안할 때 먹는 약',
       hospitalName: '햇햇햇햇 햇햇햇햇햇 햇햇햇햇햇',
       prescriptionDate: new Date(baseDate.getTime() - 1 * 24 * 60 * 60 * 1000)
@@ -32,7 +32,7 @@ export function generateMockMedicationSchedules(): MedicationSchedule[] {
     },
     {
       medicationScheduleId: 2,
-      member: { memberId: 1, name: '김민준' },
+      memberId: 1,
       name: 'ADHD',
       hospitalName: '해살',
       prescriptionDate: new Date(baseDate.getTime() - 3 * 24 * 60 * 60 * 1000)
@@ -49,7 +49,7 @@ export function generateMockMedicationSchedules(): MedicationSchedule[] {
     },
     {
       medicationScheduleId: 3,
-      member: { memberId: 1, name: '김민준' },
+      memberId: 1,
       name: '파란색 알약',
       hospitalName: '해살',
       prescriptionDate: new Date(baseDate.getTime() - 7 * 24 * 60 * 60 * 1000)
@@ -66,7 +66,7 @@ export function generateMockMedicationSchedules(): MedicationSchedule[] {
     },
     {
       medicationScheduleId: 4,
-      member: { memberId: 1, name: '김민준' },
+      memberId: 1,
       name: '불안장애',
       hospitalName: '해살',
       prescriptionDate: new Date(baseDate.getTime() - 10 * 24 * 60 * 60 * 1000)
@@ -83,7 +83,7 @@ export function generateMockMedicationSchedules(): MedicationSchedule[] {
     },
     {
       medicationScheduleId: 5,
-      member: { memberId: 1, name: '김민준' },
+      memberId: 1,
       name: '공황장애',
       hospitalName: '정신의학과',
       prescriptionDate: new Date(baseDate.getTime() - 14 * 24 * 60 * 60 * 1000)
