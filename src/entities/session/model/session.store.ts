@@ -3,11 +3,15 @@ import { create } from 'zustand';
 
 interface SessionState {
   accessToken: string | null;
+  refreshToken: string | null;
   isLoaded: boolean; // SecureStore에서 토큰을 불러왔는지 여부
 }
 
 interface SessionActions {
-  setTokens: (tokens: { accessToken: string }) => Promise<void>;
+  setTokens: (
+    accessToken: string,
+    refreshToken?: string | null
+  ) => Promise<void>;
   clearTokens: () => Promise<void>;
   loadTokens: () => Promise<void>;
   clearTokensIfMockDisabled: () => Promise<void>;
@@ -15,24 +19,35 @@ interface SessionActions {
 
 export const useSessionStore = create<SessionState & SessionActions>(set => ({
   accessToken: null,
+  refreshToken: null,
   isLoaded: false,
 
-  setTokens: async ({ accessToken }) => {
+  setTokens: async (accessToken, refreshToken) => {
     await SecureStore.setItemAsync('accessToken', accessToken);
-    set({ accessToken });
+    if (refreshToken) {
+      await SecureStore.setItemAsync('refreshToken', refreshToken);
+    } else {
+      await SecureStore.deleteItemAsync('refreshToken');
+    }
+    set({ accessToken, refreshToken: refreshToken || null });
   },
 
   clearTokens: async () => {
     await SecureStore.deleteItemAsync('accessToken');
-    set({ accessToken: null });
+    await SecureStore.deleteItemAsync('refreshToken');
+    set({ accessToken: null, refreshToken: null });
   },
 
   loadTokens: async () => {
-    const accessToken = await SecureStore.getItemAsync('accessToken');
-    console.log('SecureStore에서 토큰 로딩 시작, 토큰 로딩 완료:', {
+    const [accessToken, refreshToken] = await Promise.all([
+      SecureStore.getItemAsync('accessToken'),
+      SecureStore.getItemAsync('refreshToken'),
+    ]);
+    console.log('SecureStore에서 토큰 로딩 완료:', {
       hasAccessToken: !!accessToken,
+      hasRefreshToken: !!refreshToken,
     });
-    set({ accessToken, isLoaded: true });
+    set({ accessToken, refreshToken, isLoaded: true });
   },
 
   // 개발용: Mock 인증이 비활성화되었을 때 토큰 자동 클리어
@@ -41,7 +56,8 @@ export const useSessionStore = create<SessionState & SessionActions>(set => ({
     if (!env.mockAuth.enabled) {
       console.log('🔧 Mock 인증이 비활성화됨 - 기존 토큰 클리어');
       await SecureStore.deleteItemAsync('accessToken');
-      set({ accessToken: null });
+      await SecureStore.deleteItemAsync('refreshToken');
+      set({ accessToken: null, refreshToken: null });
     }
   },
 }));

@@ -48,6 +48,7 @@ export function SignupPage() {
         loginId: data.email,
         password: data.password,
         name: '사용자', // 초기값으로 설정, 나중에 수정 가능
+        nickName: '닉네임', // [TODO] 닉네임 입력 필드 추가 필요
         phoneNumber: data.phoneNumber,
         birth: data.birth.toISOString().split('T')[0], // YYYY-MM-DD 형식
       };

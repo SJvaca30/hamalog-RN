@@ -26,6 +26,8 @@ export function generateMockJWT(): string {
 export function generateMockLoginResponse() {
   return {
     token: generateMockJWT(),
+    refreshToken: generateMockJWT(),
+    expiresIn: 3600, // 1시간
   };
 }
 
@@ -37,6 +39,7 @@ export function getMockUserInfo() {
     memberId: parseInt(env.mockAuth.user.id),
     loginId: env.mockAuth.user.email,
     name: env.mockAuth.user.name,
+    nickName: '테스트유저', // [추가] 닉네임 필드
     phoneNumber: '010-1234-5678',
     birthday: '1990-01-01',
     createdAt: new Date().toISOString(),
@@ -56,6 +59,7 @@ export function isMockAuthEnabled(): boolean {
 export async function performMockLogin(): Promise<{
   accessToken: string;
   refreshToken: string;
+  expiresIn: number;
 }> {
   if (!isMockAuthEnabled()) {
     throw new Error('Mock 인증이 비활성화되어 있습니다.');
@@ -67,5 +71,6 @@ export async function performMockLogin(): Promise<{
   return {
     accessToken: generateMockJWT(),
     refreshToken: generateMockJWT(), // 실제로는 다른 만료 시간을 가져야 함
+    expiresIn: 3600,
   };
 }

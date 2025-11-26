@@ -39,9 +39,7 @@ export const useLogin = () => {
       console.log('로그인 성공');
 
       // 토큰을 세션 스토어에 저장
-      await setTokens({
-        accessToken: response.token,
-      });
+      await setTokens(response.token, response.refreshToken);
 
       // 메인 화면으로 이동
       router.replace('/(app)/(home)');

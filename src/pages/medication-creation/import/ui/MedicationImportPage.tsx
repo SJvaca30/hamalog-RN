@@ -23,11 +23,9 @@ export function MedicationImportPage() {
   const mockUser = isMockAuthEnabled() ? getMockUserInfo() : null;
   const memberId = mockUser?.memberId || 1; // fallback ID
 
-  const {
-    data: medications = [],
-    isLoading,
-    error,
-  } = useGetMedicationSchedules(memberId);
+  const { data, isLoading, error } = useGetMedicationSchedules(memberId);
+
+  const medications = data?.schedules || [];
 
   // 선택된 약물 상태 관리
   const [selectedMedication, setSelectedMedication] =

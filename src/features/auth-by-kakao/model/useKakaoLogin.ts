@@ -17,27 +17,32 @@ export const useKakaoLogin = () => {
 
       // hamalog-rn://auth?token=xxx 형태 처리
       if (url.startsWith('hamalog-rn://auth')) {
-        try {
-          const urlObj = new URL(url);
-          const token = urlObj.searchParams.get('token');
+        (async () => {
+          try {
+            const urlObj = new URL(url);
+            const token = urlObj.searchParams.get('token');
+            const refreshToken = urlObj.searchParams.get('refreshToken');
 
-          if (token) {
-            console.log('✅ 백엔드로부터 토큰 수신');
-            setTokens({
-              accessToken: token,
-            });
-            setIsLoading(false);
-            Alert.alert('성공', '카카오 로그인에 성공했습니다!');
-          } else {
-            const error = urlObj.searchParams.get('error');
-            Alert.alert('로그인 실패', error || '토큰을 받을 수 없습니다.');
+            if (token) {
+              console.log('✅ 백엔드로부터 토큰 수신');
+              // refreshToken은 없을 수도 있음 (호환성 확보)
+              await setTokens(token, refreshToken || null);
+              setIsLoading(false);
+              Alert.alert('성공', '카카오 로그인에 성공했습니다!');
+            } else {
+              const error = urlObj.searchParams.get('error');
+              Alert.alert('로그인 실패', error || '토큰을 받을 수 없습니다.');
+              setIsLoading(false);
+            }
+          } catch (error) {
+            console.error('Deep Link 파싱 실패:', error);
+            Alert.alert(
+              '로그인 실패',
+              'Deep Link 처리 중 오류가 발생했습니다.'
+            );
             setIsLoading(false);
           }
-        } catch (error) {
-          console.error('Deep Link 파싱 실패:', error);
-          Alert.alert('로그인 실패', 'Deep Link 처리 중 오류가 발생했습니다.');
-          setIsLoading(false);
-        }
+        })();
       }
     };
 

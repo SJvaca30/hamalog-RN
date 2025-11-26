@@ -62,7 +62,7 @@ export function generateMockMedicationSchedules(): MedicationSchedule[] {
         .split('T')[0],
       prescriptionDays: 14,
       perDay: 3,
-      alarmType: 'SOUND' as const,
+      alarmType: 'SOUND_AND_VIBRATION' as const,
     },
     {
       medicationScheduleId: 4,
@@ -79,7 +79,7 @@ export function generateMockMedicationSchedules(): MedicationSchedule[] {
         .split('T')[0],
       prescriptionDays: 45,
       perDay: 1,
-      alarmType: 'VIBRATION' as const,
+      alarmType: 'NONE' as const,
     },
     {
       medicationScheduleId: 5,

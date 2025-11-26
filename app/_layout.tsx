@@ -77,9 +77,7 @@ export default function RootLayout() {
         // Mock 인증이 활성화되어 있고 토큰이 없으면 자동 로그인
         try {
           const mockTokens = await performMockLogin();
-          await setTokens({
-            accessToken: mockTokens.accessToken,
-          });
+          await setTokens(mockTokens.accessToken, mockTokens.refreshToken);
           console.log('✅ Mock 로그인 완료!');
         } catch (error) {
           console.error('❌ Mock 로그인 실패:', error);

@@ -24,15 +24,50 @@ http.interceptors.request.use(
   }
 );
 
-// 응답 인터셉터: 에러 공통 처리
+interface RefreshTokenResponse {
+  token: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+// 응답 인터셉터: 에러 공통 처리 및 토큰 갱신
 http.interceptors.response.use(
   response => response,
-  error => {
-    if (error.response?.status === 401) {
-      console.log('Unauthorized, redirect to login');
-      // 401 에러 발생 시 토큰 초기화 및 로그인 화면으로 리다이렉트
-      useSessionStore.getState().clearTokens();
+  async error => {
+    const originalRequest = error.config;
+
+    // 401 에러이고, 아직 재시도하지 않은 요청인 경우
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const refreshToken = useSessionStore.getState().refreshToken;
+
+        if (refreshToken) {
+          // 토큰 갱신 요청
+          const { data } = await axios.post<RefreshTokenResponse>(
+            `${BASE_URL}/auth/refresh`,
+            {
+              refreshToken,
+            }
+          );
+
+          // 새 토큰 저장 (Store 업데이트)
+          await useSessionStore
+            .getState()
+            .setTokens(data.token, data.refreshToken);
+
+          // 실패했던 요청에 새 토큰 적용 후 재시도
+          originalRequest.headers.Authorization = `Bearer ${data.token}`;
+          return http(originalRequest);
+        }
+      } catch (refreshError) {
+        // 갱신 실패 시 로그아웃 처리
+        console.log('Token refresh failed, redirecting to login', refreshError);
+        await useSessionStore.getState().clearTokens();
+      }
     }
+
     return Promise.reject(error);
   }
 );
