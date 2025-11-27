@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 
 import { useSession } from '@entities/session';
-import { queryKeys } from '@shared/lib/query-keys';
+import { authKeys } from '../lib/query-keys';
 
 import { login, logout, signup, validateEmailFormat } from '../api';
 import type { LoginRequest, SignupRequest } from './types';
@@ -85,7 +85,7 @@ export const useLogout = () => {
  */
 export const useValidateEmailFormat = (email: string) => {
   return useQuery({
-    queryKey: queryKeys.auth.emailCheck(email),
+    queryKey: authKeys.emailCheck(email),
     queryFn: () => validateEmailFormat(email),
     enabled: !!email && email.includes('@'), // 유효한 이메일일 때만 실행
     retry: false, // 형식 검증은 재시도하지 않음

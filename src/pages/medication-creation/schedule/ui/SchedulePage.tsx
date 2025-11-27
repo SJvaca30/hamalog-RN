@@ -5,7 +5,7 @@ import { BottomCTA } from '@shared/ui/BottomCTA';
 import { Box } from '@shared/ui/Box';
 import { CalendarModal } from '@shared/ui/Calendar';
 import { ConfirmModal } from '@shared/ui/ConfirmModal';
-import { MedicationTimeCard } from '@shared/ui/MedicationTimeCard';
+import { MedicationTimeCard } from '@entities/medication-schedule';
 import { NumberInput, createEndDateHelperText } from '@shared/ui/NumberInput';
 import { PageContainer } from '@shared/ui/PageContainer';
 import { TextField } from '@shared/ui/TextField';

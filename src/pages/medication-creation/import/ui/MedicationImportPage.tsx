@@ -2,8 +2,8 @@ import {
   useGetMedicationSchedules,
   type MedicationSchedule,
 } from '@entities/medication-schedule';
+import { useSession } from '@entities/session';
 import { MedicationSelectionList } from '@features/select-existing-medication';
-import { getMockUserInfo, isMockAuthEnabled } from '@shared/lib/mock-auth';
 import { BottomCTA } from '@shared/ui/BottomCTA';
 import { Box } from '@shared/ui/Box';
 import { PageContainer } from '@shared/ui/PageContainer';
@@ -18,12 +18,10 @@ import { Shadow } from 'react-native-shadow-2';
 export function MedicationImportPage() {
   const router = useRouter();
   const { bottom: _bottomInset } = useSafeAreaInsets();
+  const { memberId } = useSession();
 
-  // 현재는 Mock 사용자 정보 사용 (추후 실제 사용자 정보로 교체)
-  const mockUser = isMockAuthEnabled() ? getMockUserInfo() : null;
-  const memberId = mockUser?.memberId || 1; // fallback ID
-
-  const { data, isLoading, error } = useGetMedicationSchedules(memberId);
+  // memberId가 없으면 0을 사용하여 쿼리를 비활성화 (enabled: !!memberId 덕분)
+  const { data, isLoading, error } = useGetMedicationSchedules(memberId || 0);
 
   const medications = data?.schedules || [];
 

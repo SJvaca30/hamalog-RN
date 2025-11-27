@@ -12,3 +12,5 @@ export {
 } from './model/use-medication-schedules';
 
 export { getMedicationScheduleById, getMedicationSchedules } from './api';
+
+export { MedicationTimeCard } from './ui/MedicationTimeCard';
