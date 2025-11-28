@@ -1,7 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
 
-import { useSession } from '@entities/session';
 import { authKeys } from '../lib/query-keys';
 
 import { login, logout, signup, validateEmailFormat } from '../api';
@@ -11,15 +9,8 @@ import type { LoginRequest, SignupRequest } from './types';
  * 회원가입 훅
  */
 export const useSignup = () => {
-  const router = useRouter();
-
   return useMutation({
     mutationFn: (data: SignupRequest) => signup(data),
-    onSuccess: () => {
-      console.log('회원가입 성공');
-      // 회원가입 성공 후 로그인 화면으로 이동
-      router.replace('/(auth)/login');
-    },
     onError: (error: any) => {
       console.error('회원가입 실패:', error);
     },
@@ -28,22 +19,11 @@ export const useSignup = () => {
 
 /**
  * 로그인 훅
+ * - 주의: 세션 처리와 라우팅은 이 훅을 사용하는 상위 컴포넌트(Feature)에서 처리해야 합니다.
  */
 export const useLogin = () => {
-  const { setTokens } = useSession();
-  const router = useRouter();
-
   return useMutation({
     mutationFn: (data: LoginRequest) => login(data),
-    onSuccess: async response => {
-      console.log('로그인 성공');
-
-      // 토큰을 세션 스토어에 저장
-      await setTokens(response.token, response.refreshToken);
-
-      // 메인 화면으로 이동
-      router.replace('/(app)/(home)');
-    },
     onError: (error: any) => {
       console.error('로그인 실패:', error);
     },
@@ -52,28 +32,13 @@ export const useLogin = () => {
 
 /**
  * 로그아웃 훅
+ * - 주의: 세션 처리와 라우팅은 이 훅을 사용하는 상위 컴포넌트(Feature)에서 처리해야 합니다.
  */
 export const useLogout = () => {
-  const { clearTokens } = useSession();
-  const router = useRouter();
-
   return useMutation({
     mutationFn: logout,
-    onSuccess: async () => {
-      console.log('로그아웃 성공');
-
-      // 토큰 삭제
-      await clearTokens();
-
-      // 로그인 화면으로 이동
-      router.replace('/(auth)/login');
-    },
     onError: (error: any) => {
       console.error('로그아웃 실패:', error);
-
-      // 에러가 발생해도 로컬 토큰은 삭제
-      clearTokens();
-      router.replace('/(auth)/login');
     },
   });
 };
