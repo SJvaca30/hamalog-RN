@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import { Step } from './Step';
 
 type Props = {
-  variant: 'register' | 'schedule';
+  variant: 'register' | 'import' | 'schedule';
 };
 
 export const MedicationCreationStepper = ({ variant }: Props) => {

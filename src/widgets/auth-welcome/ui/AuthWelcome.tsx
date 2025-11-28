@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Pressable } from 'react-native';
 
-import { KakaoLoginButton } from '@features/auth-by-kakao';
+import { KakaoLoginButton, useKakaoLogin } from '@features/auth-by-kakao';
 import { Box } from '@shared/ui/Box';
 import { Typography } from '@shared/ui/Typography';
 
@@ -20,14 +20,14 @@ export function AuthWelcome({
   subtitle = '건강한 하루를 시작해보세요',
 }: AuthWelcomeProps) {
   const router = useRouter();
+  const { login: kakaoLogin, isPending: isKakaoLoginPending } = useKakaoLogin();
 
   const handleEmailLogin = () => {
     router.push('/email-login');
   };
 
   const handleKakaoLogin = () => {
-    // TODO: 카카오 로그인 로직 구현
-    console.log('카카오 로그인 시도');
+    kakaoLogin();
   };
 
   return (
@@ -45,7 +45,10 @@ export function AuthWelcome({
       {/* 로그인 옵션 섹션 */}
       <Box className="w-full gap-4">
         {/* 카카오 로그인 버튼 */}
-        <KakaoLoginButton onPress={handleKakaoLogin} />
+        <KakaoLoginButton
+          onPress={handleKakaoLogin}
+          disabled={isKakaoLoginPending}
+        />
 
         {/* 이메일 로그인 버튼 */}
         <Pressable

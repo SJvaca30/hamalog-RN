@@ -1,8 +1,8 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { useState } from 'react';
-import { Platform, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
 
 import { Box } from '../Box';
+import { CalendarModal } from '../Calendar';
 import { TextField } from '../TextField';
 
 interface DatePickerProps {
@@ -17,7 +17,7 @@ interface DatePickerProps {
 
 /**
  * 날짜 선택 컴포넌트
- * iOS에서는 모달로, Android에서는 네이티브 피커로 표시됩니다.
+ * CalendarModal을 사용하여 일관된 UI를 제공합니다.
  */
 export function DatePicker({
   value,
@@ -43,19 +43,13 @@ export function DatePicker({
     }
   };
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    if (Platform.OS === 'android') {
-      setShowPicker(false);
-    }
+  const handleDateConfirm = (selectedDate: Date) => {
+    onDateChange(selectedDate);
+    setShowPicker(false);
+  };
 
-    if (selectedDate && event.type !== 'dismissed') {
-      onDateChange(selectedDate);
-      if (Platform.OS === 'ios') {
-        setShowPicker(false);
-      }
-    } else if (Platform.OS === 'ios' && event.type === 'dismissed') {
-      setShowPicker(false);
-    }
+  const handleDateCancel = () => {
+    setShowPicker(false);
   };
 
   const displayValue = value ? formatDate(value) : '';
@@ -75,16 +69,14 @@ export function DatePicker({
         />
       </Pressable>
 
-      {showPicker && (
-        <DateTimePicker
-          value={value || new Date()}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleDateChange}
-          minimumDate={minimumDate}
-          maximumDate={maximumDate}
-        />
-      )}
+      <CalendarModal
+        visible={showPicker}
+        onClose={handleDateCancel}
+        onConfirm={handleDateConfirm}
+        initialDate={value || new Date()}
+        minimumDate={minimumDate}
+        maximumDate={maximumDate}
+      />
     </Box>
   );
 }

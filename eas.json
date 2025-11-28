@@ -4,28 +4,34 @@
     "appVersionSource": "remote"
   },
   "build": {
+    "base": {
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "http://49.142.154.182:8080"
+      }
+    },
     "development": {
+      "extends": "base",
       "developmentClient": true,
       "distribution": "internal",
       "env": {
         "NODE_ENV": "development",
-        "EXPO_PUBLIC_API_BASE_URL": "http://112.72.248.195:8080"
+        "EXPO_PUBLIC_MOCK_AUTH": "false"
       }
     },
     "preview": {
+      "extends": "base",
       "distribution": "internal",
       "channel": "preview",
       "env": {
-        "NODE_ENV": "preview",
-        "EXPO_PUBLIC_API_BASE_URL": "http://112.72.248.195:8080"
+        "NODE_ENV": "preview"
       }
     },
     "production": {
+      "extends": "base",
       "autoIncrement": true,
       "channel": "production",
       "env": {
-        "NODE_ENV": "production",
-        "EXPO_PUBLIC_API_BASE_URL": "http://112.72.248.195:8080"
+        "NODE_ENV": "production"
       }
     }
   },

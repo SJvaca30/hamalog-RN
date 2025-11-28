@@ -9,7 +9,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     version: '1.0.0',
     scheme: 'hamalog-rn',
     description:
-      '정신적 어려움을 겪는 분들을 대상으로 약 처방·복용 관리+일기 작성을 통해 스스로를 돌볼 수 있도록 도와주는 서비스 하마로그',
+      '정신적 어려움을 겪는 분들을 대상으로 약 처방·복약 관리+일기 작성을 통해 스스로를 돌볼 수 있도록 도와주는 서비스 하마로그',
     runtimeVersion: {
       policy: 'appVersion',
     },
@@ -57,6 +57,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             '사진을 촬영하기 위해 카메라 접근 권한이 필요합니다.',
         },
       ],
+      'expo-font',
+      'expo-localization',
+      'expo-secure-store',
+      'expo-web-browser',
     ],
     orientation: 'portrait',
     icon: './assets/icon.png',

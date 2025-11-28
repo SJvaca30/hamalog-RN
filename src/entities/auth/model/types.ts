@@ -5,6 +5,7 @@ export interface SignupRequest {
   loginId: string; // 이메일
   password: string;
   name: string;
+  nickName: string; // 한글/영어 1-10자
   phoneNumber: string;
   birth: string; // "YYYY-MM-DD"
 }
@@ -22,6 +23,24 @@ export interface LoginRequest {
  */
 export interface LoginResponse {
   token: string; // JWT 액세스 토큰
+  refreshToken: string; // JWT 리프레시 토큰
+  expiresIn: number; // 액세스 토큰 만료 시간 (초)
+}
+
+/**
+ * 토큰 갱신 요청 DTO
+ */
+export interface RefreshTokenRequest {
+  refreshToken: string;
+}
+
+/**
+ * 토큰 갱신 응답 DTO
+ */
+export interface RefreshTokenResponse {
+  token: string;
+  refreshToken: string;
+  expiresIn: number;
 }
 
 /**

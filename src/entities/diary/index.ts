@@ -1,1 +1,1 @@
-export { DiaryForm } from './ui';
+export { DiaryForm } from './ui/DiaryForm';

@@ -12,7 +12,6 @@ import '../global.css';
 
 import { useSession } from '@entities/session';
 import { customFontsToLoad } from '@shared/config';
-import { isMockAuthEnabled, performMockLogin } from '@shared/lib/mock-auth';
 
 // Splash screen을 자동으로 숨기지 않도록 설정
 SplashScreen.preventAutoHideAsync();
@@ -43,7 +42,7 @@ function RootLayoutNav() {
       <Stack.Screen name="(app)" />
       <Stack.Screen name="create" />
       <Stack.Screen
-        name="(auth)/login"
+        name="(auth)"
         options={{
           // (auth) 그룹의 화면들은 애니메이션 없이 전환되도록 설정
           animation: 'none',
@@ -56,7 +55,7 @@ function RootLayoutNav() {
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts(customFontsToLoad);
   const [queryClient] = useState(() => new QueryClient());
-  const { loadTokens, setTokens, accessToken } = useSession();
+  const { loadTokens, accessToken } = useSession();
 
   useEffect(() => {
     (async () => {
@@ -66,22 +65,8 @@ export default function RootLayout() {
 
       // 기존 토큰 로드
       await loadTokens();
-
-      // Mock 인증 활성화 시 자동 로그인
-      if (isMockAuthEnabled() && !accessToken) {
-        try {
-          const mockTokens = await performMockLogin();
-          await setTokens({
-            accessToken: mockTokens.accessToken,
-            refreshToken: mockTokens.refreshToken,
-          });
-          console.log('✅ Mock 로그인 완료!');
-        } catch (error) {
-          console.error('❌ Mock 로그인 실패:', error);
-        }
-      }
     })();
-  }, [loadTokens, setTokens, accessToken]);
+  }, [loadTokens, accessToken]);
 
   useEffect(() => {
     if (fontsLoaded || fontError) {

@@ -9,6 +9,7 @@ import {
   useLogin,
   type LoginFormValidationData,
 } from '@entities/auth';
+import { useSession } from '@entities/session';
 import { BottomCTA } from '@shared/ui/BottomCTA';
 import { Box } from '@shared/ui/Box';
 import { ArrowLeftIcon } from '@shared/ui/icons';
@@ -38,13 +39,22 @@ export function PasswordLoginPage() {
     },
   });
 
+  const { setTokens } = useSession();
+
   const handleLogin = async (data: LoginFormValidationData) => {
     try {
-      await loginMutation.mutateAsync({
+      const response = await loginMutation.mutateAsync({
         loginId: data.email,
         password: data.password,
       });
-      // 로그인 성공 시 useLogin 훅에서 자동으로 메인 화면으로 이동
+
+      console.log('로그인 성공');
+
+      // 토큰을 세션 스토어에 저장
+      await setTokens(response.token, response.refreshToken);
+
+      // 메인 화면으로 이동
+      router.replace('/(app)/(home)');
     } catch (error: any) {
       console.error('로그인 실패:', error);
 

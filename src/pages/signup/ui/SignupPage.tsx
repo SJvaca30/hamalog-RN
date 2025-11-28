@@ -27,6 +27,10 @@ export function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // 세션 관리는 상위 컴포넌트(페이지)에서 담당하지 않고,
+  // 회원가입 성공 시 명시적인 로그인 과정을 거치도록 유도합니다.
+  // (현재 정책: 회원가입 후 -> 로그인 페이지로 이동)
+
   const signupMutation = useSignup();
 
   const {
@@ -48,12 +52,22 @@ export function SignupPage() {
         loginId: data.email,
         password: data.password,
         name: '사용자', // 초기값으로 설정, 나중에 수정 가능
+        nickName: '닉네임', // [TODO] 닉네임 입력 필드 추가 필요
         phoneNumber: data.phoneNumber,
         birth: data.birth.toISOString().split('T')[0], // YYYY-MM-DD 형식
       };
 
       await signupMutation.mutateAsync(signupData);
-      Alert.alert('성공', '회원가입이 완료되었습니다!');
+
+      Alert.alert('성공', '회원가입이 완료되었습니다!', [
+        {
+          text: '확인',
+          onPress: () => {
+            // 회원가입 성공 시 로그인 페이지로 이동
+            router.replace('/(auth)/login');
+          },
+        },
+      ]);
     } catch (error: any) {
       console.error('회원가입 실패:', error);
 
