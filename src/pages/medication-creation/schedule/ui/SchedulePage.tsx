@@ -1,3 +1,9 @@
+import {
+  createMedicationSchedule,
+  MedicationTimeCard,
+} from '@entities/medication-schedule';
+import { useSession } from '@entities/session';
+import type { PickedImage } from '@features/upload-medication-photo';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
 import { AlarmMode, AlarmModeSelector } from '@shared/ui/AlarmModeSelector';
@@ -5,8 +11,7 @@ import { BottomCTA } from '@shared/ui/BottomCTA';
 import { Box } from '@shared/ui/Box';
 import { CalendarModal } from '@shared/ui/Calendar';
 import { ConfirmModal } from '@shared/ui/ConfirmModal';
-import { MedicationTimeCard } from '@entities/medication-schedule';
-import { NumberInput, createEndDateHelperText } from '@shared/ui/NumberInput';
+import { createEndDateHelperText, NumberInput } from '@shared/ui/NumberInput';
 import { PageContainer } from '@shared/ui/PageContainer';
 import { TextField } from '@shared/ui/TextField';
 import { TimePickerModal } from '@shared/ui/TimePicker';
@@ -14,15 +19,38 @@ import { Typography } from '@shared/ui/Typography';
 import { MedicationCreationStepper } from '@widgets/medication-creation-stepper';
 import { addDays, differenceInDays, format, startOfDay } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Keyboard, Platform, Pressable } from 'react-native';
+import { Alert, Keyboard, Platform, Pressable } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 
 interface MedicationTime {
   id: string;
   time: Date;
 }
+
+/** RegisterPage에서 전달받는 route params */
+type RegisterParams = {
+  nickname?: string;
+  hospital?: string;
+  prescribedAt?: string; // "YYYY-MM-DD" or ""
+  memo?: string;
+  selectedImage?: string; // JSON.stringify(PickedImage)
+};
+
+/** AlarmMode를 API alarmType으로 변환 */
+const alarmModeToType = (
+  mode: AlarmMode
+): 'SOUND' | 'VIBRATION' | 'SOUND_AND_VIBRATION' | 'NONE' => {
+  switch (mode) {
+    case 'sound':
+      return 'SOUND';
+    case 'vibration':
+      return 'VIBRATION';
+    default:
+      return 'SOUND';
+  }
+};
 
 export function SchedulePage() {
   const router = useRouter();
@@ -31,12 +59,22 @@ export function SchedulePage() {
   const scrollRef = useRef<any>(null);
   const isNavigatingBackRef = useRef(false);
 
+  // RegisterPage에서 전달받은 params
+  const params = useLocalSearchParams() as RegisterParams;
+  const selectedImage: PickedImage | null = params.selectedImage
+    ? JSON.parse(params.selectedImage)
+    : null;
+
+  // 세션에서 memberId 가져오기
+  const { memberId } = useSession();
+
   // 폼 상태
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [prescriptionDays, setPrescriptionDays] = useState(0);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [medicationTimes, setMedicationTimes] = useState<MedicationTime[]>([]);
   const [alarmMode, setAlarmMode] = useState<AlarmMode>('sound');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 모달 상태
   const [isStartDateCalendarVisible, setIsStartDateCalendarVisible] =
@@ -181,20 +219,70 @@ export function SchedulePage() {
     }
   };
 
-  // 확인 버튼
-  const handleConfirm = () => {
-    if (!canProceed) return;
+  // 확인 버튼 - FormData 구성 + API 호출
+  const handleConfirm = async () => {
+    if (!canProceed || isSubmitting) return;
 
-    // TODO: 복약 스케줄 저장 로직
-    console.log('복약 스케줄 저장:', {
-      startDate,
-      prescriptionDays,
-      medicationTimes,
-      alarmMode,
-    });
+    if (!memberId) {
+      Alert.alert('오류', '로그인 정보를 확인할 수 없습니다.');
+      return;
+    }
 
-    // 메인으로 이동
-    router.push('/(app)/(home)');
+    setIsSubmitting(true);
+
+    try {
+      // API 요청 데이터 구성
+      const requestData = {
+        memberId,
+        name: params.nickname,
+        hospitalName: params.hospital || '',
+        prescriptionDate:
+          params.prescribedAt || format(new Date(), 'yyyy-MM-dd'),
+        memo: params.memo || '',
+        startOfAd: format(startDate, 'yyyy-MM-dd'),
+        prescriptionDays,
+        perDay: medicationTimes.length,
+        alarmType: alarmModeToType(alarmMode),
+      };
+
+      // FormData 구성 (multipart/form-data)
+      const formData = new FormData();
+
+      // Part 1: data (application/json)
+      formData.append('data', JSON.stringify(requestData));
+
+      // Part 2: image (선택사항)
+      if (selectedImage) {
+        const imageFile = {
+          uri: selectedImage.uri,
+          name: selectedImage.fileName || 'medication.jpg',
+          type: selectedImage.mimeType || 'image/jpeg',
+        } as unknown as Blob;
+
+        formData.append('image', imageFile);
+      }
+
+      console.log('복약 스케줄 등록 요청:', requestData);
+
+      // API 호출
+      const response = await createMedicationSchedule(formData);
+
+      console.log('복약 스케줄 등록 성공:', response);
+      Alert.alert('등록 완료', '복약 스케줄이 등록되었습니다.', [
+        {
+          text: '확인',
+          onPress: () => router.push('/(app)/(home)'),
+        },
+      ]);
+    } catch (error) {
+      console.error('복약 스케줄 등록 실패:', error);
+      Alert.alert(
+        '등록 실패',
+        '복약 스케줄 등록에 실패했습니다. 다시 시도해주세요.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // 모달 핸들러들
@@ -307,8 +395,8 @@ export function SchedulePage() {
                       Platform.OS === 'android' ? bottomInset + 48 : 48,
                   }}>
                   <BottomCTA
-                    text="확인"
-                    disabled={!canProceed}
+                    text={isSubmitting ? '등록 중...' : '확인'}
+                    disabled={!canProceed || isSubmitting}
                     onPress={handleConfirm}
                   />
                 </Box>

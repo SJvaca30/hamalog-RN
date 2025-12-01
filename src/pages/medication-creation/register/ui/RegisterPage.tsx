@@ -1,4 +1,7 @@
-import { MedicationPhotoField } from '@features/upload-medication-photo';
+import {
+  MedicationPhotoField,
+  type PickedImage,
+} from '@features/upload-medication-photo';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
 import { BottomCTA } from '@shared/ui/BottomCTA';
@@ -26,12 +29,10 @@ export function RegisterPage() {
   const [hospital, setHospital] = useState('');
   const [prescribedAt, setPrescribedAt] = useState<Date | null>(null);
   const [memo, setMemo] = useState('');
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const [isPhotoUploading, setIsPhotoUploading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<PickedImage | null>(null);
   const [isTextFieldFocused, setIsTextFieldFocused] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const canProceed =
-    nickname.trim().length > 0 && !!photoUrl && !isPhotoUploading; // 별명+사진 필수, 업로드 중이 아닐 때
+  const canProceed = nickname.trim().length > 0 && !!selectedImage; // 별명+사진 필수
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   // 사용자가 입력한 내용이 있는지 확인
@@ -40,7 +41,7 @@ export function RegisterPage() {
     hospital.trim().length > 0 ||
     prescribedAt !== null ||
     memo.trim().length > 0 ||
-    !!photoUrl;
+    !!selectedImage;
 
   // 뒤로가기 이벤트 처리
   useEffect(() => {
@@ -66,8 +67,20 @@ export function RegisterPage() {
   }, [navigation, hasUserInput]);
 
   const handleNext = () => {
-    if (!canProceed) return;
-    router.push('/create/medication/schedule');
+    if (!canProceed || !selectedImage) return;
+
+    // route params로 데이터 전달
+    router.push({
+      pathname: '/create/medication/schedule',
+      params: {
+        nickname,
+        hospital,
+        prescribedAt: prescribedAt ? format(prescribedAt, 'yyyy-MM-dd') : '',
+        memo,
+        // PickedImage 객체를 JSON 문자열로 전달
+        selectedImage: JSON.stringify(selectedImage),
+      },
+    });
   };
 
   const handleTextFieldFocus = () => {
@@ -119,9 +132,8 @@ export function RegisterPage() {
 
                 {/* 1. 약물 사진 */}
                 <MedicationPhotoField
-                  onUploaded={setPhotoUrl}
-                  onCleared={() => setPhotoUrl(null)}
-                  onUploadStateChange={setIsPhotoUploading}
+                  onSelected={setSelectedImage}
+                  onCleared={() => setSelectedImage(null)}
                 />
 
                 {/* 2. 별명 */}
