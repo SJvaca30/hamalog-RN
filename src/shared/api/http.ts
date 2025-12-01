@@ -25,9 +25,9 @@ http.interceptors.request.use(
 );
 
 interface RefreshTokenResponse {
-  token: string;
-  refreshToken: string;
-  expiresIn: number;
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
 }
 
 // 응답 인터셉터: 에러 공통 처리 및 토큰 갱신
@@ -52,13 +52,13 @@ http.interceptors.response.use(
             }
           );
 
-          // 새 토큰 저장 (Store 업데이트)
+          // 새 토큰 저장 (Store 업데이트) - snake_case 응답 형식 대응
           await useSessionStore
             .getState()
-            .setTokens(data.token, data.refreshToken);
+            .setTokens(data.access_token, data.refresh_token);
 
           // 실패했던 요청에 새 토큰 적용 후 재시도
-          originalRequest.headers.Authorization = `Bearer ${data.token}`;
+          originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
           return http(originalRequest);
         }
       } catch (refreshError) {

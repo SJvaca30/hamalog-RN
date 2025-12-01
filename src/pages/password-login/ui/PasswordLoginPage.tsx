@@ -50,8 +50,8 @@ export function PasswordLoginPage() {
 
       console.log('로그인 성공');
 
-      // 토큰을 세션 스토어에 저장
-      await setTokens(response.token, response.refreshToken);
+      // 토큰을 세션 스토어에 저장 (snake_case 응답 형식 대응)
+      await setTokens(response.access_token, response.refresh_token);
 
       // 메인 화면으로 이동
       router.replace('/(app)/(home)');
@@ -61,8 +61,8 @@ export function PasswordLoginPage() {
       // 백엔드 에러 메시지 처리
       if (error.response?.status === 401) {
         Alert.alert('로그인 실패', '이메일 또는 비밀번호가 일치하지 않습니다.');
-      } else if (error.response?.data?.errorMessage) {
-        Alert.alert('로그인 실패', error.response.data.errorMessage);
+      } else if (error.response?.data?.message) {
+        Alert.alert('로그인 실패', error.response.data.message);
       } else {
         Alert.alert(
           '로그인 실패',

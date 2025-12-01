@@ -19,12 +19,13 @@ export interface LoginRequest {
 }
 
 /**
- * 로그인 응답 DTO
+ * 로그인 응답 DTO (snake_case)
  */
 export interface LoginResponse {
-  token: string; // JWT 액세스 토큰
-  refreshToken: string; // JWT 리프레시 토큰
-  expiresIn: number; // 액세스 토큰 만료 시간 (초)
+  access_token: string; // JWT 액세스 토큰
+  refresh_token: string; // JWT 리프레시 토큰
+  expires_in: number; // 액세스 토큰 만료 시간 (초)
+  token_type: string; // "Bearer"
 }
 
 /**
@@ -35,30 +36,51 @@ export interface RefreshTokenRequest {
 }
 
 /**
- * 토큰 갱신 응답 DTO
+ * 토큰 갱신 응답 DTO (snake_case)
  */
 export interface RefreshTokenResponse {
-  token: string;
-  refreshToken: string;
-  expiresIn: number;
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
 }
 
 /**
  * 회원가입 응답 - 단순 문자열
  */
-export type SignupResponse = string; // "회원가입 성공"
+export type SignupResponse = string; // "회원가입이 성공적으로 완료되었습니다"
 
 /**
  * 로그아웃 응답 - 단순 문자열
  */
-export type LogoutResponse = string; // "로그아웃 성공"
+export type LogoutResponse = string; // "로그아웃이 성공적으로 처리되었습니다"
 
 /**
  * API 에러 응답 형식
  */
 export interface ApiErrorResponse {
-  errorMessage: string;
-  code: string;
+  error: string; // 에러 코드
+  message: string; // 에러 메시지
+  timestamp: string; // ISO-8601 형식
+}
+
+/**
+ * CSRF 토큰 응답 DTO
+ */
+export interface CsrfTokenResponse {
+  csrfToken: string;
+  headerName: string; // "X-CSRF-TOKEN"
+  expiryMinutes: number; // 60
+  timestamp: string; // ISO-8601
+}
+
+/**
+ * CSRF 상태 응답 DTO
+ */
+export interface CsrfStatusResponse {
+  userId: string;
+  csrfTokenPresent: boolean;
+  csrfTokenValid: boolean;
+  timestamp: string; // ISO-8601
 }
 
 /**
