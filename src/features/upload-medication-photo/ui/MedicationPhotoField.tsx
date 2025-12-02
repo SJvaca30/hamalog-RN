@@ -7,9 +7,9 @@ import {
   PictureUploadIcon,
 } from '@shared/ui/icons';
 import { Typography } from '@shared/ui/Typography';
-import * as FileSystem from 'expo-file-system';
+import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { Alert, Image, Platform, Pressable, View } from 'react-native';
+import { Alert, Platform, Pressable, View } from 'react-native';
 import { ConfirmModal } from '../../../shared/ui/ConfirmModal';
 import type { PickedImage } from '../model/types';
 import { usePickImage } from '../model/usePickImage';
@@ -62,30 +62,28 @@ export function MedicationPhotoField({
 
   /**
    * 이미지 파일 크기 검증 (5MB 제한)
+   * expo-image-picker가 제공하는 fileSize를 사용합니다.
    */
-  const validateImageSize = async (uri: string): Promise<boolean> => {
-    try {
-      const fileInfo = await FileSystem.getInfoAsync(uri);
-      if (fileInfo.exists && 'size' in fileInfo) {
-        const fileSize = (fileInfo as { size: number }).size;
-        const fileSizeMB = (fileSize / (1024 * 1024)).toFixed(2);
-        console.log(`[MedicationPhotoField] 이미지 크기: ${fileSizeMB}MB`);
-
-        if (fileSize > MAX_IMAGE_SIZE_BYTES) {
-          Alert.alert(
-            '파일 크기 초과',
-            `이미지 파일 크기가 5MB를 초과합니다. (현재: ${fileSizeMB}MB)\n더 작은 이미지를 선택해주세요.`,
-            [{ text: '확인' }]
-          );
-          return false;
-        }
-      }
-      return true;
-    } catch (error) {
-      console.error('[MedicationPhotoField] 파일 크기 확인 실패:', error);
-      // 크기 확인 실패 시에도 진행 허용 (서버에서 최종 검증)
+  const validateImageSize = (fileSize?: number): boolean => {
+    if (!fileSize) {
+      // 파일 크기 정보가 없으면 서버에서 최종 검증하도록 허용
+      console.warn('[MedicationPhotoField] 파일 크기 정보 없음, 서버에서 검증');
       return true;
     }
+
+    const fileSizeMB = (fileSize / (1024 * 1024)).toFixed(2);
+    console.log(`[MedicationPhotoField] 이미지 크기: ${fileSizeMB}MB`);
+
+    if (fileSize > MAX_IMAGE_SIZE_BYTES) {
+      Alert.alert(
+        '파일 크기 초과',
+        `이미지 파일 크기가 5MB를 초과합니다. (현재: ${fileSizeMB}MB)\n더 작은 이미지를 선택해주세요.`,
+        [{ text: '확인' }]
+      );
+      return false;
+    }
+
+    return true;
   };
 
   const handlePressUpload = () => {
@@ -123,9 +121,8 @@ export function MedicationPhotoField({
         return;
       }
 
-      // 5MB 용량 검증
-      const isValidSize = await validateImageSize(picked.uri);
-      if (!isValidSize) {
+      // 5MB 용량 검증 (expo-image-picker가 제공하는 fileSize 사용)
+      if (!validateImageSize(picked.fileSize)) {
         clear();
         return;
       }
@@ -158,9 +155,8 @@ export function MedicationPhotoField({
         return;
       }
 
-      // 5MB 용량 검증
-      const isValidSize = await validateImageSize(picked.uri);
-      if (!isValidSize) {
+      // 5MB 용량 검증 (expo-image-picker가 제공하는 fileSize 사용)
+      if (!validateImageSize(picked.fileSize)) {
         clear();
         return;
       }
@@ -209,7 +205,7 @@ export function MedicationPhotoField({
               <Image
                 source={{ uri: image.uri }}
                 className="h-full w-full rounded-2xl"
-                resizeMode="cover"
+                contentFit="cover"
               />
               {!isProcessing && (
                 <Pressable

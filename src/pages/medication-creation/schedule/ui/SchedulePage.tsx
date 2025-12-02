@@ -61,9 +61,17 @@ export function SchedulePage() {
 
   // RegisterPage에서 전달받은 params
   const params = useLocalSearchParams() as RegisterParams;
-  const selectedImage: PickedImage | null = params.selectedImage
-    ? JSON.parse(params.selectedImage)
-    : null;
+
+  // JSON 파싱 안전 처리 (잘못된 JSON이나 직접 네비게이션 대응)
+  const selectedImage: PickedImage | null = (() => {
+    if (!params.selectedImage) return null;
+    try {
+      return JSON.parse(params.selectedImage) as PickedImage;
+    } catch (error) {
+      console.error('[SchedulePage] selectedImage 파싱 실패:', error);
+      return null;
+    }
+  })();
 
   // 세션에서 memberId 가져오기
   const { memberId } = useSession();
