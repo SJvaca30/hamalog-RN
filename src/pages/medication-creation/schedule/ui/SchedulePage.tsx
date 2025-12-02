@@ -20,7 +20,7 @@ import { MedicationCreationStepper } from '@widgets/medication-creation-stepper'
 import { addDays, differenceInDays, format, startOfDay } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Keyboard, Platform, Pressable } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 
@@ -107,6 +107,8 @@ export function SchedulePage() {
     alarmMode !== 'sound';
 
   // 뒤로가기 이벤트 처리
+  // NOTE: 리스너 내부에서 최신 상태를 직접 참조하므로 의존성 배열에 상태를 추가하지 않음
+  // 상태를 의존성에 추가하면 리스너가 계속 재등록되어 성능 문제 발생
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       if (isNavigatingBackRef.current) {
@@ -129,26 +131,30 @@ export function SchedulePage() {
     });
 
     return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation]);
 
   // 처방일수 직접 변경 시에만 종료일 업데이트 (캘린더 선택 시 제외)
-  const updateEndDateFromDays = (days: number) => {
-    if (days > 0) {
-      // 시간 무시하고 날짜만 계산하여 일관성 확보
-      const startDateOnly = startOfDay(startDate);
-      const calculatedEndDate = addDays(startDateOnly, days - 1);
-      setEndDate(calculatedEndDate);
-    } else {
-      setEndDate(null);
-    }
-  };
+  const updateEndDateFromDays = useCallback(
+    (days: number) => {
+      if (days > 0) {
+        // 시간 무시하고 날짜만 계산하여 일관성 확보
+        const startDateOnly = startOfDay(startDate);
+        const calculatedEndDate = addDays(startDateOnly, days - 1);
+        setEndDate(calculatedEndDate);
+      } else {
+        setEndDate(null);
+      }
+    },
+    [startDate]
+  );
 
   // 시작일 변경 시 종료일 재계산
   useEffect(() => {
     if (prescriptionDays > 0) {
       updateEndDateFromDays(prescriptionDays);
     }
-  }, [startDate]);
+  }, [prescriptionDays, updateEndDateFromDays]);
 
   // 복약 시작일 선택
   const handleStartDateSelect = (date: Date) => {

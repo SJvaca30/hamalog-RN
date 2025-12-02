@@ -7,9 +7,8 @@ import {
   PictureUploadIcon,
 } from '@shared/ui/icons';
 import { Typography } from '@shared/ui/Typography';
-import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { Alert, Platform, Pressable, View } from 'react-native';
+import { Alert, Image, Platform, Pressable, View } from 'react-native';
 import { ConfirmModal } from '../../../shared/ui/ConfirmModal';
 import type { PickedImage } from '../model/types';
 import { usePickImage } from '../model/usePickImage';
@@ -59,6 +58,16 @@ export function MedicationPhotoField({
       console.warn('실제 기기나 `npx expo run:ios`로 테스트를 권장합니다.');
     }
   }, []);
+
+  // 이미지 상태 변경 디버그 로그
+  useEffect(() => {
+    if (__DEV__) {
+      console.log(
+        '[MedicationPhotoField] image 상태 변경:',
+        image?.uri ?? null
+      );
+    }
+  }, [image]);
 
   /**
    * 이미지 파일 크기 검증 (5MB 제한)
@@ -203,9 +212,10 @@ export function MedicationPhotoField({
           {image ? (
             <>
               <Image
+                key={image.uri}
                 source={{ uri: image.uri }}
                 className="h-full w-full rounded-2xl"
-                contentFit="cover"
+                resizeMode="cover"
               />
               {!isProcessing && (
                 <Pressable
