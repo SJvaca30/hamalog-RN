@@ -16,6 +16,7 @@ interface DecodedToken {
 interface SessionState {
   accessToken: string | null;
   refreshToken: string | null;
+  csrfToken: string | null;
   memberId: number | null;
   isLoaded: boolean; // SecureStore에서 토큰을 불러왔는지 여부
 }
@@ -25,6 +26,7 @@ interface SessionActions {
     accessToken: string,
     refreshToken?: string | null
   ) => Promise<void>;
+  setCsrfToken: (token: string) => void;
   clearTokens: () => Promise<void>;
   loadTokens: () => Promise<void>;
   clearTokensIfMockDisabled: () => Promise<void>;
@@ -91,6 +93,7 @@ const getMemberIdFromToken = (token: string): number | null => {
 export const useSessionStore = create<SessionState & SessionActions>(set => ({
   accessToken: null,
   refreshToken: null,
+  csrfToken: null,
   memberId: null,
   isLoaded: false,
 
@@ -106,10 +109,19 @@ export const useSessionStore = create<SessionState & SessionActions>(set => ({
     set({ accessToken, refreshToken: refreshToken || null, memberId });
   },
 
+  setCsrfToken: (token: string) => {
+    set({ csrfToken: token });
+  },
+
   clearTokens: async () => {
     await SecureStore.deleteItemAsync('accessToken');
     await SecureStore.deleteItemAsync('refreshToken');
-    set({ accessToken: null, refreshToken: null, memberId: null });
+    set({
+      accessToken: null,
+      refreshToken: null,
+      csrfToken: null,
+      memberId: null,
+    });
   },
 
   loadTokens: async () => {
@@ -142,7 +154,12 @@ export const useSessionStore = create<SessionState & SessionActions>(set => ({
       }
       await SecureStore.deleteItemAsync('accessToken');
       await SecureStore.deleteItemAsync('refreshToken');
-      set({ accessToken: null, refreshToken: null, memberId: null });
+      set({
+        accessToken: null,
+        refreshToken: null,
+        csrfToken: null,
+        memberId: null,
+      });
     }
   },
 }));

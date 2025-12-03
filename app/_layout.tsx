@@ -10,7 +10,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 // 글로벌 CSS 임포트
 import '../global.css';
 
-import { useSession } from '@entities/session';
+import { getCsrfToken } from '@entities/auth/api';
+import { useSession, useSessionStore } from '@entities/session';
 import { customFontsToLoad } from '@shared/config';
 
 // Splash screen을 자동으로 숨기지 않도록 설정
@@ -57,6 +58,7 @@ export default function RootLayout() {
   const [queryClient] = useState(() => new QueryClient());
   const { loadTokens, accessToken } = useSession();
 
+  // 앱 초기화 및 토큰 로드
   useEffect(() => {
     (async () => {
       if (Platform.OS === 'android') {
@@ -66,7 +68,24 @@ export default function RootLayout() {
       // 기존 토큰 로드
       await loadTokens();
     })();
-  }, [loadTokens, accessToken]);
+  }, [loadTokens]);
+
+  // Access Token이 있을 때(로그인 상태) CSRF 토큰 갱신
+  // NOTE: useSessionStore.getState()로 직접 액션 호출하여 의존성 배열 최적화
+  useEffect(() => {
+    if (accessToken) {
+      getCsrfToken()
+        .then(data => {
+          if (data.csrfToken) {
+            useSessionStore.getState().setCsrfToken(data.csrfToken);
+            console.log('앱 초기화: CSRF 토큰 갱신 성공');
+          }
+        })
+        .catch(error => {
+          console.warn('앱 초기화: CSRF 토큰 갱신 실패', error);
+        });
+    }
+  }, [accessToken]);
 
   useEffect(() => {
     if (fontsLoaded || fontError) {

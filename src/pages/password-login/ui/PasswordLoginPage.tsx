@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { Alert, Pressable } from 'react-native';
 
 import {
+  getCsrfToken,
   loginFormSchema,
   useLogin,
   type LoginFormValidationData,
@@ -39,7 +40,7 @@ export function PasswordLoginPage() {
     },
   });
 
-  const { setTokens } = useSession();
+  const { setTokens, setCsrfToken } = useSession();
 
   const handleLogin = async (data: LoginFormValidationData) => {
     try {
@@ -52,6 +53,18 @@ export function PasswordLoginPage() {
 
       // 토큰을 세션 스토어에 저장 (snake_case 응답 형식 대응)
       await setTokens(response.access_token, response.refresh_token);
+
+      // CSRF 토큰 발급 및 저장
+      try {
+        const csrfData = await getCsrfToken();
+        if (csrfData.csrfToken) {
+          setCsrfToken(csrfData.csrfToken);
+          console.log('CSRF 토큰 발급 성공');
+        }
+      } catch (csrfError) {
+        console.warn('CSRF 토큰 발급 실패:', csrfError);
+        // CSRF 토큰 발급 실패해도 로그인은 성공 처리 (일부 GET 요청은 가능할 수 있음)
+      }
 
       // 메인 화면으로 이동
       router.replace('/(app)/(home)');

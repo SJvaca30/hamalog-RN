@@ -1,8 +1,9 @@
+import { getCsrfToken } from '@entities/auth/api';
 import {
   createMedicationSchedule,
   MedicationTimeCard,
 } from '@entities/medication-schedule';
-import { useSession } from '@entities/session';
+import { useSession, useSessionStore } from '@entities/session';
 import type { PickedImage } from '@features/upload-medication-photo';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
@@ -243,6 +244,38 @@ export function SchedulePage() {
     }
 
     setIsSubmitting(true);
+
+    // CSRF 토큰 보장 로직
+    // NOTE: useSessionStore.getState()로 직접 상태 확인하여 타이밍 이슈 방지
+    const currentCsrfToken = useSessionStore.getState().csrfToken;
+    if (!currentCsrfToken) {
+      try {
+        console.log('CSRF 토큰이 없어 재발급 시도...');
+        const csrfResponse = await getCsrfToken();
+        console.log('CSRF API 응답:', JSON.stringify(csrfResponse, null, 2));
+
+        // 응답에서 csrfToken 추출 (snake_case 대응)
+        const newToken =
+          csrfResponse.csrfToken ||
+          (csrfResponse as any).csrf_token ||
+          (csrfResponse as any).token;
+
+        if (newToken) {
+          // 스토어에 직접 저장 (동기적으로 즉시 반영됨)
+          useSessionStore.getState().setCsrfToken(newToken);
+          console.log('CSRF 토큰 재발급 성공:', newToken);
+
+          // 저장 확인
+          const storedToken = useSessionStore.getState().csrfToken;
+          console.log('스토어에 저장된 CSRF 토큰:', storedToken);
+        } else {
+          console.warn('CSRF 응답에 토큰이 없음:', Object.keys(csrfResponse));
+        }
+      } catch (e) {
+        console.error('CSRF 토큰 재발급 실패:', e);
+        // 실패해도 일단 진행 (서버 설정에 따라 다를 수 있음)
+      }
+    }
 
     try {
       // API 요청 데이터 구성

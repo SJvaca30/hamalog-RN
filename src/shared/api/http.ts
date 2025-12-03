@@ -9,14 +9,26 @@ export const http = axios.create({
   timeout: 10000,
 });
 
-// 요청 인터셉터: 모든 요청에 JWT 토큰 추가
+// 요청 인터셉터: 모든 요청에 JWT 토큰 및 CSRF 토큰 추가
 http.interceptors.request.use(
   config => {
     // React Hook이 아니므로 getState()로 직접 상태 조회
-    const accessToken = useSessionStore.getState().accessToken;
+    const { accessToken, csrfToken } = useSessionStore.getState();
+
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+
+    // POST, PUT, DELETE, PATCH 요청 시 CSRF 토큰 추가
+    const method = config.method?.toUpperCase();
+    if (
+      csrfToken &&
+      method &&
+      ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)
+    ) {
+      config.headers['X-CSRF-TOKEN'] = csrfToken;
+    }
+
     return config;
   },
   error => {
