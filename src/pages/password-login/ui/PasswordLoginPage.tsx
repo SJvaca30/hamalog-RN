@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { Alert, Pressable } from 'react-native';
 
 import {
+  getCsrfToken,
   loginFormSchema,
   useLogin,
   type LoginFormValidationData,
@@ -39,7 +40,7 @@ export function PasswordLoginPage() {
     },
   });
 
-  const { setTokens } = useSession();
+  const { setTokens, setCsrfToken } = useSession();
 
   const handleLogin = async (data: LoginFormValidationData) => {
     try {
@@ -50,8 +51,20 @@ export function PasswordLoginPage() {
 
       console.log('로그인 성공');
 
-      // 토큰을 세션 스토어에 저장
-      await setTokens(response.token, response.refreshToken);
+      // 토큰을 세션 스토어에 저장 (snake_case 응답 형식 대응)
+      await setTokens(response.access_token, response.refresh_token);
+
+      // CSRF 토큰 발급 및 저장
+      try {
+        const csrfData = await getCsrfToken();
+        if (csrfData.csrfToken) {
+          setCsrfToken(csrfData.csrfToken);
+          console.log('CSRF 토큰 발급 성공');
+        }
+      } catch (csrfError) {
+        console.warn('CSRF 토큰 발급 실패:', csrfError);
+        // CSRF 토큰 발급 실패해도 로그인은 성공 처리 (일부 GET 요청은 가능할 수 있음)
+      }
 
       // 메인 화면으로 이동
       router.replace('/(app)/(home)');
@@ -61,8 +74,8 @@ export function PasswordLoginPage() {
       // 백엔드 에러 메시지 처리
       if (error.response?.status === 401) {
         Alert.alert('로그인 실패', '이메일 또는 비밀번호가 일치하지 않습니다.');
-      } else if (error.response?.data?.errorMessage) {
-        Alert.alert('로그인 실패', error.response.data.errorMessage);
+      } else if (error.response?.data?.message) {
+        Alert.alert('로그인 실패', error.response.data.message);
       } else {
         Alert.alert(
           '로그인 실패',

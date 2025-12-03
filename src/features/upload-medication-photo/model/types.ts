@@ -4,4 +4,5 @@ export type PickedImage = {
   height?: number;
   fileName?: string;
   mimeType?: string;
+  fileSize?: number;
 };

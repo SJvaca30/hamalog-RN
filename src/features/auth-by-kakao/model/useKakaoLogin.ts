@@ -2,11 +2,12 @@ import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 import { Alert, Linking } from 'react-native';
 
+import { getCsrfToken } from '@entities/auth';
 import { useSession } from '@entities/session';
 import { env } from '@shared/config/env';
 
 export const useKakaoLogin = () => {
-  const { setTokens } = useSession();
+  const { setTokens, setCsrfToken } = useSession();
   const [isLoading, setIsLoading] = useState(false);
 
   // Deep Link 처리 (백엔드에서 토큰과 함께 리다이렉트)
@@ -27,6 +28,18 @@ export const useKakaoLogin = () => {
               console.log('✅ 백엔드로부터 토큰 수신');
               // refreshToken은 없을 수도 있음 (호환성 확보)
               await setTokens(token, refreshToken || null);
+
+              // CSRF 토큰 발급 및 저장
+              try {
+                const csrfData = await getCsrfToken();
+                if (csrfData.csrfToken) {
+                  setCsrfToken(csrfData.csrfToken);
+                  console.log('CSRF 토큰 발급 성공');
+                }
+              } catch (csrfError) {
+                console.warn('CSRF 토큰 발급 실패:', csrfError);
+              }
+
               setIsLoading(false);
               Alert.alert('성공', '카카오 로그인에 성공했습니다!');
             } else {

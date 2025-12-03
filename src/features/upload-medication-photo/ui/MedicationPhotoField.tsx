@@ -8,86 +8,92 @@ import {
 } from '@shared/ui/icons';
 import { Typography } from '@shared/ui/Typography';
 import { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Platform,
-  Pressable,
-  View,
-} from 'react-native';
+import { Alert, Image, Platform, Pressable, View } from 'react-native';
 import { ConfirmModal } from '../../../shared/ui/ConfirmModal';
+import type { PickedImage } from '../model/types';
 import { usePickImage } from '../model/usePickImage';
-import { useUploadImage } from '../model/useUploadImage';
+
+/** 서버 이미지 파일 용량 제한: 5MB */
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 
 type Props = {
-  onUploaded?: (url: string) => void;
+  /** 이미지 선택 완료 시 호출 (업로드 X, PickedImage 객체 전달) */
+  onSelected?: (image: PickedImage) => void;
+  /** 이미지 삭제 시 호출 */
   onCleared?: () => void;
-  onUploadStateChange?: (isUploading: boolean) => void;
   label?: string;
   description?: string;
 };
 
 /**
- * 약물 사진 업로드 입력 필드
- * - 클릭(Press) 시 갤러리 열기 → 선택 → 업로드까지 처리합니다.
- * - 업로드 성공 시 `onUploaded(url)` 콜백으로 상위에 알립니다.
+ * 약물 사진 선택 입력 필드
+ * - 클릭(Press) 시 갤러리/카메라에서 이미지를 선택합니다.
+ * - 선택된 이미지는 `onSelected(image)` 콜백으로 상위에 PickedImage 객체를 전달합니다.
+ * - 실제 업로드는 복약 스케줄 등록 시 FormData에 함께 전송됩니다.
+ * - 5MB 용량 제한 검증 포함.
  */
 export function MedicationPhotoField({
-  onUploaded,
+  onSelected,
   onCleared,
-  onUploadStateChange,
   label = '약물 사진',
   description = '약 봉투, 약 한 알 등,\n편한 방식으로 기록하세요',
 }: Props) {
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [showSelectModal, setShowSelectModal] = useState(false);
-  const [_uploadedUrl, setUploadedUrl] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { image, pickFromLibrary, takePhoto, clear, checkPermissions } =
     usePickImage();
-  const upload = useUploadImage();
 
   // 개발 중 권한 상태 확인
   useEffect(() => {
-    // 개발 환경에서만 실행
     if (__DEV__) {
       checkPermissions();
     }
   }, [checkPermissions]);
 
-  // 업로드 성공 시 즉시 상위 컴포넌트에 알림
-  useEffect(() => {
-    if (upload.isSuccess && upload.data?.url) {
-      const url = upload.data.url;
-      setUploadedUrl(url);
-      onUploaded?.(url);
-    }
-  }, [upload.isSuccess, upload.data?.url, onUploaded]);
-
-  // 업로드 에러 시 사용자에게 알림
-  useEffect(() => {
-    if (upload.isError) {
-      Alert.alert(
-        '업로드 실패',
-        '사진 업로드에 실패했습니다. 다시 시도해주세요.',
-        [{ text: '확인' }]
-      );
-    }
-  }, [upload.isError]);
-
   // 개발 환경에서 시뮬레이터 제한사항 안내
   useEffect(() => {
     if (__DEV__ && Platform.OS === 'ios') {
-      // 시뮬레이터 감지는 완벽하지 않지만, 개발 중에는 유용
       console.warn('iOS 시뮬레이터에서는 갤러리 선택이 제한적일 수 있습니다.');
       console.warn('실제 기기나 `npx expo run:ios`로 테스트를 권장합니다.');
     }
   }, []);
 
-  // 업로드 상태 변경을 상위 컴포넌트에 알림
+  // 이미지 상태 변경 디버그 로그
   useEffect(() => {
-    onUploadStateChange?.(upload.isPending);
-  }, [upload.isPending, onUploadStateChange]);
+    if (__DEV__) {
+      console.log(
+        '[MedicationPhotoField] image 상태 변경:',
+        image?.uri ?? null
+      );
+    }
+  }, [image]);
+
+  /**
+   * 이미지 파일 크기 검증 (5MB 제한)
+   * expo-image-picker가 제공하는 fileSize를 사용합니다.
+   */
+  const validateImageSize = (fileSize?: number): boolean => {
+    if (!fileSize) {
+      // 파일 크기 정보가 없으면 서버에서 최종 검증하도록 허용
+      console.warn('[MedicationPhotoField] 파일 크기 정보 없음, 서버에서 검증');
+      return true;
+    }
+
+    const fileSizeMB = (fileSize / (1024 * 1024)).toFixed(2);
+    console.log(`[MedicationPhotoField] 이미지 크기: ${fileSizeMB}MB`);
+
+    if (fileSize > MAX_IMAGE_SIZE_BYTES) {
+      Alert.alert(
+        '파일 크기 초과',
+        `이미지 파일 크기가 5MB를 초과합니다. (현재: ${fileSizeMB}MB)\n더 작은 이미지를 선택해주세요.`,
+        [{ text: '확인' }]
+      );
+      return false;
+    }
+
+    return true;
+  };
 
   const handlePressUpload = () => {
     // TODO: 로컬 스토리지에서 동의 여부 확인
@@ -107,13 +113,13 @@ export function MedicationPhotoField({
 
   const handlePick = async () => {
     setShowSelectModal(false);
+    setIsProcessing(true);
     try {
       console.log('[MedicationPhotoField] 갤러리 선택 시작');
       const picked = await pickFromLibrary();
       if (!picked) {
         console.log('[MedicationPhotoField] 갤러리에서 이미지 선택되지 않음');
 
-        // iOS 시뮬레이터에서의 제한사항 안내
         if (__DEV__ && Platform.OS === 'ios') {
           Alert.alert(
             '갤러리 접근 제한',
@@ -124,26 +130,30 @@ export function MedicationPhotoField({
         return;
       }
 
-      console.log('[MedicationPhotoField] 선택된 이미지 업로드 시작');
-      // TanStack Query의 mutateAsync를 사용하여 업로드
-      await upload.mutateAsync({ image: picked });
-      // 성공 시 처리는 useEffect에서 처리됨
-      console.log('[MedicationPhotoField] 갤러리 이미지 업로드 요청 완료');
+      // 5MB 용량 검증 (expo-image-picker가 제공하는 fileSize 사용)
+      if (!validateImageSize(picked.fileSize)) {
+        clear();
+        return;
+      }
+
+      console.log('[MedicationPhotoField] 이미지 선택 완료:', picked);
+      onSelected?.(picked);
     } catch (error) {
-      // 에러는 useEffect에서 처리됨
-      console.error('[MedicationPhotoField] Gallery upload failed:', error);
+      console.error('[MedicationPhotoField] Gallery pick failed:', error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleCamera = async () => {
     setShowSelectModal(false);
+    setIsProcessing(true);
     try {
       console.log('[MedicationPhotoField] 카메라 촬영 시작');
       const picked = await takePhoto();
       if (!picked) {
         console.log('[MedicationPhotoField] 카메라에서 이미지 촬영되지 않음');
 
-        // iOS 시뮬레이터에서의 카메라 제한사항 안내
         if (__DEV__ && Platform.OS === 'ios') {
           Alert.alert(
             '카메라 사용 불가',
@@ -154,21 +164,23 @@ export function MedicationPhotoField({
         return;
       }
 
-      console.log('[MedicationPhotoField] 촬영된 이미지 업로드 시작');
-      // TanStack Query의 mutateAsync를 사용하여 업로드
-      await upload.mutateAsync({ image: picked });
-      // 성공 시 처리는 useEffect에서 처리됨
-      console.log('[MedicationPhotoField] 카메라 이미지 업로드 요청 완료');
+      // 5MB 용량 검증 (expo-image-picker가 제공하는 fileSize 사용)
+      if (!validateImageSize(picked.fileSize)) {
+        clear();
+        return;
+      }
+
+      console.log('[MedicationPhotoField] 카메라 촬영 완료:', picked);
+      onSelected?.(picked);
     } catch (error) {
-      // 에러는 useEffect에서 처리됨
-      console.error('[MedicationPhotoField] Camera upload failed:', error);
+      console.error('[MedicationPhotoField] Camera capture failed:', error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleClear = () => {
     clear();
-    setUploadedUrl(null);
-    upload.reset(); // TanStack Query 상태 초기화
     onCleared?.();
   };
 
@@ -191,25 +203,21 @@ export function MedicationPhotoField({
 
         <Pressable
           onPress={handlePressUpload}
-          disabled={upload.isPending}
+          disabled={isProcessing}
           className={cn(
             'h-[120] w-[120] rounded-2xl border border-gray-150',
             'shrink-0 items-center justify-center gap-2.5',
-            upload.isPending && 'opacity-70'
+            isProcessing && 'opacity-70'
           )}>
           {image ? (
             <>
               <Image
+                key={image.uri}
                 source={{ uri: image.uri }}
                 className="h-full w-full rounded-2xl"
                 resizeMode="cover"
               />
-              {upload.isPending && (
-                <View className="absolute inset-0 items-center justify-center rounded-2xl bg-black/50">
-                  <ActivityIndicator size="large" color="#ffffff" />
-                </View>
-              )}
-              {!upload.isPending && (
+              {!isProcessing && (
                 <Pressable
                   onPress={handleClear}
                   hitSlop={8}
@@ -222,21 +230,10 @@ export function MedicationPhotoField({
             </>
           ) : (
             <View className="items-center gap-2.5">
-              {upload.isPending ? (
-                <>
-                  <ActivityIndicator size="small" color="#9CA3AF" />
-                  <Typography variant="button-small" color="text-gray-300">
-                    업로드 중...
-                  </Typography>
-                </>
-              ) : (
-                <>
-                  <PictureUploadIcon width={20} height={20} />
-                  <Typography variant="button-small" color="text-gray-300">
-                    사진 업로드
-                  </Typography>
-                </>
-              )}
+              <PictureUploadIcon width={20} height={20} />
+              <Typography variant="button-small" color="text-gray-300">
+                사진 선택
+              </Typography>
             </View>
           )}
         </Pressable>

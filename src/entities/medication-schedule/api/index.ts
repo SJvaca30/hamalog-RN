@@ -8,14 +8,23 @@ import {
 
 /**
  * 복약 스케줄 목록 조회
+ * @param memberId - 회원 ID
+ * @param page - 페이지 번호 (0부터 시작, 선택사항)
+ * @param size - 페이지 크기 (최대 100, 선택사항)
  */
 export const getMedicationSchedules = async (
-  memberId: number
+  memberId: number,
+  page?: number,
+  size?: number
 ): Promise<GetMedicationScheduleListResponse> => {
-  const { data } = await http.get<GetMedicationScheduleListResponse>(
-    `/medication-schedule/list/${memberId}`
-  );
+  const params = new URLSearchParams();
+  if (page !== undefined) params.append('page', String(page));
+  if (size !== undefined) params.append('size', String(size));
 
+  const queryString = params.toString();
+  const url = `/medication-schedule/list/${memberId}${queryString ? `?${queryString}` : ''}`;
+
+  const { data } = await http.get<GetMedicationScheduleListResponse>(url);
   return data;
 };
 

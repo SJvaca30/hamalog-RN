@@ -16,6 +16,7 @@ export {
   useSignup,
   useValidateEmailFormat,
 } from './model/use-auth';
+export { getCsrfStatus, getCsrfToken } from './api';
 export {
   birthDateSchema,
   emailInputFormSchema,

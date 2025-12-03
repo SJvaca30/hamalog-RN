@@ -1,6 +1,8 @@
 import { http } from '@shared/api/http';
 
 import {
+  CsrfStatusResponse,
+  CsrfTokenResponse,
   EmailCheckResult,
   LoginRequest,
   LoginResponse,
@@ -38,6 +40,24 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
 export const logout = async (): Promise<LogoutResponse> => {
   const { data: response } = await http.post<LogoutResponse>('/auth/logout');
   return response;
+};
+
+/**
+ * CSRF 토큰 발급 API
+ * JWT 인증 필수. Redis 기반 토큰 저장소에 60분 TTL로 저장됩니다.
+ */
+export const getCsrfToken = async (): Promise<CsrfTokenResponse> => {
+  const { data } = await http.get<CsrfTokenResponse>('/auth/csrf-token');
+  return data;
+};
+
+/**
+ * CSRF 토큰 상태 확인 API
+ * JWT 인증 필수. Redis에 저장된 토큰 존재 여부/TTL 확인.
+ */
+export const getCsrfStatus = async (): Promise<CsrfStatusResponse> => {
+  const { data } = await http.get<CsrfStatusResponse>('/auth/csrf-status');
+  return data;
 };
 
 /**

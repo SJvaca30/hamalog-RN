@@ -152,6 +152,7 @@ export function usePickImage() {
         height: asset.height,
         fileName: asset.fileName ?? undefined,
         mimeType: asset.mimeType,
+        fileSize: asset.fileSize ?? undefined,
       };
 
       console.log('[usePickImage] 이미지 선택 성공:', picked);
@@ -207,6 +208,7 @@ export function usePickImage() {
         height: asset.height,
         fileName: asset.fileName ?? undefined,
         mimeType: asset.mimeType,
+        fileSize: asset.fileSize ?? undefined,
       };
 
       console.log('[usePickImage] 카메라 촬영 성공:', picked);

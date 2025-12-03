@@ -71,10 +71,10 @@ export function SignupPage() {
     } catch (error: any) {
       console.error('회원가입 실패:', error);
 
-      // 특별한 에러 케이스 처리
+      // 특별한 에러 케이스 처리 (409: 중복 리소스)
       if (
-        error.response?.status === 400 &&
-        error.response?.data?.code === 'DUPLICATE_MEMBER'
+        error.response?.status === 409 &&
+        error.response?.data?.error === 'DUPLICATE_MEMBER'
       ) {
         Alert.alert(
           '이미 가입된 이메일',
@@ -92,8 +92,8 @@ export function SignupPage() {
             },
           ]
         );
-      } else if (error.response?.data?.errorMessage) {
-        Alert.alert('회원가입 실패', error.response.data.errorMessage);
+      } else if (error.response?.data?.message) {
+        Alert.alert('회원가입 실패', error.response.data.message);
       } else {
         Alert.alert(
           '회원가입 실패',

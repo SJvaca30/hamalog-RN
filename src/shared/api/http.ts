@@ -9,14 +9,26 @@ export const http = axios.create({
   timeout: 10000,
 });
 
-// 요청 인터셉터: 모든 요청에 JWT 토큰 추가
+// 요청 인터셉터: 모든 요청에 JWT 토큰 및 CSRF 토큰 추가
 http.interceptors.request.use(
   config => {
     // React Hook이 아니므로 getState()로 직접 상태 조회
-    const accessToken = useSessionStore.getState().accessToken;
+    const { accessToken, csrfToken } = useSessionStore.getState();
+
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+
+    // POST, PUT, DELETE, PATCH 요청 시 CSRF 토큰 추가
+    const method = config.method?.toUpperCase();
+    if (
+      csrfToken &&
+      method &&
+      ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)
+    ) {
+      config.headers['X-CSRF-TOKEN'] = csrfToken;
+    }
+
     return config;
   },
   error => {
@@ -25,9 +37,9 @@ http.interceptors.request.use(
 );
 
 interface RefreshTokenResponse {
-  token: string;
-  refreshToken: string;
-  expiresIn: number;
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
 }
 
 // 응답 인터셉터: 에러 공통 처리 및 토큰 갱신
@@ -52,13 +64,13 @@ http.interceptors.response.use(
             }
           );
 
-          // 새 토큰 저장 (Store 업데이트)
+          // 새 토큰 저장 (Store 업데이트) - snake_case 응답 형식 대응
           await useSessionStore
             .getState()
-            .setTokens(data.token, data.refreshToken);
+            .setTokens(data.access_token, data.refresh_token);
 
           // 실패했던 요청에 새 토큰 적용 후 재시도
-          originalRequest.headers.Authorization = `Bearer ${data.token}`;
+          originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
           return http(originalRequest);
         }
       } catch (refreshError) {
