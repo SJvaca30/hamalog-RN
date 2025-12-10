@@ -48,6 +48,9 @@ export const logout = async (): Promise<LogoutResponse> => {
  */
 export const getCsrfToken = async (): Promise<CsrfTokenResponse> => {
   const { data } = await http.get<CsrfTokenResponse>('/auth/csrf-token');
+  if (__DEV__) {
+    console.log('[CSRF][token] response:', JSON.stringify(data)?.slice(0, 300));
+  }
   return data;
 };
 
@@ -57,6 +60,12 @@ export const getCsrfToken = async (): Promise<CsrfTokenResponse> => {
  */
 export const getCsrfStatus = async (): Promise<CsrfStatusResponse> => {
   const { data } = await http.get<CsrfStatusResponse>('/auth/csrf-status');
+  if (__DEV__) {
+    console.log(
+      '[CSRF][status] response:',
+      JSON.stringify(data)?.slice(0, 300)
+    );
+  }
   return data;
 };
 

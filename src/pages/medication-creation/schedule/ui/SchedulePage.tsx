@@ -1,4 +1,4 @@
-import { getCsrfToken } from '@entities/auth/api';
+import { getCsrfToken } from '@entities/auth';
 import {
   createMedicationSchedule,
   MedicationTimeCard,
@@ -277,6 +277,17 @@ export function SchedulePage() {
       }
     }
 
+    // 재발급 후에도 토큰이 없다면 제출을 중단
+    const latestCsrf = useSessionStore.getState().csrfToken;
+    if (!latestCsrf) {
+      Alert.alert(
+        '등록 실패',
+        '보안 토큰을 발급받지 못했습니다. 로그인 후 다시 시도해주세요.'
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       // API 요청 데이터 구성
       const requestData = {
@@ -290,13 +301,26 @@ export function SchedulePage() {
         prescriptionDays,
         perDay: medicationTimes.length,
         alarmType: alarmModeToType(alarmMode),
+        medicationTimes: medicationTimes.map(t => format(t.time, 'HH:mm:ss')),
       };
 
       // FormData 구성 (multipart/form-data)
       const formData = new FormData();
 
-      // Part 1: data (application/json)
-      formData.append('data', JSON.stringify(requestData));
+      // Part 1: data (application/json) - Content-Type 강제
+      const dataJson = JSON.stringify(requestData);
+      const toBase64 =
+        typeof globalThis.btoa === 'function'
+          ? globalThis.btoa(unescape(encodeURIComponent(dataJson)))
+          : null;
+      const dataPart = toBase64
+        ? {
+            uri: `data:application/json;base64,${toBase64}`,
+            name: 'data.json',
+            type: 'application/json',
+          }
+        : dataJson; // btoa 불가 시 문자열로 폴백
+      formData.append('data', dataPart as any);
 
       // Part 2: image (선택사항)
       if (selectedImage) {
@@ -304,7 +328,7 @@ export function SchedulePage() {
           uri: selectedImage.uri,
           name: selectedImage.fileName || 'medication.jpg',
           type: selectedImage.mimeType || 'image/jpeg',
-        } as unknown as Blob;
+        } as any;
 
         formData.append('image', imageFile);
       }
@@ -322,6 +346,27 @@ export function SchedulePage() {
         },
       ]);
     } catch (error) {
+      if (__DEV__) {
+        // AxiosError 형태를 가정하고 상태/헤더/데이터를 요약해 출력
+        const axiosError = error as any;
+        const status = axiosError?.response?.status;
+        const headers = axiosError?.response?.headers;
+        const dataPreview =
+          typeof axiosError?.response?.data === 'string'
+            ? axiosError.response.data.slice(0, 300)
+            : JSON.stringify(axiosError?.response?.data)?.slice(0, 300);
+        const sentCsrf = axiosError?.config?.headers?.['X-CSRF-TOKEN'];
+        const sentAuth = axiosError?.config?.headers?.Authorization;
+        console.warn('[Schedule][ERROR]', {
+          status,
+          sentCsrf,
+          sentAuth: sentAuth ? `${String(sentAuth).slice(0, 20)}...` : null,
+          headers,
+          dataPreview,
+          url: axiosError?.config?.url,
+          method: axiosError?.config?.method,
+        });
+      }
       console.error('복약 스케줄 등록 실패:', error);
       Alert.alert(
         '등록 실패',

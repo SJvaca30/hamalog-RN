@@ -1,13 +1,16 @@
 import * as WebBrowser from 'expo-web-browser';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, Linking } from 'react-native';
 
 import { getCsrfToken } from '@entities/auth';
-import { useSession } from '@entities/session';
+import { useSession, useSessionStore } from '@entities/session';
 import { env } from '@shared/config/env';
 
 export const useKakaoLogin = () => {
   const { setTokens, setCsrfToken } = useSession();
+  const lastCsrfIssuedAtRef = useRef(0);
+  const handledRef = useRef(false); // 단발 처리 가드
+  const processedTokenRef = useRef<string | null>(null); // 동일 토큰 중복 처리 방지
   const [isLoading, setIsLoading] = useState(false);
 
   // Deep Link 처리 (백엔드에서 토큰과 함께 리다이렉트)
@@ -20,24 +23,51 @@ export const useKakaoLogin = () => {
       if (url.startsWith('hamalog-rn://auth')) {
         (async () => {
           try {
+            if (handledRef.current) {
+              if (__DEV__) {
+                console.log('🔁 Deep Link 이미 처리됨. 건너뜀.');
+              }
+              return;
+            }
+
             const urlObj = new URL(url);
             const token = urlObj.searchParams.get('token');
             const refreshToken = urlObj.searchParams.get('refreshToken');
 
             if (token) {
+              if (processedTokenRef.current === token) {
+                if (__DEV__) {
+                  console.log('🔁 동일 토큰 이미 처리됨. 건너뜀.');
+                }
+                return;
+              }
+
               console.log('✅ 백엔드로부터 토큰 수신');
               // refreshToken은 없을 수도 있음 (호환성 확보)
               await setTokens(token, refreshToken || null);
+              processedTokenRef.current = token;
+              handledRef.current = true;
 
-              // CSRF 토큰 발급 및 저장
-              try {
-                const csrfData = await getCsrfToken();
-                if (csrfData.csrfToken) {
-                  setCsrfToken(csrfData.csrfToken);
-                  console.log('CSRF 토큰 발급 성공');
+              // CSRF 토큰 발급 및 저장 (최근 5초 이내 중복 요청 방지)
+              const now = Date.now();
+              const existingCsrf = useSessionStore.getState().csrfToken;
+              if (existingCsrf) {
+                if (__DEV__) {
+                  console.log('CSRF 이미 스토어에 존재, 발급 스킵');
                 }
-              } catch (csrfError) {
-                console.warn('CSRF 토큰 발급 실패:', csrfError);
+              } else if (now - lastCsrfIssuedAtRef.current > 5000) {
+                try {
+                  const csrfData = await getCsrfToken();
+                  if (csrfData.csrfToken) {
+                    setCsrfToken(csrfData.csrfToken);
+                    lastCsrfIssuedAtRef.current = now;
+                    console.log('CSRF 토큰 발급 성공');
+                  }
+                } catch (csrfError) {
+                  console.warn('CSRF 토큰 발급 실패:', csrfError);
+                }
+              } else if (__DEV__) {
+                console.log('CSRF 토큰 최근 발급됨, 중복 요청 스킵');
               }
 
               setIsLoading(false);
