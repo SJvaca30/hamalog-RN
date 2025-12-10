@@ -32,7 +32,8 @@ export function RegisterPage() {
   const [selectedImage, setSelectedImage] = useState<PickedImage | null>(null);
   const [isTextFieldFocused, setIsTextFieldFocused] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const canProceed = nickname.trim().length > 0 && !!selectedImage; // 별명+사진 필수
+  const canProceed =
+    nickname.trim().length > 0 && hospital.trim().length > 0 && !!selectedImage;
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   // 사용자가 입력한 내용이 있는지 확인
@@ -67,7 +68,7 @@ export function RegisterPage() {
   }, [navigation, hasUserInput]);
 
   const handleNext = () => {
-    if (!canProceed || !selectedImage) return;
+    if (!canProceed) return;
 
     // route params로 데이터 전달
     router.push({
@@ -77,8 +78,10 @@ export function RegisterPage() {
         hospital,
         prescribedAt: prescribedAt ? format(prescribedAt, 'yyyy-MM-dd') : '',
         memo,
-        // PickedImage 객체를 JSON 문자열로 전달
-        selectedImage: JSON.stringify(selectedImage),
+        // PickedImage 객체를 JSON 문자열로 전달 (DEV에서 이미지 없을 경우 undefined)
+        selectedImage: selectedImage
+          ? JSON.stringify(selectedImage)
+          : undefined,
       },
     });
   };
@@ -150,6 +153,7 @@ export function RegisterPage() {
                 {/* 3. 병원명 */}
                 <TextField
                   label="병원명"
+                  required
                   placeholder="진료 받은 병원을 적어주세요"
                   value={hospital}
                   onChangeText={setHospital}

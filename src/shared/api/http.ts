@@ -7,6 +7,7 @@ const BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 export const http = axios.create({
   baseURL: BASE_URL,
   timeout: 10000,
+  withCredentials: true,
 });
 
 // 요청 인터셉터: 모든 요청에 JWT 토큰 및 CSRF 토큰 추가
@@ -46,6 +47,26 @@ interface RefreshTokenResponse {
 http.interceptors.response.use(
   response => response,
   async error => {
+    if (__DEV__) {
+      const status = error.response?.status;
+      const headers = error.response?.headers;
+      const dataPreview =
+        typeof error.response?.data === 'string'
+          ? error.response.data.slice(0, 300)
+          : JSON.stringify(error.response?.data)?.slice(0, 300);
+      const sentCsrf = error.config?.headers?.['X-CSRF-TOKEN'];
+      const sentAuth = error.config?.headers?.Authorization;
+      console.warn('[HTTP][ERROR]', {
+        url: error.config?.url,
+        method: error.config?.method,
+        status,
+        sentCsrf,
+        sentAuth: sentAuth ? `${String(sentAuth).slice(0, 20)}...` : null,
+        headers,
+        dataPreview,
+      });
+    }
+
     const originalRequest = error.config;
 
     // 401 에러이고, 아직 재시도하지 않은 요청인 경우
@@ -68,6 +89,26 @@ http.interceptors.response.use(
           await useSessionStore
             .getState()
             .setTokens(data.access_token, data.refresh_token);
+
+          // CSRF 토큰 재발급 시도 (refresh 후 구 토큰 무효화 대비)
+          try {
+            const { getCsrfToken } = await import('@entities/auth/api');
+            const csrf = await getCsrfToken();
+            const newCsrfToken =
+              csrf.csrfToken || (csrf as any).csrf_token || (csrf as any).token;
+            if (newCsrfToken) {
+              useSessionStore.getState().setCsrfToken(newCsrfToken);
+              if (__DEV__) {
+                console.log('[HTTP][refresh] CSRF 재발급 성공');
+              }
+            } else if (__DEV__) {
+              console.warn('[HTTP][refresh] CSRF 응답에 토큰 없음');
+            }
+          } catch (csrfError) {
+            if (__DEV__) {
+              console.warn('[HTTP][refresh] CSRF 재발급 실패', csrfError);
+            }
+          }
 
           // 실패했던 요청에 새 토큰 적용 후 재시도
           originalRequest.headers.Authorization = `Bearer ${data.access_token}`;

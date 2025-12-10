@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import * as NavigationBar from 'expo-navigation-bar';
 import { SplashScreen, Stack, useRouter, useSegments } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -57,6 +57,7 @@ export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts(customFontsToLoad);
   const [queryClient] = useState(() => new QueryClient());
   const { loadTokens, accessToken } = useSession();
+  const csrfFetchedRef = useRef(false);
 
   // 앱 초기화 및 토큰 로드
   useEffect(() => {
@@ -73,11 +74,12 @@ export default function RootLayout() {
   // Access Token이 있을 때(로그인 상태) CSRF 토큰 갱신
   // NOTE: useSessionStore.getState()로 직접 액션 호출하여 의존성 배열 최적화
   useEffect(() => {
-    if (accessToken) {
+    if (accessToken && !csrfFetchedRef.current) {
       getCsrfToken()
         .then(data => {
           if (data.csrfToken) {
             useSessionStore.getState().setCsrfToken(data.csrfToken);
+            csrfFetchedRef.current = true;
             console.log('앱 초기화: CSRF 토큰 갱신 성공');
           }
         })
