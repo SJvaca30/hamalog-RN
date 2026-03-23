@@ -1,7 +1,7 @@
 /**
  * 환경 변수 로더
  * - Expo SDK 53+: 클라이언트에서 접근 가능한 키는 EXPO_PUBLIC_ 접두사가 필요합니다.
- * - 여기서는 EXPO_PUBLIC_API_BASE_URL을 읽어 `env.apiBaseUrl`로 노출합니다.
+ * - 여기서는 EXPO_PUBLIC_API_BASE_URL, EXPO_PUBLIC_ENABLE_AUTH_MOCK을 읽어 public config로 노출합니다.
  * - production에서 값이 없으면 즉시 오류를 던져 잘못된 배포를 방지합니다.
  * - development/preview에서는 로컬 개발 기본값(`http://localhost:8080`)을 사용합니다.
  */
@@ -16,6 +16,7 @@ const EnvSchema = z.object({
 // process.env에서 필요한 값만 추출 (런타임/빌드 타임 모두 동작)
 const rawEnv = {
   EXPO_PUBLIC_API_BASE_URL: process.env.EXPO_PUBLIC_API_BASE_URL,
+  EXPO_PUBLIC_ENABLE_AUTH_MOCK: process.env.EXPO_PUBLIC_ENABLE_AUTH_MOCK,
   NODE_ENV: process.env.NODE_ENV,
 };
 
@@ -43,7 +44,16 @@ function resolveApiBaseUrl(): string {
   return 'http://localhost:8080';
 }
 
+function resolveEnableAuthMock(): boolean {
+  if (isProduction) {
+    return false;
+  }
+
+  return rawEnv.EXPO_PUBLIC_ENABLE_AUTH_MOCK === 'true';
+}
+
 // 상위 레이어에서 사용하기 위한 public config
 export const env = {
   apiBaseUrl: resolveApiBaseUrl(),
+  enableAuthMock: resolveEnableAuthMock(),
 };
