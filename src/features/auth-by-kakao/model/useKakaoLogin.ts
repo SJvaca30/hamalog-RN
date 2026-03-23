@@ -95,7 +95,7 @@ export const useKakaoLogin = () => {
     return () => {
       subscription.remove();
     };
-  }, [setTokens]);
+  }, [setCsrfToken, setTokens]);
 
   // 백엔드 OAuth 엔드포인트로 리다이렉트
   const login = async () => {

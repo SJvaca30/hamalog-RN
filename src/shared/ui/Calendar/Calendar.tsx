@@ -158,7 +158,12 @@ export function CalendarModal({
       new Date(currentMonth).getMonth()
     );
 
-    const years = Array.from({ length: 21 }, (_, i) => currentYear - 10 + i);
+    const minYear = minimumDate ? getYear(minimumDate) : currentYear - 120;
+    const maxYear = maximumDate ? getYear(maximumDate) : currentYear + 10;
+    const years = Array.from(
+      { length: maxYear - minYear + 1 },
+      (_, i) => maxYear - i
+    );
     const months = Array.from({ length: 12 }, (_, i) => i);
 
     const handlePickerConfirm = () => {
