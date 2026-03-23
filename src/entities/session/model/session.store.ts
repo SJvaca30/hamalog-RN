@@ -29,7 +29,6 @@ interface SessionActions {
   setCsrfToken: (token: string) => void;
   clearTokens: () => Promise<void>;
   loadTokens: () => Promise<void>;
-  clearTokensIfMockDisabled: () => Promise<void>;
 }
 
 const getMemberIdFromToken = (token: string): number | null => {
@@ -143,24 +142,6 @@ export const useSessionStore = create<SessionState & SessionActions>(set => ({
       });
     }
     set({ accessToken, refreshToken, memberId, isLoaded: true });
-  },
-
-  // 개발용: Mock 인증이 비활성화되었을 때 토큰 자동 클리어
-  clearTokensIfMockDisabled: async () => {
-    const { env } = await import('@shared/config/env');
-    if (!env.mockAuth.enabled) {
-      if (__DEV__) {
-        console.log('🔧 Mock 인증이 비활성화됨 - 기존 토큰 클리어');
-      }
-      await SecureStore.deleteItemAsync('accessToken');
-      await SecureStore.deleteItemAsync('refreshToken');
-      set({
-        accessToken: null,
-        refreshToken: null,
-        csrfToken: null,
-        memberId: null,
-      });
-    }
   },
 }));
 

@@ -6,7 +6,7 @@ interface HamaNavigatorProps extends IconProps {
   href?: Href;
 }
 
-const HamaNavigator = ({ href, ...props }: HamaNavigatorProps) => {
+export const HamaNavigator = ({ href, ...props }: HamaNavigatorProps) => {
   const router = useRouter();
 
   const handlePress = () => {
@@ -21,4 +21,3 @@ const HamaNavigator = ({ href, ...props }: HamaNavigatorProps) => {
     </Pressable>
   );
 };
-export default HamaNavigator;

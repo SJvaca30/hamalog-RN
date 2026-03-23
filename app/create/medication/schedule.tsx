@@ -1,3 +1,3 @@
-import { SchedulePage } from '@pages/medication-creation/schedule';
+import { MedicationSchedulePage } from '@pages/medication-schedule';
 
-export default SchedulePage;
+export default MedicationSchedulePage;

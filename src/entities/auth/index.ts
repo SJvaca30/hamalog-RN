@@ -1,11 +1,15 @@
 // Public API for auth entity
 export type {
   ApiErrorResponse,
+  CsrfStatusResponse,
+  CsrfTokenResponse,
   EmailCheckResult,
   LoginFormData,
   LoginRequest,
   LoginResponse,
   LogoutResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
   SignupFormData,
   SignupRequest,
   SignupResponse,
@@ -16,7 +20,7 @@ export {
   useSignup,
   useValidateEmailFormat,
 } from './model/use-auth';
-export { getCsrfStatus, getCsrfToken } from './api';
+export { getCsrfStatus, getCsrfToken, refreshTokens } from './api';
 export {
   birthDateSchema,
   emailInputFormSchema,

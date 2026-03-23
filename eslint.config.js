@@ -82,6 +82,94 @@ const eslintConfig = [
       'react/prop-types': 'off',
     },
   },
+  {
+    files: ['src/**/*.{ts,tsx}', 'app/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            '@entities/*/api',
+            '@entities/*/api/*',
+            '@entities/*/model',
+            '@entities/*/model/*',
+            '@entities/*/lib',
+            '@entities/*/lib/*',
+            '@entities/*/ui',
+            '@entities/*/ui/*',
+            '@features/*/api',
+            '@features/*/api/*',
+            '@features/*/model',
+            '@features/*/model/*',
+            '@features/*/lib',
+            '@features/*/lib/*',
+            '@features/*/ui',
+            '@features/*/ui/*',
+            '@widgets/*/api',
+            '@widgets/*/api/*',
+            '@widgets/*/model',
+            '@widgets/*/model/*',
+            '@widgets/*/lib',
+            '@widgets/*/lib/*',
+            '@widgets/*/ui',
+            '@widgets/*/ui/*',
+            '@pages/*/*',
+            '@pages/*/*/*',
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/shared/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            '@entities/*',
+            '@features/*',
+            '@widgets/*',
+            '@pages/*',
+            '@app/*',
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/entities/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['@features/*', '@widgets/*', '@pages/*', '@app/*'],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/features/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['@widgets/*', '@pages/*', '@app/*'],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/widgets/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['@pages/*', '@app/*'],
+        },
+      ],
+    },
+  },
 ];
 
 module.exports = eslintConfig;

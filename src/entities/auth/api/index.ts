@@ -1,4 +1,7 @@
+import axios from 'axios';
+
 import { http } from '@shared/api/http';
+import { env } from '@shared/config';
 
 import {
   CsrfStatusResponse,
@@ -7,6 +10,8 @@ import {
   LoginRequest,
   LoginResponse,
   LogoutResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
   SignupRequest,
   SignupResponse,
 } from '../model/types';
@@ -31,6 +36,25 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
     '/auth/login',
     data
   );
+  return response;
+};
+
+/**
+ * 토큰 갱신 API
+ * - shared http 인터셉터 순환을 피하기 위해 raw axios를 사용합니다.
+ */
+export const refreshTokens = async (
+  data: RefreshTokenRequest
+): Promise<RefreshTokenResponse> => {
+  const { data: response } = await axios.post<RefreshTokenResponse>(
+    `${env.apiBaseUrl}/auth/refresh`,
+    data,
+    {
+      timeout: 10000,
+      withCredentials: true,
+    }
+  );
+
   return response;
 };
 

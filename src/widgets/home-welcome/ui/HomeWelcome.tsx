@@ -3,7 +3,7 @@ import { Typography } from '@shared/ui/Typography';
 import { format } from 'date-fns';
 import { memo } from 'react';
 
-const HomeWelcome = () => {
+const HomeWelcomeComponent = () => {
   const formattedDate = format(new Date(), 'yyyy년 M월 d일');
 
   return (
@@ -26,4 +26,4 @@ const HomeWelcome = () => {
   );
 };
 
-export default memo(HomeWelcome);
+export const HomeWelcome = memo(HomeWelcomeComponent);

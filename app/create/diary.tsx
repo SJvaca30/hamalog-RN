@@ -1,7 +1,3 @@
-import { Typography } from '@shared/ui/Typography';
+import { CreateDiaryPage } from '@pages/create-diary';
 
-const DiaryCreatePage = () => {
-  return <Typography>Diary Create Page</Typography>;
-};
-
-export default DiaryCreatePage;
+export default CreateDiaryPage;

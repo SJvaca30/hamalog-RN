@@ -1,7 +1,3 @@
-import { Typography } from '@shared/ui/Typography';
+import { CreateSleepPage } from '@pages/create-sleep';
 
-const SleepCreatePage = () => {
-  return <Typography>Sleep Create Page</Typography>;
-};
-
-export default SleepCreatePage;
+export default CreateSleepPage;

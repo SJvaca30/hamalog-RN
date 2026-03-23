@@ -7,6 +7,7 @@ export default function MedicationLayout() {
         headerShown: false,
       }}>
       <Stack.Screen name="index" />
+      <Stack.Screen name="import" />
       <Stack.Screen name="register" />
       <Stack.Screen name="schedule" />
     </Stack>

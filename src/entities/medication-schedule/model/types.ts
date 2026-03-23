@@ -1,3 +1,5 @@
+export type MedicationAlarmType = 'SOUND' | 'VIBE';
+
 /**
  * 사용자 요약 정보 (다른 엔티티에서 참조용)
  */
@@ -20,7 +22,7 @@ export interface MedicationSchedule {
   startOfAd: string; // "YYYY-MM-DD"
   prescriptionDays: number;
   perDay: number;
-  alarmType: 'SOUND' | 'VIBRATION' | 'SOUND_AND_VIBRATION' | 'NONE';
+  alarmType: MedicationAlarmType;
 }
 
 /**
@@ -53,7 +55,8 @@ export interface CreateMedicationScheduleRequest {
   startOfAd: string; // "YYYY-MM-DD"
   prescriptionDays: number;
   perDay: number;
-  alarmType: 'SOUND' | 'VIBRATION' | 'SOUND_AND_VIBRATION' | 'NONE';
+  alarmType: MedicationAlarmType;
+  medicationTimes: string[];
 }
 
 /**

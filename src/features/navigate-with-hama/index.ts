@@ -1,1 +1,1 @@
-export { default as HamaNavigator } from './ui/HamaNavigator';
+export { HamaNavigator } from './ui/HamaNavigator';
