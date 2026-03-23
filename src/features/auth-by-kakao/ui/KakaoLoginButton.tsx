@@ -1,10 +1,7 @@
-import { Image } from 'expo-image';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { colors } from '@shared/config';
 import { Typography } from '@shared/ui/Typography';
-
-const KAKAO_SYMBOL_URI =
-  'https://developers.kakao.com/assets/img/about/logos/kakaologin/kr/kakaologin_ci_01.png';
 
 interface KakaoLoginButtonProps {
   onPress: () => void;
@@ -18,7 +15,11 @@ export function KakaoLoginButton({ onPress, disabled }: KakaoLoginButtonProps) {
       style={[styles.container, disabled && styles.pressed]}
       onPress={onPress}
       disabled={disabled}>
-      <Image source={{ uri: KAKAO_SYMBOL_URI }} style={styles.symbol} />
+      <View style={styles.symbol}>
+        <Typography variant="body-1" color="text-gray-850">
+          K
+        </Typography>
+      </View>
       <View style={styles.labelContainer}>
         <Typography variant="body-1" color="text-gray-850">
           카카오 로그인
@@ -31,7 +32,7 @@ export function KakaoLoginButton({ onPress, disabled }: KakaoLoginButtonProps) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: '#FEE500',
+    backgroundColor: colors.point.yellow[400],
     borderRadius: 6,
     flexDirection: 'row',
     height: 50,
@@ -48,7 +49,11 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   symbol: {
+    alignItems: 'center',
+    backgroundColor: colors.gray[850],
+    borderRadius: 12,
     height: 24,
+    justifyContent: 'center',
     left: 15,
     position: 'absolute',
     width: 24,

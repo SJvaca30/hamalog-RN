@@ -1,3 +1,3 @@
-import { AppRoot } from '@app/providers/AppRoot';
+import { AppRoot } from '@application/providers/AppRoot';
 
 export default AppRoot;

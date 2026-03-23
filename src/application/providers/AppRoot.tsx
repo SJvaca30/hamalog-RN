@@ -9,8 +9,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import '../../../global.css';
 
-import { setupHttpClient } from '@app/init/setup-http-client';
-import { AppNavigator } from '@app/navigation/AppNavigator';
+import { setupHttpClient } from '@application/init/setup-http-client';
+import { AppNavigator } from '@application/navigation/AppNavigator';
 import { getCsrfToken } from '@entities/auth';
 import { useSession, useSessionStore } from '@entities/session';
 import { customFontsToLoad } from '@shared/config';

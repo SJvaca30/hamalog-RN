@@ -64,7 +64,6 @@ export function DatePicker({
           onChangeText={() => {}} // 읽기 전용이므로 빈 함수
           inputProps={{
             editable: false,
-            pointerEvents: 'none',
           }}
         />
       </Pressable>

@@ -131,7 +131,7 @@ const eslintConfig = [
             '@features/*',
             '@widgets/*',
             '@pages/*',
-            '@app/*',
+            '@application/*',
           ],
         },
       ],
@@ -143,7 +143,7 @@ const eslintConfig = [
       'no-restricted-imports': [
         'error',
         {
-          patterns: ['@features/*', '@widgets/*', '@pages/*', '@app/*'],
+          patterns: ['@features/*', '@widgets/*', '@pages/*', '@application/*'],
         },
       ],
     },
@@ -154,7 +154,7 @@ const eslintConfig = [
       'no-restricted-imports': [
         'error',
         {
-          patterns: ['@widgets/*', '@pages/*', '@app/*'],
+          patterns: ['@widgets/*', '@pages/*', '@application/*'],
         },
       ],
     },
@@ -165,7 +165,7 @@ const eslintConfig = [
       'no-restricted-imports': [
         'error',
         {
-          patterns: ['@pages/*', '@app/*'],
+          patterns: ['@pages/*', '@application/*'],
         },
       ],
     },

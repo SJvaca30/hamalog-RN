@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 
-import { ProtectedRoutesGate } from '@app/navigation/ProtectedRoutesGate';
+import { ProtectedRoutesGate } from '@application/navigation/ProtectedRoutesGate';
 
 export function AppNavigator() {
   return (
