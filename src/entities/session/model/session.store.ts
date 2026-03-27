@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import { jwtDecode } from 'jwt-decode';
+import { Platform } from 'react-native';
 import { create } from 'zustand';
 
 interface DecodedToken {
@@ -18,7 +19,7 @@ interface SessionState {
   refreshToken: string | null;
   csrfToken: string | null;
   memberId: number | null;
-  isLoaded: boolean; // SecureStore에서 토큰을 불러왔는지 여부
+  isLoaded: boolean; // 세션 저장소에서 토큰을 불러왔는지 여부
 }
 
 interface SessionActions {
@@ -29,7 +30,6 @@ interface SessionActions {
   setCsrfToken: (token: string) => void;
   clearTokens: () => Promise<void>;
   loadTokens: () => Promise<void>;
-  clearTokensIfMockDisabled: () => Promise<void>;
 }
 
 const getMemberIdFromToken = (token: string): number | null => {
@@ -90,6 +90,55 @@ const getMemberIdFromToken = (token: string): number | null => {
   }
 };
 
+const isWeb = Platform.OS === 'web';
+
+const getStoredItem = async (key: string): Promise<string | null> => {
+  if (!isWeb) {
+    return SecureStore.getItemAsync(key);
+  }
+
+  try {
+    if (typeof localStorage === 'undefined') {
+      return null;
+    }
+
+    return localStorage.getItem(key);
+  } catch (error) {
+    console.warn(`[Session] 웹 저장소 조회 실패: ${key}`, error);
+    return null;
+  }
+};
+
+const setStoredItem = async (key: string, value: string): Promise<void> => {
+  if (!isWeb) {
+    await SecureStore.setItemAsync(key, value);
+    return;
+  }
+
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(key, value);
+    }
+  } catch (error) {
+    console.warn(`[Session] 웹 저장소 저장 실패: ${key}`, error);
+  }
+};
+
+const removeStoredItem = async (key: string): Promise<void> => {
+  if (!isWeb) {
+    await SecureStore.deleteItemAsync(key);
+    return;
+  }
+
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(key);
+    }
+  } catch (error) {
+    console.warn(`[Session] 웹 저장소 삭제 실패: ${key}`, error);
+  }
+};
+
 export const useSessionStore = create<SessionState & SessionActions>(set => ({
   accessToken: null,
   refreshToken: null,
@@ -98,11 +147,11 @@ export const useSessionStore = create<SessionState & SessionActions>(set => ({
   isLoaded: false,
 
   setTokens: async (accessToken, refreshToken) => {
-    await SecureStore.setItemAsync('accessToken', accessToken);
+    await setStoredItem('accessToken', accessToken);
     if (refreshToken) {
-      await SecureStore.setItemAsync('refreshToken', refreshToken);
+      await setStoredItem('refreshToken', refreshToken);
     } else {
-      await SecureStore.deleteItemAsync('refreshToken');
+      await removeStoredItem('refreshToken');
     }
 
     const memberId = getMemberIdFromToken(accessToken);
@@ -114,8 +163,8 @@ export const useSessionStore = create<SessionState & SessionActions>(set => ({
   },
 
   clearTokens: async () => {
-    await SecureStore.deleteItemAsync('accessToken');
-    await SecureStore.deleteItemAsync('refreshToken');
+    await removeStoredItem('accessToken');
+    await removeStoredItem('refreshToken');
     set({
       accessToken: null,
       refreshToken: null,
@@ -126,8 +175,8 @@ export const useSessionStore = create<SessionState & SessionActions>(set => ({
 
   loadTokens: async () => {
     const [accessToken, refreshToken] = await Promise.all([
-      SecureStore.getItemAsync('accessToken'),
-      SecureStore.getItemAsync('refreshToken'),
+      getStoredItem('accessToken'),
+      getStoredItem('refreshToken'),
     ]);
 
     let memberId: number | null = null;
@@ -136,31 +185,13 @@ export const useSessionStore = create<SessionState & SessionActions>(set => ({
     }
 
     if (__DEV__) {
-      console.log('SecureStore에서 토큰 로딩 완료:', {
+      console.log('세션 저장소에서 토큰 로딩 완료:', {
         hasAccessToken: !!accessToken,
         hasRefreshToken: !!refreshToken,
         memberId,
       });
     }
     set({ accessToken, refreshToken, memberId, isLoaded: true });
-  },
-
-  // 개발용: Mock 인증이 비활성화되었을 때 토큰 자동 클리어
-  clearTokensIfMockDisabled: async () => {
-    const { env } = await import('@shared/config/env');
-    if (!env.mockAuth.enabled) {
-      if (__DEV__) {
-        console.log('🔧 Mock 인증이 비활성화됨 - 기존 토큰 클리어');
-      }
-      await SecureStore.deleteItemAsync('accessToken');
-      await SecureStore.deleteItemAsync('refreshToken');
-      set({
-        accessToken: null,
-        refreshToken: null,
-        csrfToken: null,
-        memberId: null,
-      });
-    }
   },
 }));
 

@@ -44,12 +44,7 @@ export const getMedicationScheduleById = async (id: number) => {
 export const createMedicationSchedule = async (formData: FormData) => {
   const { data } = await http.post<CreateMedicationScheduleResponse>(
     '/medication-schedule',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
+    formData
   );
   return data;
 };

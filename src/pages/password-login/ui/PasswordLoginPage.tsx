@@ -11,6 +11,7 @@ import {
   type LoginFormValidationData,
 } from '@entities/auth';
 import { useSession } from '@entities/session';
+import { getApiErrorMessage } from '@shared/api';
 import { BottomCTA } from '@shared/ui/BottomCTA';
 import { Box } from '@shared/ui/Box';
 import { ArrowLeftIcon } from '@shared/ui/icons';
@@ -74,12 +75,13 @@ export function PasswordLoginPage() {
       // 백엔드 에러 메시지 처리
       if (error.response?.status === 401) {
         Alert.alert('로그인 실패', '이메일 또는 비밀번호가 일치하지 않습니다.');
-      } else if (error.response?.data?.message) {
-        Alert.alert('로그인 실패', error.response.data.message);
       } else {
         Alert.alert(
           '로그인 실패',
-          '로그인 중 오류가 발생했습니다. 다시 시도해주세요.'
+          getApiErrorMessage(
+            error,
+            '로그인 중 오류가 발생했습니다. 다시 시도해주세요.'
+          )
         );
       }
     }

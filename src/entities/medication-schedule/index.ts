@@ -1,9 +1,13 @@
 // Public API for medication-schedule entity
 export type {
+  CreateMedicationScheduleRequest,
+  CreateMedicationScheduleResponse,
   GetMedicationScheduleListResponse,
   GetMedicationScheduleResponse,
+  MedicationAlarmType,
   MedicationSchedule,
   MemberSummary,
+  UpdateMedicationScheduleRequest,
 } from './model/types';
 
 export {

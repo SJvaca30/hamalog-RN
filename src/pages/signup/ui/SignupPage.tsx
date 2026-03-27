@@ -10,6 +10,7 @@ import {
   type SignupFormValidationData,
   type SignupRequest,
 } from '@entities/auth';
+import { getApiErrorMessage, getApiErrorResponse } from '@shared/api';
 import { BottomCTA } from '@shared/ui/BottomCTA';
 import { Box } from '@shared/ui/Box';
 import { DatePicker } from '@shared/ui/DatePicker';
@@ -74,7 +75,7 @@ export function SignupPage() {
       // 특별한 에러 케이스 처리 (409: 중복 리소스)
       if (
         error.response?.status === 409 &&
-        error.response?.data?.error === 'DUPLICATE_MEMBER'
+        getApiErrorResponse(error)?.code === 'DUPLICATE_MEMBER'
       ) {
         Alert.alert(
           '이미 가입된 이메일',
@@ -92,12 +93,13 @@ export function SignupPage() {
             },
           ]
         );
-      } else if (error.response?.data?.message) {
-        Alert.alert('회원가입 실패', error.response.data.message);
       } else {
         Alert.alert(
           '회원가입 실패',
-          '회원가입 중 오류가 발생했습니다. 다시 시도해주세요.'
+          getApiErrorMessage(
+            error,
+            '회원가입 중 오류가 발생했습니다. 다시 시도해주세요.'
+          )
         );
       }
     }

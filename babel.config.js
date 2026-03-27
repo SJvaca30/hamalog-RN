@@ -6,6 +6,8 @@ module.exports = function (api) {
       {
         root: ['./'],
         alias: {
+          '@application': './src/application',
+          '@application/*': './src/application/*',
           '@pages': './src/pages',
           '@pages/*': './src/pages/*',
           '@widgets': './src/widgets',

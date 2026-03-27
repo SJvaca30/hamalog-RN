@@ -1,7 +1,3 @@
-import { Typography } from '@shared/ui/Typography';
+import { CreateSymptomPage } from '@pages/create-symptom';
 
-const SymptomCreatePage = () => {
-  return <Typography>Symptom Create Page</Typography>;
-};
-
-export default SymptomCreatePage;
+export default CreateSymptomPage;

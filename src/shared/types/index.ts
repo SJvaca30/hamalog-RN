@@ -1,6 +1,1 @@
-export type {
-  BackgroundColor,
-  BorderColor,
-  TextColor,
-  TypographyVariant,
-} from './ui.types';
+export type { PickedImage } from './image';

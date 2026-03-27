@@ -2,12 +2,13 @@ import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Linking } from 'react-native';
 
-import { getCsrfToken } from '@entities/auth';
+import { getCsrfToken, useLogin } from '@entities/auth';
 import { useSession, useSessionStore } from '@entities/session';
 import { env } from '@shared/config/env';
 
 export const useKakaoLogin = () => {
   const { setTokens, setCsrfToken } = useSession();
+  const loginMutation = useLogin();
   const lastCsrfIssuedAtRef = useRef(0);
   const handledRef = useRef(false); // 단발 처리 가드
   const processedTokenRef = useRef<string | null>(null); // 동일 토큰 중복 처리 방지
@@ -95,12 +96,30 @@ export const useKakaoLogin = () => {
     return () => {
       subscription.remove();
     };
-  }, [setTokens]);
+  }, [setCsrfToken, setTokens]);
 
   // 백엔드 OAuth 엔드포인트로 리다이렉트
   const login = async () => {
     try {
       setIsLoading(true);
+
+      if (env.enableAuthMock) {
+        const response = await loginMutation.mutateAsync({
+          loginId: 'kakao.mock@hamalog.local',
+          password: 'kakao-mock-password',
+        });
+
+        await setTokens(response.access_token, response.refresh_token);
+
+        const csrfData = await getCsrfToken();
+        if (csrfData.csrfToken) {
+          setCsrfToken(csrfData.csrfToken);
+        }
+
+        setIsLoading(false);
+        Alert.alert('성공', '카카오 로그인에 성공했습니다!');
+        return;
+      }
 
       // 백엔드의 카카오 OAuth 시작 엔드포인트
       const backendOAuthUrl = `${env.apiBaseUrl}/oauth2/auth/kakao`;

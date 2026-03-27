@@ -1,3 +1,5 @@
+import type { ApiErrorResponse } from '@shared/api';
+
 /**
  * 회원가입 요청 DTO
  */
@@ -57,11 +59,7 @@ export type LogoutResponse = string; // "로그아웃이 성공적으로 처리�
 /**
  * API 에러 응답 형식
  */
-export interface ApiErrorResponse {
-  error: string; // 에러 코드
-  message: string; // 에러 메시지
-  timestamp: string; // ISO-8601 형식
-}
+export type { ApiErrorResponse };
 
 /**
  * CSRF 토큰 응답 DTO
@@ -70,6 +68,7 @@ export interface CsrfTokenResponse {
   csrfToken: string;
   headerName: string; // "X-CSRF-TOKEN"
   expiryMinutes: number; // 60
+  storage: string;
   timestamp: string; // ISO-8601
 }
 
@@ -80,6 +79,7 @@ export interface CsrfStatusResponse {
   userId: string;
   csrfTokenPresent: boolean;
   csrfTokenValid: boolean;
+  storage: string;
   timestamp: string; // ISO-8601
 }
 

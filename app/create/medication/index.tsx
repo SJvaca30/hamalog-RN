@@ -1,3 +1,3 @@
-import { MedicationCreationPage } from '@pages/medication-creation/index/index';
+import { MedicationCreatePage } from '@pages/medication-create';
 
-export default MedicationCreationPage;
+export default MedicationCreatePage;

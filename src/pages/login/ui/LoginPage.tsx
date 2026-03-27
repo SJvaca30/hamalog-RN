@@ -2,11 +2,6 @@ import { PageContainer } from '@shared/ui/PageContainer';
 import { AuthWelcome } from '@widgets/auth-welcome';
 
 export function LoginPage() {
-  console.log('LoginPage 렌더링됨, 환경변수 확인:', {
-    kakaoAppKey: process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY,
-    apiBaseUrl: process.env.EXPO_PUBLIC_API_BASE_URL,
-  });
-
   return (
     <PageContainer>
       <AuthWelcome

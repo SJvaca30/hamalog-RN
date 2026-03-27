@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios, { type InternalAxiosRequestConfig } from 'axios';
 
-import { useSessionStore } from '@entities/session/model/session.store';
+import { env } from '@shared/config';
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
+const BASE_URL = env.apiBaseUrl;
 
 export const http = axios.create({
   baseURL: BASE_URL,
@@ -10,99 +10,131 @@ export const http = axios.create({
   withCredentials: true,
 });
 
-// 요청 인터셉터: 모든 요청에 JWT 토큰 및 CSRF 토큰 추가
-http.interceptors.request.use(
-  config => {
-    // React Hook이 아니므로 getState()로 직접 상태 조회
-    const { accessToken, csrfToken } = useSessionStore.getState();
-
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-
-    // POST, PUT, DELETE, PATCH 요청 시 CSRF 토큰 추가
-    const method = config.method?.toUpperCase();
-    if (
-      csrfToken &&
-      method &&
-      ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)
-    ) {
-      config.headers['X-CSRF-TOKEN'] = csrfToken;
-    }
-
-    return config;
-  },
-  error => {
-    return Promise.reject(error);
-  }
-);
-
 interface RefreshTokenResponse {
   access_token: string;
   refresh_token: string;
   expires_in: number;
 }
 
-// 응답 인터셉터: 에러 공통 처리 및 토큰 갱신
-http.interceptors.response.use(
-  response => response,
-  async error => {
-    if (__DEV__) {
-      const status = error.response?.status;
-      const headers = error.response?.headers;
-      const dataPreview =
-        typeof error.response?.data === 'string'
-          ? error.response.data.slice(0, 300)
-          : JSON.stringify(error.response?.data)?.slice(0, 300);
-      const sentCsrf = error.config?.headers?.['X-CSRF-TOKEN'];
-      const sentAuth = error.config?.headers?.Authorization;
-      console.warn('[HTTP][ERROR]', {
-        url: error.config?.url,
-        method: error.config?.method,
-        status,
-        sentCsrf,
-        sentAuth: sentAuth ? `${String(sentAuth).slice(0, 20)}...` : null,
-        headers,
-        dataPreview,
-      });
-    }
+interface CsrfRefreshResponse {
+  csrfToken?: string;
+  csrf_token?: string;
+  token?: string;
+}
 
-    const originalRequest = error.config;
+interface RetryableRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
-    // 401 에러이고, 아직 재시도하지 않은 요청인 경우
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+interface HttpClientDependencies {
+  getAccessToken: () => string | null;
+  getRefreshToken: () => string | null;
+  getCsrfTokenValue: () => string | null;
+  setTokens: (
+    accessToken: string,
+    refreshToken?: string | null
+  ) => Promise<void>;
+  setCsrfToken: (token: string) => void;
+  clearSession: () => Promise<void>;
+  refreshAccessToken: (refreshToken: string) => Promise<RefreshTokenResponse>;
+  refreshCsrfToken: () => Promise<CsrfRefreshResponse>;
+}
 
-      try {
-        const refreshToken = useSessionStore.getState().refreshToken;
+let requestInterceptorId: number | null = null;
+let responseInterceptorId: number | null = null;
 
-        if (refreshToken) {
-          // 토큰 갱신 요청
-          const { data } = await axios.post<RefreshTokenResponse>(
-            `${BASE_URL}/auth/refresh`,
-            {
-              refreshToken,
-            }
-          );
+const logHttpError = (error: unknown) => {
+  if (!__DEV__) return;
 
-          // 새 토큰 저장 (Store 업데이트) - snake_case 응답 형식 대응
-          await useSessionStore
-            .getState()
-            .setTokens(data.access_token, data.refresh_token);
+  const httpError = error as {
+    response?: { status?: number; headers?: unknown; data?: unknown };
+    config?: {
+      url?: string;
+      method?: string;
+      headers?: Record<string, unknown>;
+    };
+  };
 
-          // CSRF 토큰 재발급 시도 (refresh 후 구 토큰 무효화 대비)
+  const dataPreview =
+    typeof httpError.response?.data === 'string'
+      ? httpError.response.data.slice(0, 300)
+      : JSON.stringify(httpError.response?.data)?.slice(0, 300);
+
+  console.warn('[HTTP][ERROR]', {
+    url: httpError.config?.url,
+    method: httpError.config?.method,
+    status: httpError.response?.status,
+    sentCsrf: httpError.config?.headers?.['X-CSRF-TOKEN'],
+    sentAuth: httpError.config?.headers?.Authorization
+      ? `${String(httpError.config.headers.Authorization).slice(0, 20)}...`
+      : null,
+    headers: httpError.response?.headers,
+    dataPreview,
+  });
+};
+
+export function configureHttpClient(deps: HttpClientDependencies) {
+  if (requestInterceptorId !== null) {
+    http.interceptors.request.eject(requestInterceptorId);
+  }
+
+  if (responseInterceptorId !== null) {
+    http.interceptors.response.eject(responseInterceptorId);
+  }
+
+  requestInterceptorId = http.interceptors.request.use(
+    config => {
+      const accessToken = deps.getAccessToken();
+      const csrfToken = deps.getCsrfTokenValue();
+
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+
+      const method = config.method?.toUpperCase();
+      if (
+        csrfToken &&
+        method &&
+        ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)
+      ) {
+        config.headers['X-CSRF-TOKEN'] = csrfToken;
+      }
+
+      return config;
+    },
+    error => Promise.reject(error)
+  );
+
+  responseInterceptorId = http.interceptors.response.use(
+    response => response,
+    async error => {
+      logHttpError(error);
+
+      const originalRequest = error.config as
+        | RetryableRequestConfig
+        | undefined;
+      if (!originalRequest) {
+        return Promise.reject(error);
+      }
+
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+
+        try {
+          const refreshToken = deps.getRefreshToken();
+          if (!refreshToken) {
+            throw error;
+          }
+
+          const tokenData = await deps.refreshAccessToken(refreshToken);
+          await deps.setTokens(tokenData.access_token, tokenData.refresh_token);
+
           try {
-            const { getCsrfToken } = await import('@entities/auth/api');
-            const csrf = await getCsrfToken();
-            const newCsrfToken =
-              csrf.csrfToken || (csrf as any).csrf_token || (csrf as any).token;
-            if (newCsrfToken) {
-              useSessionStore.getState().setCsrfToken(newCsrfToken);
-              if (__DEV__) {
-                console.log('[HTTP][refresh] CSRF 재발급 성공');
-              }
-            } else if (__DEV__) {
-              console.warn('[HTTP][refresh] CSRF 응답에 토큰 없음');
+            const csrfData = await deps.refreshCsrfToken();
+            const refreshedCsrfToken =
+              csrfData.csrfToken ?? csrfData.csrf_token ?? csrfData.token;
+            if (refreshedCsrfToken) {
+              deps.setCsrfToken(refreshedCsrfToken);
             }
           } catch (csrfError) {
             if (__DEV__) {
@@ -110,17 +142,27 @@ http.interceptors.response.use(
             }
           }
 
-          // 실패했던 요청에 새 토큰 적용 후 재시도
-          originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
+          originalRequest.headers.Authorization = `Bearer ${tokenData.access_token}`;
           return http(originalRequest);
+        } catch (refreshError) {
+          await deps.clearSession();
+          return Promise.reject(refreshError);
         }
-      } catch (refreshError) {
-        // 갱신 실패 시 로그아웃 처리
-        console.log('Token refresh failed, redirecting to login', refreshError);
-        await useSessionStore.getState().clearTokens();
       }
+
+      return Promise.reject(error);
+    }
+  );
+
+  return () => {
+    if (requestInterceptorId !== null) {
+      http.interceptors.request.eject(requestInterceptorId);
+      requestInterceptorId = null;
     }
 
-    return Promise.reject(error);
-  }
-);
+    if (responseInterceptorId !== null) {
+      http.interceptors.response.eject(responseInterceptorId);
+      responseInterceptorId = null;
+    }
+  };
+}
